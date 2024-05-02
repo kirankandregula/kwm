@@ -13,7 +13,7 @@ const override = css`
 `;
 
 function AdminPage() {
-  const [cards, setCards] = useState([]);
+  const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(true); // Added loading state
   const navigate = useNavigate();
 
@@ -28,19 +28,7 @@ function AdminPage() {
       );
 
       const userData = response.data;
-
-      const mappedCards = userData.map((user) => {
-        return {
-          userId: user.user_id,
-          username: user.Name,
-          preValue : user.Previous_Value,
-          gold: user.Gold,
-          debt: user.Debt,
-        };
-      });
-
-      setCards(mappedCards);
-
+      setUserData(userData);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -48,9 +36,8 @@ function AdminPage() {
     }
   };
 
-  const handleCardClick = (userId, previousValue) => {
-    // Call another component with the parameter username
-    console.log(previousValue);
+  const handleRowClick = (userId) => {
+    // Call another component with the parameter userId
     navigate(`/user-details/${userId}`);
   };
   
@@ -75,28 +62,20 @@ function AdminPage() {
             />
           </div>
         ) : (
-          <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-    {cards.map((card, index) => (
-  <div
-    className="col d-flex justify-content-center"
-    key={index}
-    onClick={() => handleCardClick(card.userId, card.preValue)}
-  >
-    <div className={`card rounded shadow bg-secondary text-white`}>
-      <div className="card-body text-center">
-        <h5 className="card-title">{card.username.toUpperCase()}</h5>
-        <div className="main d-flex flex-between">
-          <div className="values">
-            <p className="card-text">Gold: ₹{card.gold}</p>
-            <p className="card-text">Debt: ₹{card.debt}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-))}
-
-          </div>
+          <table className="table table-striped">
+            <thead>
+              <tr>
+                <th>Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              {userData.map((user, index) => (
+                <tr key={index} onClick={() => handleRowClick(user.user_id)}>
+                  <td>{user.Name}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
       </div>
     </div>

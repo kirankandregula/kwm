@@ -11,7 +11,7 @@ const override = css`
   border-color: red;
 `;
 
-const StockMoniter = () => {
+const StockMonitor = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterValue, setFilterValue] = useState("");
@@ -22,7 +22,7 @@ const StockMoniter = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "https://script.googleusercontent.com/macros/echo?user_content_key=XZrlUsEM2NAI5dbFQqlYVKB3xN7iTe-FzVN4GGAP8ik87A3WImQ3BmVAOocLrEEHrgg3YYe5WxACl91J0dfbx9W-i4AKY-TVm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnLIsAGIJk7nwByX2kP7E6KcaQfttZZzFJP9CDHuNsY9n9zt9O8kY-ipqgo7HRuB6PbxLehp36rzvpZB8rFGwxXnkU3qpDqKHHg&lib=MB2EvUQOnusAtbHEY3orlAmtjq-h6POhb"
+          "https://script.googleusercontent.com/macros/echo?user_content_key=D35XLo26aoh5Z6byEVTdPv8NVrACw3zuHZ_HJxKY5KqEI7ZjEeeVraa75NBgA4hkNg3qOxflbiHesAoEbgUupkm-snUMR4NFm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnF8p6Pvu3GCIvWI3y7Ghdmj_6hTbf1zJNLytKYjKWeR9NiP1GwU0UtbxfLZwjkztxGbJ7F4B_nj2Vjvl4XSHwi4AYsHa6a3vbA&lib=MDgztCdXOLOYDH2WnKkUSaorbG83cRkUz"
         );
         setData(response.data);
       } catch (error) {
@@ -66,8 +66,8 @@ const StockMoniter = () => {
 
   const filteredData = data.filter(
     (row) =>
-      row.TICKER && // Filter out rows where TICKER is null or undefined
-      (row.TICKER.toLowerCase().includes(filterValue.toLowerCase()) ||
+      row.stockName && // Filter out rows where stockName is null or undefined
+      (row.stockName.toLowerCase().includes(filterValue.toLowerCase()) ||
       row.Sector.toLowerCase().includes(filterValue.toLowerCase()))
   );
 
@@ -91,21 +91,21 @@ const StockMoniter = () => {
               <table className="table table-striped">
                 <thead>
                   <tr>
-                    <th onClick={() => handleSort("TICKER")}>Ticker</th>
+                    <th onClick={() => handleSort("stockName")}>Ticker</th>
                     <th onClick={() => handleSort("Sector")}>Sector</th>
                     <th onClick={() => handleSort("LTP")}>LTP</th>
-                    <th onClick={() => handleSort("SCOPE TO GROW")}>Scope to Grow</th>
-                    <th onClick={() => handleSort("HOLD/SELL")}>Hold/Sell</th>
+                    <th onClick={() => handleSort("scopeToGrow")}>Scope to Grow</th>
+                    <th onClick={() => handleSort("action")}>Hold/Sell</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredData.map((row, index) => (
                     <tr key={index}>
-                      <td>{row.TICKER}</td>
+                      <td>{row.stockName}</td>
                       <td>{row.Sector}</td>
                       <td>{row.LTP}</td>
-                      <td className={getScopeColor(row["SCOPE TO GROW"])}>{row["SCOPE TO GROW"]}</td>
-                      <td className={getHoldSellColor(row["HOLD/SELL"])}>{row["HOLD/SELL"]}</td>
+                      <td className={getScopeColor(row.scopeToGrow)}>{row.scopeToGrow}</td>
+                      <td className={getHoldSellColor(row.action)}>{row.action}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -118,4 +118,4 @@ const StockMoniter = () => {
   );
 };
 
-export default StockMoniter;
+export default StockMonitor;

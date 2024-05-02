@@ -15,7 +15,7 @@ const YourPortfolio = () => {
       if (cookies.userRole === 'Admin') {
         navigate(`/admin/${cookies.userId}`);
       } else if (cookies.userRole === 'Viewer') {
-        navigate(`/viewer/${cookies.userId}`);
+        navigate(`/user-details/${cookies.userId}`);
       }
     }
   }, [cookies.userId, cookies.userRole, navigate]);
