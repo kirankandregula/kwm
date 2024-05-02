@@ -22,7 +22,7 @@ const StockMonitor = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "https://script.googleusercontent.com/macros/echo?user_content_key=D35XLo26aoh5Z6byEVTdPv8NVrACw3zuHZ_HJxKY5KqEI7ZjEeeVraa75NBgA4hkNg3qOxflbiHesAoEbgUupkm-snUMR4NFm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnF8p6Pvu3GCIvWI3y7Ghdmj_6hTbf1zJNLytKYjKWeR9NiP1GwU0UtbxfLZwjkztxGbJ7F4B_nj2Vjvl4XSHwi4AYsHa6a3vbA&lib=MDgztCdXOLOYDH2WnKkUSaorbG83cRkUz"
+          "https://script.googleusercontent.com/macros/echo?user_content_key=sWCqu1QFJ5Q66c1GGYLcUlsDZ6saLTQZhHqE9HK-f2L__qCglxC6dFGy6LU-wl6FftvL3ZnHCYzGsz899pWZoZIBSb7jeHCCm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnF8p6Pvu3GCIvWI3y7Ghdmj_6hTbf1zJNLytKYjKWeR9NiP1GwU0UtbxfLZwjkztxGbJ7F4B_nj2Vjvl4XSHwi4AYsHa6a3vbA&lib=MDgztCdXOLOYDH2WnKkUSaorbG83cRkUz"
         );
         setData(response.data);
       } catch (error) {
@@ -91,9 +91,12 @@ const StockMonitor = () => {
               <table className="table table-striped">
                 <thead>
                   <tr>
-                    <th onClick={() => handleSort("stockName")}>Ticker</th>
+                    <th onClick={() => handleSort("stockName")}>Stock Name</th>
                     <th onClick={() => handleSort("Sector")}>Sector</th>
+                    <th onClick={() => handleSort("pe")}>PE</th>
+                    <th onClick={() => handleSort("marketCap")}>Market Cap</th>
                     <th onClick={() => handleSort("LTP")}>LTP</th>
+                    <th onClick={() => handleSort("targetPrice")}>Target Price</th>
                     <th onClick={() => handleSort("scopeToGrow")}>Scope to Grow</th>
                     <th onClick={() => handleSort("action")}>Hold/Sell</th>
                   </tr>
@@ -103,7 +106,10 @@ const StockMonitor = () => {
                     <tr key={index}>
                       <td>{row.stockName}</td>
                       <td>{row.Sector}</td>
+                      <td>{row.pe}</td>
+                      <td>{row.marketCap}</td>
                       <td>{row.LTP}</td>
+                      <td>{row.targetPrice}</td>
                       <td className={getScopeColor(row.scopeToGrow)}>{row.scopeToGrow}</td>
                       <td className={getHoldSellColor(row.action)}>{row.action}</td>
                     </tr>

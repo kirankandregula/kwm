@@ -87,7 +87,9 @@ function UserDetails() {
 
   return (
     <div className="container-fluid">
-      <div className="row m-5">
+      {/* Display user's name */}
+      <h1 className="mt-5 text-center">{userFinancialData ? userFinancialData.Name.toUpperCase() : "User Details"}</h1>
+      <div className="row">
         <div className="col-lg-6 col-md-12 col-sm-12">
           <UserMetricsCard 
             averagePE={averagePE} 
