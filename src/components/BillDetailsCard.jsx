@@ -7,7 +7,7 @@ function BillDetailsCard({ preValue, presentValue }) {
 
   return (
     <div className="card mx-auto mt-4 my-2 text-white text-center" style={{ width: "300px" }}>
-      <div className="card-body bg-info" style={{ borderRadius: "10px" }}>
+      <div className="card-body bg-secondary" style={{ borderRadius: "10px" }}>
         <h5 className="card-title text-center">Bill Details</h5>
         <p className="card-text">Previous Quarter Value: {preValue.toFixed(2)}</p>
         <p className="card-text">Present Value: {presentValue}</p>

@@ -74,7 +74,7 @@ function UserDetails() {
 
   return (
     <div className="container-fluid">
-      <h1 className="mt-5 text-center">{userFinancialData ? userFinancialData.Name.toUpperCase() : "User Details"}</h1>
+      <h1 className=" text-center" style={{marginTop: "60px"}}>{userFinancialData ? userFinancialData.Name.toUpperCase() : "User Details"}</h1>
       <div className="row">
         <div className="col-lg-6 col-md-12 col-sm-12">
           <UserMetricsCard 
@@ -107,7 +107,7 @@ function UserDetails() {
       </div>
       <div className="row">
         <div className="col-lg-12 col-md-12 col-sm-12">
-          <div className="text-center m-2">
+          <div className="text-center mb-5">
             {cookies.userRole === "Admin" && (
               <button className="btn btn-secondary mb-5" onClick={handleBack}>Back</button>
             )}
