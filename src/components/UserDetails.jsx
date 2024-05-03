@@ -22,6 +22,7 @@ function UserDetails() {
   const [totalLatestValue, setTotalLatestValue] = useState(0);
   const [averagePE, setAveragePE] = useState(0);
   const [averageScopeToGrow, setAverageScopeToGrow] = useState(0);
+  const [cardsLoading, setCardsLoading] = useState(true); // State for cards loading
   const { userId } = useParams();
   const navigate = useNavigate();
 
@@ -47,23 +48,36 @@ function UserDetails() {
         let total = 0;
         let peTotal = 0;
         let scopeTotal = 0;
+        let promises = []; // Array to store promises for fetching stock data
         formattedData.forEach(stock => {
-          axios.get(`https://script.googleusercontent.com/macros/echo?user_content_key=M8iUr2Z4ujhnZj3gV3jqyikffgyvfGGgE3LB3d7khmmrPclpYpwHDJT4UsbuwsGWdk_NjhcYGkEiZFHb0g2ZI4og0-Tok6FKm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnF8p6Pvu3GCIvWI3y7Ghdmj_6hTbf1zJNLytKYjKWeR9NiP1GwU0UtbxfLZwjkztxGbJ7F4B_nj2Vjvl4XSHwi4AYsHa6a3vbA&lib=MDgztCdXOLOYDH2WnKkUSaorbG83cRkUz&stock_id=${stock.stockId}`).then(response => {
-            const fetchedStockData = response.data.find(item => item.stock_id === stock.stockId);
-            total += fetchedStockData.LTP * stock.quantity;
-            peTotal += fetchedStockData.pe;
-            scopeTotal += parseInt(fetchedStockData.scopeToGrow.replace('%', ''));
+          // Push each promise into the promises array
+          promises.push(
+            axios.get(`https://script.googleusercontent.com/macros/echo?user_content_key=M8iUr2Z4ujhnZj3gV3jqyikffgyvfGGgE3LB3d7khmmrPclpYpwHDJT4UsbuwsGWdk_NjhcYGkEiZFHb0g2ZI4og0-Tok6FKm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnF8p6Pvu3GCIvWI3y7Ghdmj_6hTbf1zJNLytKYjKWeR9NiP1GwU0UtbxfLZwjkztxGbJ7F4B_nj2Vjvl4XSHwi4AYsHa6a3vbA&lib=MDgztCdXOLOYDH2WnKkUSaorbG83cRkUz&stock_id=${stock.stockId}`)
+          );
+        });
+  
+        // Wait for all promises to resolve
+        Promise.all(promises)
+          .then(responses => {
+            responses.forEach((response, index) => {
+              const fetchedStockData = response.data.find(item => item.stock_id === formattedData[index].stockId);
+              total += fetchedStockData.LTP * formattedData[index].quantity;
+              peTotal += fetchedStockData.pe;
+              scopeTotal += parseInt(fetchedStockData.scopeToGrow.replace('%', ''));
+            });
             setTotalLatestValue(total.toFixed(2));
             setAveragePE((peTotal / formattedData.length).toFixed(2));
             setAverageScopeToGrow((scopeTotal / formattedData.length).toFixed(2));
-          }).catch(error => {
+            setUserFinancialData(userData);
+            setCardsLoading(false); // Set cards loading state to false when all data is fetched
+          })
+          .catch(error => {
             console.error("Error fetching stock data:", error);
+            setCardsLoading(false); // In case of error, still set cards loading state to false
           });
-        });
-  
-        setUserFinancialData(userData);
       } catch (error) {
         console.error("Error fetching data:", error);
+        setCardsLoading(false); // Set cards loading state to false in case of error
       } finally {
         setLoading(false);
       }
@@ -77,23 +91,36 @@ function UserDetails() {
       <h1 className=" text-center" style={{marginTop: "60px"}}>{userFinancialData ? userFinancialData.Name.toUpperCase() : "User Details"}</h1>
       <div className="row">
         <div className="col-lg-6 col-md-12 col-sm-12">
-          <UserMetricsCard 
-            averagePE={averagePE} 
-            averageScopeToGrow={averageScopeToGrow}
-            preValue={userFinancialData ? userFinancialData.Previous_Value : 0} 
-            equity={totalLatestValue}
-            gold={userFinancialData ? userFinancialData.Gold : 0}
-            debt={userFinancialData ? userFinancialData.Debt : 0}
-            totalLatestValue={parseFloat(totalLatestValue) + (userFinancialData ? parseFloat(userFinancialData.Gold) : 0) + (userFinancialData ? parseFloat(userFinancialData.Debt) : 0)}
-          />
+          {cardsLoading ? ( // Render spinner if cards are still loading
+            <div className="sweet-loading">
+              <ClipLoader color={"#36D7B7"} loading={cardsLoading} css={override} size={150} />
+            </div>
+          ) : (
+            <UserMetricsCard 
+              averagePE={averagePE} 
+              averageScopeToGrow={averageScopeToGrow}
+              preValue={userFinancialData ? userFinancialData.Previous_Value : 0} 
+              equity={totalLatestValue}
+              gold={userFinancialData ? userFinancialData.Gold : 0}
+              debt={userFinancialData ? userFinancialData.Debt : 0}
+              totalLatestValue={parseFloat(totalLatestValue) + (userFinancialData ? parseFloat(userFinancialData.Gold) : 0) + (userFinancialData ? parseFloat(userFinancialData.Debt) : 0)}
+            />
+          )}
         </div>
         <div className="col-lg-6 col-md-12 col-sm-12">
-          <BillDetailsCard
-            preValue={userFinancialData ? userFinancialData.Previous_Value : 0}
-            presentValue={parseFloat(totalLatestValue) + (userFinancialData ? parseFloat(userFinancialData.Gold) : 0) + (userFinancialData ? parseFloat(userFinancialData.Debt) : 0)}
-          />
+          {cardsLoading ? ( // Render spinner if cards are still loading
+            <div className="sweet-loading">
+              <ClipLoader color={"#36D7B7"} loading={cardsLoading} css={override} size={150} />
+            </div>
+          ) : (
+            <BillDetailsCard
+              preValue={userFinancialData ? userFinancialData.Previous_Value : 0}
+              presentValue={parseFloat(totalLatestValue) + (userFinancialData ? parseFloat(userFinancialData.Gold) : 0) + (userFinancialData ? parseFloat(userFinancialData.Debt) : 0)}
+            />
+          )}
         </div>
       </div>
+      {/* Stock table */}
       <div className="row">
         <div className="col-lg-12 col-md-12 col-sm-12">
           {loading ? (
@@ -105,6 +132,7 @@ function UserDetails() {
           )}
         </div>
       </div>
+      {/* Back button */}
       <div className="row">
         <div className="col-lg-12 col-md-12 col-sm-12">
           <div className="text-center mb-5">

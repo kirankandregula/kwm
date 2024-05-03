@@ -40,7 +40,6 @@ function AdminPage() {
     // Call another component with the parameter userId
     navigate(`/user-details/${userId}`);
   };
-  
 
   return (
     <div className="container">
@@ -62,16 +61,20 @@ function AdminPage() {
             />
           </div>
         ) : (
-          <table className="table table-striped w-50">
+          <table className="table table-striped table-bordered w-50">
             <thead>
               <tr>
-                <th>Name</th>
+                <th>Click on Username for more details:</th>
               </tr>
             </thead>
             <tbody>
               {userData.map((user, index) => (
-                <tr key={index} onClick={() => handleRowClick(user.user_id)}>
-                  <td>{user.Name}</td>
+                <tr
+                  key={index}
+                  onClick={() => handleRowClick(user.user_id)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <td className="text-center">{user.Name.toUpperCase()}</td>
                 </tr>
               ))}
             </tbody>
