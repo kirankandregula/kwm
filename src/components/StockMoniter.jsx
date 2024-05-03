@@ -88,7 +88,7 @@ const StockMonitor = () => {
               className="form-control mb-3"
             />
             <div className="table-responsive">
-              <table className="table table-striped">
+              <table className="table table-striped" style={{marginBottom: "100px"}}>
                 <thead>
                   <tr>
                     <th onClick={() => handleSort("stockName")}>Stock Name</th>

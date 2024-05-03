@@ -22,9 +22,16 @@ const StockInRadar = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "https://script.googleusercontent.com/macros/echo?user_content_key=67B8Y0EJMW02EPlVPu-PoAMzf3ApIXItOJtrbq8UkpLXG2PcAclwiPo3BNjHb5OnySCSzaJgePLgATb-MIGCWhW6uKtDjEkMm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnBqD5FsSlQPV8j6OXhdGDXNVlPWdlNKC9iNoIk-dLAzlh0ANztJIqzg2pP1UpnQpnXe62d9Ci5tkWju5pNoTen7kAHANyA3YtQ&lib=MB2EvUQOnusAtbHEY3orlAmtjq-h6POhb"
+          "https://script.googleusercontent.com/macros/echo?user_content_key=qMtoCMo4kWltfUjYaRn6GopWqqNndEC1bezXUgK8M0LeH5jWm4drHpNHHELMyw7si7YwnvME1t3xMbELX7VJ_sn8N9MXtc1Jm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnPqU_W-BE9pyJ8Qi7blHIc0Q4hbO2tLSd-Ckxc38EV02_Qf-RqQCqPnZjz_HV7aw1twIbDb-TFUbhpkZ24DVnzhFvnZ3JX3SHg&lib=MDgztCdXOLOYDH2WnKkUSaorbG83cRkUz"
         );
-        setData(response.data);
+        setData(response.data.concat({
+          "stock": "JPPOWER",
+          "ltp": 19.6,
+          "pe": 34.59,
+          "industry": "Power Generation",
+          "target": 30,
+          "stg": "53%"
+        }));
         if (response.data.some((stock) => stock.Ticker !== "")) {
           setHasStocks(true);
         }
@@ -84,19 +91,23 @@ const StockInRadar = () => {
             <table className="table table-striped">
               <thead>
                 <tr>
-                  <th>Ticker</th>
+                  <th>Stock</th>
                   <th>LTP</th>
+                  <th>PE</th>
+                  <th>Industry</th>
                   <th>Target</th>
                   <th>Scope to Grow</th>
                 </tr>
               </thead>
               <tbody>
-                {data.filter((stock) => stock.Ticker !== "").map((row, index) => (
+                {data.map((row, index) => (
                   <tr key={index}>
-                    <td>{row.Ticker}</td>
-                    <td>{row.Ltp}</td>
-                    <td>{row.Target}</td>
-                    <td className={getScopeColor(row["Scope to Grow"])}>{row["Scope to Grow"]}</td>
+                    <td>{row.stock}</td>
+                    <td>{row.ltp}</td>
+                    <td>{row.pe}</td>
+                    <td>{row.industry}</td>
+                    <td>{row.target}</td>
+                    <td className={getScopeColor(row.stg)}>{row.stg}</td>
                   </tr>
                 ))}
               </tbody>

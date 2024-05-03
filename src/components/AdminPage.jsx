@@ -44,8 +44,8 @@ function AdminPage() {
 
   return (
     <div className="container">
-      <h1 className="mb-4 text-center" style={{ marginTop: "70px" }}>
-        PortFolio Data
+      <h1 className=" text-center" style={{ marginTop: "70px" }}>
+        Users
       </h1>
       <div
         className="d-flex justify-content-center align-items-center"
@@ -62,7 +62,7 @@ function AdminPage() {
             />
           </div>
         ) : (
-          <table className="table table-striped">
+          <table className="table table-striped w-50">
             <thead>
               <tr>
                 <th>Name</th>

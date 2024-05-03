@@ -59,11 +59,8 @@ export default function App() {
                     Home
                   </Link>
                 </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/portfolio" onClick={handleClick}>
-                    Your PortFolio
-                  </Link>
-                </li>
+                
+                
                 <li className="nav-item">
                   <Link className="nav-link" to="/spying" onClick={handleClick}>
                     Stock Moniter
@@ -119,11 +116,11 @@ export default function App() {
           <Route path="/portfolio/:userId" element={<YourPortfolio />} />
           <Route path="/radar" element={<StockInRadar />} />
         </Routes>
-        <footer className="footer mt-3 py-3 bg-dark text-white">
-          <div className="container text-center">
-            All rights reserved to KK Wealth Mills @2024
-          </div>
-        </footer>
+        <footer className="footer py-3 bg-dark text-white" style={{ position: "fixed", bottom: 0, width: "100%" }}>
+  <div className="container text-center">
+    All rights reserved to KK Wealth Mills @2024
+  </div>
+</footer>
       </div>
     </BrowserRouter>
   );
