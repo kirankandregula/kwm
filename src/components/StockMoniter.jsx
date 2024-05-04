@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { css } from "@emotion/react"; // Import css from emotion/react
-import { ClipLoader } from "react-spinners"; // Import ClipLoader component
+import { css } from "@emotion/react";
+import { ClipLoader } from "react-spinners";
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 
-// Define override style using css from emotion/react
 const override = css`
   display: block;
   margin: 0 auto;
@@ -40,7 +39,6 @@ const StockMonitor = () => {
       fetchData();
     }
   }, [cookies.userName, cookies.userRole, navigate]);
-  
 
   const getScopeColor = (scope) => {
     if (parseFloat(scope.replace("%", "")) >= 50) {
@@ -54,6 +52,19 @@ const StockMonitor = () => {
 
   const getHoldSellColor = (holdSell) => {
     return holdSell === "Hold" ? "text-success" : "text-danger";
+  };
+
+  const getMarketCapColor = (marketCap) => {
+    switch (marketCap) {
+      case "Large Cap":
+        return "text-success";
+      case "Medium Cap":
+        return "text-warning";
+      case "Small Cap":
+        return "text-danger";
+      default:
+        return "";
+    }
   };
 
   const handleSort = (columnName) => {
@@ -79,10 +90,10 @@ const StockMonitor = () => {
       <div className="row justify-content-center align-items-center" style={{ minHeight: "80vh" }}>
         {loading ? (
           <div className="col-sm-12 text-center">
-            <ClipLoader color={"#36D7B7"} loading={loading} css={override} size={150} /> {/* Render ClipLoader component */}
+            <ClipLoader color={"#36D7B7"} loading={loading} css={override} size={150} />
           </div>
         ) : (
-          <div className="col-sm-12 mt-5">
+          <div className="col-sm-12" style={{marginTop: "80px"}}>
             <input
               type="text"
               placeholder="Filter by ticker or sector"
@@ -112,7 +123,7 @@ const StockMonitor = () => {
                       <td>{row.stockName}</td>
                       <td>{row.Sector}</td>
                       <td>{row.pe}</td>
-                      <td>{row.marketCap}</td>
+                      <td className={getMarketCapColor(row.marketCap)}>{row.marketCap}</td>
                       <td>{row.LTP}</td>
                       <td>{row.targetPrice}</td>
                       <td className={getScopeColor(row.scopeToGrow)}>{row.scopeToGrow}</td>

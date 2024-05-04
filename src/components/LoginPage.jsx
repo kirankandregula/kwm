@@ -50,7 +50,7 @@ const LoginPage = () => {
   
   return (
     <div className="container d-flex justify-content-center align-items-center" style={{ marginTop: "80px" }}>
-      <div className="card w-50">
+      <div className="card w-75">
         <div className="card-body">
           <h2 className="card-title text-center mb-4">User Login</h2>
           {errorMessage && <p className="text-center text-danger">{errorMessage}</p>}
