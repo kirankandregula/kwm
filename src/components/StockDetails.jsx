@@ -33,20 +33,26 @@ function StockDetails({ stock }) {
 
   const latestValue = (stockData.LTP * stock.quantity).toFixed(2); // Round latest value
 
+  // Determine row class based on scope to grow
+  let rowClassName = '';
+  if (getScopeToGrowColor(stockData.scopeToGrow) === 'red') {
+    rowClassName = 'table-danger'; // Bootstrap danger class
+  }
+
   return (
-    <tr>
-      <td>{stock.stockId}</td>
+    <tr className={rowClassName}>
       <td>{stockData.stockName}</td>
       <td>{stockData.Sector}</td>
       <td>{stockData.pe}</td>
       <td>{stockData.marketCap}</td>
-      <td>{stockData.targetPrice}</td>
-      <td>{stockData.lowPrice}</td>
-      <td style={{ color: getScopeToGrowColor(stockData.scopeToGrow) }}>{stockData.scopeToGrow}</td>
-      <td>{stockData.action}</td>
+      <td className={stockData.action === "Hold" ? "text-success" : "text-danger"}>{stockData.action}</td>
+      <td className={stockData.average === "Average" ? "text-danger" : ""}>{stockData.average}</td>
       <td>{stock.quantity}</td>
       <td>{stockData.LTP}</td>
+      <td>{stockData.targetPrice}</td>
       <td>{latestValue}</td> {/* Display rounded latest value */}
+      <td style={{ color: getScopeToGrowColor(stockData.scopeToGrow) }}>{stockData.scopeToGrow}</td>
+      <td>{stockData.presentQuarter}</td>
     </tr>
   );
 }
@@ -58,7 +64,7 @@ function getScopeToGrowColor(scopeToGrow) {
   }
 
   const scopeValue = parseInt(scopeToGrow.replace('%', ''));
-  if (scopeValue < 30) {
+  if (scopeValue <= 10) { // Changed to less than or equal to
     return 'red';
   } else if (scopeValue >= 30 && scopeValue <= 50) {
     return 'orange';

@@ -86,9 +86,41 @@ function UserDetails() {
     fetchData();
   }, [userId]);
 
+  function getGreeting() {
+    const hour = new Date().getHours();
+    if (hour < 12) {
+      return "Good Morning";
+    } else if (hour < 18) {
+      return "Good Afternoon";
+    } else {
+      return "Good Evening";
+    }
+  }
+
+  function toPascalCase(str) {
+    return str.replace(/\s(.)/g, function(match) {
+      return match.toUpperCase();
+    }).replace(/\s/g, '').replace(/^(.)/, function(match) {
+      return match.toUpperCase();
+    });
+  }
+  
+
   return (
     <div className="container-fluid">
-      <h1 className=" text-center" style={{marginTop: "60px"}}>{userFinancialData ? userFinancialData.Name.toUpperCase() : "User Details"}</h1>
+     <h3 className="text-center text-secondary" style={{ marginTop: "80px" }}>
+  {userFinancialData
+     ? `${getGreeting()}.... ${toPascalCase(userFinancialData.Name)}`
+    : "Loading Portfolio Details....."}
+</h3>
+{/* Display message while loading */}
+{!userFinancialData && (
+  <p className="text-center text-secondary">
+    It will take a few seconds. Please wait...
+  </p>
+)}
+
+    
       <div className="row">
         <div className="col-lg-6 col-md-12 col-sm-12">
           {cardsLoading ? ( // Render spinner if cards are still loading

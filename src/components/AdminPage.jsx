@@ -5,6 +5,7 @@ import "./../App.css";
 import { css } from "@emotion/react";
 import { ClipLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie"; // Import useCookies hook
 
 const override = css`
   display: block;
@@ -14,7 +15,8 @@ const override = css`
 
 function AdminPage() {
   const [userData, setUserData] = useState([]);
-  const [loading, setLoading] = useState(true); // Added loading state
+  const [loading, setLoading] = useState(true);
+  const [cookies] = useCookies(["userName"]); // Retrieve username from cookies
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,39 +34,48 @@ function AdminPage() {
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
-      setLoading(false); // Set loading to false after fetching data
+      setLoading(false);
     }
   };
 
   const handleRowClick = (userId) => {
-    // Call another component with the parameter userId
     navigate(`/user-details/${userId}`);
+  };
+
+  // Function to get dynamic greeting
+  const getGreet = () => {
+    const currentHour = new Date().getHours();
+    if (currentHour < 12) {
+      return "Good morning";
+    } else if (currentHour < 18) {
+      return "Good afternoon";
+    } else {
+      return "Good evening";
+    }
   };
 
   return (
     <div className="container">
-      <h1 className=" text-center" style={{ marginTop: "70px" }}>
-        Users
-      </h1>
+      <h3 className="text-center text-secondary" style={{ marginTop: "70px" }}>
+        Admin Page
+      </h3>
+      <h4 className="text-secondary text-center py-3">
+        {/* Display dynamic greeting */}
+        {getGreet()}... {cookies.userName}
+      </h4>
       <div
         className="d-flex justify-content-center align-items-center"
         style={{ minHeight: "80vh" }}
       >
         {loading ? (
-          // Display spinner while loading
           <div className="sweet-loading">
-            <ClipLoader
-              color={"#36D7B7"}
-              loading={loading}
-              css={override}
-              size={150}
-            />
+            <ClipLoader color={"#36D7B7"} loading={loading} css={override} size={150} />
           </div>
         ) : (
           <table className="table table-striped table-bordered w-50">
             <thead>
               <tr>
-                <th>Click on Username for more details:</th>
+                <th>Click on Username for Personal Portfolio:</th>
               </tr>
             </thead>
             <tbody>
@@ -74,7 +85,9 @@ function AdminPage() {
                   onClick={() => handleRowClick(user.user_id)}
                   style={{ cursor: "pointer" }}
                 >
-                  <td className="text-center">{user.Name.toUpperCase()}</td>
+                  <td className="text-center p-3">
+                    {user.Name.toUpperCase()}
+                  </td>
                 </tr>
               ))}
             </tbody>

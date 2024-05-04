@@ -15,10 +15,10 @@ function UserMetricsCard({ totalLatestValue, averagePE, averageScopeToGrow, preV
   return (
     <div className="card mx-auto mt-4 my-2 text-white text-center" style={{ width: "300px" }}>
       <div className={`card-body ${getColorClass(quarterlyReturn)}`} style={{ borderRadius: "10px" }}>
-        <h5 className="card-title text-center">User Metrics</h5>
+        <h5 className="card-title text-center py-1">Your PortFolio Details</h5>
         <p className="card-text">Present Value:  ₹{totalLatestValue}</p>
         <p className="card-text">Quarterly Return: {quarterlyReturn}%</p>
-        <p className="card-text">Average PE: {averagePE}%</p>
+        <p className="card-text">Average PE: {averagePE}</p>
         <p className="card-text">Average Scope to Grow: {averageScopeToGrow}%</p>
         <p className="card-text">Equity:  ₹{equity}</p>
         <p className="card-text">Gold:  ₹{gold}</p>

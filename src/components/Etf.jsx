@@ -52,7 +52,7 @@ const EtfService = () => {
   return (
     <div>
      
-      <div className="table-responsive " style={{marginTop: "80px"}}>
+      <div className="table-responsive " style={{marginTop: "80px",marginBottom: "80px"}}>
         <h2 className='text-success text-center'>ETF Service</h2>
         <table className="table table-bordered table-striped shadow">
           <thead className="bg-primary text-white">

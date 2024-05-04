@@ -39,6 +39,7 @@ export default function App() {
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top ">
           <div className="container">
             <Link className="navbar-brand" to="/">
+              <img src="https://i.ibb.co/SsdfRXP/KK-Wealth-Mills-transparent.png" alt="KK Wealth Mills Logo" style={{ maxWidth: "40px", marginRight: "10px" }} />
               KK Wealth Mills
             </Link>
             <button
@@ -117,10 +118,10 @@ export default function App() {
           <Route path="/radar" element={<StockInRadar />} />
         </Routes>
         <footer className="footer py-3 bg-dark text-white" style={{ position: "fixed", bottom: 0, width: "100%" }}>
-  <div className="container text-center">
-    All rights reserved to KK Wealth Mills @2024
-  </div>
-</footer>
+          <div className="container text-center">
+            All rights reserved to KK Wealth Mills @2024
+          </div>
+        </footer>
       </div>
     </BrowserRouter>
   );

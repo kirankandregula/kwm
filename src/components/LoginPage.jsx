@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { ClipLoader } from 'react-spinners';
+import { BsPersonFill, BsLockFill } from 'react-icons/bs'; // Import Bootstrap icons
 
 const LoginPage = () => {
   const [credentials, setCredentials] = useState({ userName: '', passWord: '' });
@@ -49,21 +50,25 @@ const LoginPage = () => {
   
   return (
     <div className="container d-flex justify-content-center align-items-center" style={{ marginTop: "80px" }}>
-      <div className="card w-70">
+      <div className="card w-50">
         <div className="card-body">
-          <h2 className="card-title text-center">User Login</h2>
+          <h2 className="card-title text-center mb-4">User Login</h2>
           {errorMessage && <p className="text-center text-danger">{errorMessage}</p>}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
-              <label htmlFor="userName" className="form-label">Username:</label>
-              <input type="text" id="userName" name="userName" value={credentials.userName} onChange={handleChange} className="form-control" required />
+              <div className="input-group">
+                <span className="input-group-text"><BsPersonFill /></span>
+                <input type="text" id="userName" name="userName" value={credentials.userName} onChange={handleChange} className="form-control" placeholder="Username" required />
+              </div>
             </div>
             <div className="mb-3">
-              <label htmlFor="passWord" className="form-label">Password:</label>
-              <input type="password" id="passWord" name="passWord" value={credentials.passWord} onChange={handleChange} className="form-control" required />
+              <div className="input-group">
+                <span className="input-group-text"><BsLockFill /></span>
+                <input type="password" id="passWord" name="passWord" value={credentials.passWord} onChange={handleChange} className="form-control" placeholder="Password" required />
+              </div>
             </div>
-            <button type="submit" className="btn btn-primary w-100" style={{ backgroundColor: "#7700a6" }}>
-              {loading ? <ClipLoader color={"#ffffff"} size={20} /> : "Login"}
+            <button type="submit" className="btn btn-primary w-100" style={{ backgroundColor: "black", color: "white" }}>
+              {loading && <ClipLoader color={"#ffffff"} size={20} />} Login
             </button>
           </form>
         </div>
