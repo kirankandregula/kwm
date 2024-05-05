@@ -35,7 +35,7 @@ function StockDetails({ stock }) {
 
   // Determine row class based on scope to grow
   let rowClassName = '';
-  if (getScopeToGrowColor(stockData.scopeToGrow) === 'red') {
+  if (parseInt(stockData.scopeToGrow) <= 10) {
     rowClassName = 'table-danger'; // Bootstrap danger class
   }
 
@@ -64,7 +64,7 @@ function getScopeToGrowColor(scopeToGrow) {
   }
 
   const scopeValue = parseInt(scopeToGrow.replace('%', ''));
-  if (scopeValue <= 10) { // Changed to less than or equal to
+  if (scopeValue < 30) { // Changed to less than or equal to
     return 'red';
   } else if (scopeValue >= 30 && scopeValue <= 50) {
     return 'orange';

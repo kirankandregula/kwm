@@ -30,6 +30,7 @@ function UserDetails() {
     const fetchData = async () => {
       try {
         const stockResponse = await axios.get(`https://script.googleusercontent.com/macros/echo?user_content_key=697rrLjwFYb7dZdxmz2WtAK0v7TSdy_D-aQmRL37y1N41_jSxXQRfQ-mNHnJcfFAr-L-FKjj2r5kFAsBYKPkbO6jqPx4ghSfm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnDZ1xou3Yh4_OfOhrnVFN_l_7UgENfxTtMYqWp-LqOc5fnHnWUGSpRLqjn72R3VFhw9KRDVeiat-iXRlSyZY22LMiOySTcSiOg&lib=MDgztCdXOLOYDH2WnKkUSaorbG83cRkUz`);
+        
         const financialResponse = await axios.get(`https://script.google.com/macros/s/AKfycbymorTjnVzmJr56gY5zoBlD-dUp8bwC-dYwIKdAm2WRjnfpwjgMLpUut9E15rgCbXah/exec`);
   
         const stockData = stockResponse.data;
@@ -89,11 +90,11 @@ function UserDetails() {
   function getGreeting() {
     const hour = new Date().getHours();
     if (hour < 12) {
-      return "Good Morning";
+      return "Good morning";
     } else if (hour < 18) {
-      return "Good Afternoon";
+      return "Good afternoon";
     } else {
-      return "Good Evening";
+      return "Good evening";
     }
   }
 
@@ -108,18 +109,23 @@ function UserDetails() {
 
   return (
     <div className="container-fluid">
-     <h3 className="text-center text-secondary" style={{ marginTop: "80px" }}>
-  {userFinancialData
-     ? `${getGreeting()}.... ${toPascalCase(userFinancialData.Name)}`
-    : "Loading Portfolio Details....."}
-</h3>
-{/* Display message while loading */}
-{!userFinancialData && (
-  <p className="text-center text-secondary">
-    It will take a few seconds. Please wait...
-  </p>
-)}
+        <h3 className="text-center text-secondary" style={{ marginTop: "80px" }}>
+      {userFinancialData
+        ? `${getGreeting()}.... ${toPascalCase(userFinancialData.Name)}`
+        : "Loading Portfolio Details....."}
+    </h3>
+    {/* Display message while loading */}
+    {!userFinancialData && (
+      <p className="text-center text-secondary">
+        It will take a few seconds. Please wait...
+      </p>
+    )}
 
+    {filteredData && filteredData.length === 0 && ( // Check if filteredData is empty
+      <p className="text-center text-danger">
+        You don't have any holdings now.
+      </p>
+    )}
     
       <div className="row">
         <div className="col-lg-6 col-md-12 col-sm-12">
