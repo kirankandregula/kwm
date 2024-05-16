@@ -26,15 +26,6 @@ const StockInRadar = () => {
         );
         
         const sortedData = response.data
-          .filter(stock => stock.stock !== "JPPOWER") // Remove existing JPPOWER entry
-          .concat({
-            "stock": "JPPOWER",
-            "ltp": 19.6,
-            "pe": 34.59,
-            "industry": "Power Generation",
-            "target": 30,
-            "stg": "53%"
-          })
           .sort((a, b) => parseFloat(b.stg.replace("%", "")) - parseFloat(a.stg.replace("%", "")));
     
         setData(sortedData);
