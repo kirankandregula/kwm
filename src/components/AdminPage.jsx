@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./../App.css";
 import { css } from "@emotion/react";
 import { ClipLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
-import { useCookies } from "react-cookie"; // Import useCookies hook
+import { useCookies } from "react-cookie";
 
 const override = css`
   display: block;
@@ -16,7 +15,7 @@ const override = css`
 function AdminPage() {
   const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [cookies] = useCookies(["userName"]); // Retrieve username from cookies
+  const [cookies] = useCookies(["userName"]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -42,7 +41,6 @@ function AdminPage() {
     navigate(`/user-details/${userId}`);
   };
 
-  // Function to get dynamic greeting
   const getGreet = () => {
     const currentHour = new Date().getHours();
     if (currentHour < 12) {
@@ -54,14 +52,24 @@ function AdminPage() {
     }
   };
 
+  function toPascalCase(str) {
+    return str
+      .replace(/\s(.)/g, function (match) {
+        return match.toUpperCase();
+      })
+      .replace(/\s/g, "")
+      .replace(/^(.)/, function (match) {
+        return match.toUpperCase();
+      });
+  }
+
   return (
     <div className="container">
-      <h3 className="text-center text-secondary" style={{ marginTop: "70px" }}>
+      <h3 className="text-center text-secondary" style={{ marginTop: "80px" }}>
         Admin Page
       </h3>
       <h4 className="text-secondary text-center py-3">
-        {/* Display dynamic greeting */}
-        {getGreet()}... {cookies.userName}
+        {getGreet()}... {toPascalCase(cookies.userName)}
       </h4>
       <div
         className="d-flex justify-content-center align-items-center"
@@ -69,7 +77,12 @@ function AdminPage() {
       >
         {loading ? (
           <div className="sweet-loading">
-            <ClipLoader color={"#36D7B7"} loading={loading} css={override} size={150} />
+            <ClipLoader
+              color={"#36D7B7"}
+              loading={loading}
+              css={override}
+              size={150}
+            />
           </div>
         ) : (
           <table className="table table-striped table-bordered w-50">

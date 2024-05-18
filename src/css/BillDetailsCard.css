@@ -1,0 +1,40 @@
+.bill-card-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .bill-card {
+    width: 320px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+  }
+  
+  .bill-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .bill-card-body {
+    padding: 20px;
+    font-family: 'Roboto', sans-serif;
+    color: #fff;
+    background-color: inherit; /* Ensures background color applies correctly */
+  }
+  
+  .bill-card-title {
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+  }
+  
+  .bill-card-text {
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+  
+  .bg-info {
+    background-color: #17a2b8 !important;
+  }
+  

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import PropTypes from "prop-types";
+import '../css/StockDetails.css'; // Importing custom CSS for styling
 
 function StockDetails({ stock }) {
   const [stockData, setStockData] = useState(null);
@@ -24,7 +26,7 @@ function StockDetails({ stock }) {
   }, [stock]);
 
   if (loading) {
-    return <tr><td colSpan="12">Loading...</td></tr>;
+    return <tr><td >Loading...</td></tr>;
   }
 
   if (!stockData) {
@@ -34,10 +36,8 @@ function StockDetails({ stock }) {
   const latestValue = (stockData.LTP * stock.quantity).toFixed(2); // Round latest value
 
   // Determine row class based on scope to grow
-  let rowClassName = '';
-  if (parseInt(stockData.scopeToGrow) <= 10) {
-    rowClassName = 'table-danger'; // Bootstrap danger class
-  }
+  const scopeValue = parseInt(stockData.scopeToGrow.replace('%', ''));
+  const rowClassName = scopeValue <= 10 ? 'table-danger' : '';
 
   return (
     <tr className={rowClassName}>
@@ -51,20 +51,14 @@ function StockDetails({ stock }) {
       <td>{stockData.LTP}</td>
       <td>{stockData.targetPrice}</td>
       <td>{latestValue}</td> {/* Display rounded latest value */}
-      <td style={{ color: getScopeToGrowColor(stockData.scopeToGrow) }}>{stockData.scopeToGrow}</td>
+      <td style={{ color: getScopeToGrowColor(scopeValue) }}>{stockData.scopeToGrow}</td>
       <td>{stockData.presentQuarter}</td>
     </tr>
   );
 }
 
-function getScopeToGrowColor(scopeToGrow) {
-  if (typeof scopeToGrow !== 'string') {
-    // Handle the case where scopeToGrow is not a string
-    return 'black'; // Return a default color or handle it as needed
-  }
-
-  const scopeValue = parseInt(scopeToGrow.replace('%', ''));
-  if (scopeValue < 30) { // Changed to less than or equal to
+function getScopeToGrowColor(scopeValue) {
+  if (scopeValue < 30) {
     return 'red';
   } else if (scopeValue >= 30 && scopeValue <= 50) {
     return 'orange';
@@ -72,5 +66,12 @@ function getScopeToGrowColor(scopeToGrow) {
     return 'green';
   }
 }
+
+StockDetails.propTypes = {
+  stock: PropTypes.shape({
+    stockId: PropTypes.number.isRequired,
+    quantity: PropTypes.number.isRequired
+  }).isRequired
+};
 
 export default StockDetails;

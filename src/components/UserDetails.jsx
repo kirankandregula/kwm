@@ -7,6 +7,7 @@ import { useCookies } from "react-cookie";
 import UserMetricsCard from "./UserMetricsCard";
 import BillDetailsCard from "./BillDetailsCard";
 import StockTable from "./StockTable";
+import "../css/UserDetails.css";
 
 const override = css`
   display: block;
@@ -22,7 +23,7 @@ function UserDetails() {
   const [totalLatestValue, setTotalLatestValue] = useState(0);
   const [averagePE, setAveragePE] = useState(0);
   const [averageScopeToGrow, setAverageScopeToGrow] = useState(0);
-  const [cardsLoading, setCardsLoading] = useState(true); // State for cards loading
+  const [cardsLoading, setCardsLoading] = useState(true);
   const { userId } = useParams();
   const navigate = useNavigate();
 
@@ -47,38 +48,37 @@ function UserDetails() {
         setFilteredData(formattedData);
   
         let total = 0;
-        let peTotal = 0;
-        let scopeTotal = 0;
-        let promises = []; // Array to store promises for fetching stock data
+        let weightedPETotal = 0;
+        let weightedScopeTotal = 0;
+        let promises = [];
         formattedData.forEach(stock => {
-          // Push each promise into the promises array
           promises.push(
             axios.get(`https://script.googleusercontent.com/macros/echo?user_content_key=M8iUr2Z4ujhnZj3gV3jqyikffgyvfGGgE3LB3d7khmmrPclpYpwHDJT4UsbuwsGWdk_NjhcYGkEiZFHb0g2ZI4og0-Tok6FKm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnF8p6Pvu3GCIvWI3y7Ghdmj_6hTbf1zJNLytKYjKWeR9NiP1GwU0UtbxfLZwjkztxGbJ7F4B_nj2Vjvl4XSHwi4AYsHa6a3vbA&lib=MDgztCdXOLOYDH2WnKkUSaorbG83cRkUz&stock_id=${stock.stockId}`)
           );
         });
   
-        // Wait for all promises to resolve
         Promise.all(promises)
           .then(responses => {
             responses.forEach((response, index) => {
               const fetchedStockData = response.data.find(item => item.stock_id === formattedData[index].stockId);
-              total += fetchedStockData.LTP * formattedData[index].quantity;
-              peTotal += fetchedStockData.pe;
-              scopeTotal += parseInt(fetchedStockData.scopeToGrow.replace('%', ''));
+              const latestValue = fetchedStockData.LTP * formattedData[index].quantity;
+                total += latestValue;
+                weightedPETotal += fetchedStockData.pe * latestValue;
+                weightedScopeTotal += parseInt(fetchedStockData.scopeToGrow.replace('%', '')) * latestValue;
             });
             setTotalLatestValue(total.toFixed(2));
-            setAveragePE((peTotal / formattedData.length).toFixed(2));
-            setAverageScopeToGrow((scopeTotal / formattedData.length).toFixed(2));
+            setAveragePE((weightedPETotal / total).toFixed(2));
+            setAverageScopeToGrow((weightedScopeTotal / total).toFixed(2));
             setUserFinancialData(userData);
-            setCardsLoading(false); // Set cards loading state to false when all data is fetched
+            setCardsLoading(false);
           })
           .catch(error => {
             console.error("Error fetching stock data:", error);
-            setCardsLoading(false); // In case of error, still set cards loading state to false
+            setCardsLoading(false);
           });
       } catch (error) {
         console.error("Error fetching data:", error);
-        setCardsLoading(false); // Set cards loading state to false in case of error
+        setCardsLoading(false);
       } finally {
         setLoading(false);
       }
@@ -108,29 +108,26 @@ function UserDetails() {
   
 
   return (
-    <div className="container-fluid">
-        <h3 className="text-center text-secondary" style={{ marginTop: "80px" }}>
-      {userFinancialData
-        ? `${getGreeting()}.... ${toPascalCase(userFinancialData.Name)}`
-        : "Loading Portfolio Details....."}
-    </h3>
-    {/* Display message while loading */}
-    {!userFinancialData && (
-      <p className="text-center text-secondary">
-        It will take a few seconds. Please wait...
-      </p>
-    )}
-
-    {filteredData && filteredData.length === 0 && ( // Check if filteredData is empty
-      <p className="text-center text-danger">
-        You don't have any holdings now.
-      </p>
-    )}
-    
-      <div className="row">
-        <div className="col-lg-6 col-md-12 col-sm-12">
-          {cardsLoading ? ( // Render spinner if cards are still loading
-            <div className="sweet-loading">
+    <div className="container-fluid user-details">
+      <h3 className="text-center text-secondary " style={{marginTop: "60px"}}>
+        {userFinancialData
+          ? `${getGreeting()}.... ${toPascalCase(userFinancialData.Name)}`
+          : "Loading Portfolio Details....."}
+      </h3>
+      {!userFinancialData && (
+        <p className="text-center text-secondary">
+          It will take a few seconds. Please wait...
+        </p>
+      )}
+      {filteredData && filteredData.length === 0 && (
+        <p className="text-center text-danger">
+          You don't have any holdings now.
+        </p>
+      )}
+      <div className="row mt-4">
+        <div className="col-lg-6 col-md-12 mb-4">
+          {cardsLoading ? (
+            <div className="spinner-container">
               <ClipLoader color={"#36D7B7"} loading={cardsLoading} css={override} size={150} />
             </div>
           ) : (
@@ -145,9 +142,9 @@ function UserDetails() {
             />
           )}
         </div>
-        <div className="col-lg-6 col-md-12 col-sm-12">
-          {cardsLoading ? ( // Render spinner if cards are still loading
-            <div className="sweet-loading">
+        <div className="col-lg-6 col-md-12 mb-4">
+          {cardsLoading ? (
+            <div className="spinner-container">
               <ClipLoader color={"#36D7B7"} loading={cardsLoading} css={override} size={150} />
             </div>
           ) : (
@@ -158,11 +155,10 @@ function UserDetails() {
           )}
         </div>
       </div>
-      {/* Stock table */}
-      <div className="row">
-        <div className="col-lg-12 col-md-12 col-sm-12">
+      <div className="row mt-4">
+        <div className="col-12">
           {loading ? (
-            <div className="sweet-loading">
+            <div className="spinner-container">
               <ClipLoader color={"#36D7B7"} loading={loading} css={override} size={150} />
             </div>
           ) : (
@@ -170,14 +166,11 @@ function UserDetails() {
           )}
         </div>
       </div>
-      {/* Back button */}
-      <div className="row">
-        <div className="col-lg-12 col-md-12 col-sm-12">
-          <div className="text-center mb-5">
-            {cookies.userRole === "Admin" && (
-              <button className="btn btn-secondary mb-5" onClick={handleBack}>Back</button>
-            )}
-          </div>
+      <div className="row mt-4">
+        <div className="col-12 text-center mb-5">
+          {cookies.userRole === "Admin" && (
+            <button className="btn btn-secondary" onClick={handleBack}>Back</button>
+          )}
         </div>
       </div>
     </div>

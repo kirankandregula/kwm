@@ -1,0 +1,35 @@
+.table-danger {
+    background-color: #f8d7da !important;
+  }
+  
+  .text-success {
+    color: #28a745 !important;
+  }
+  
+  .text-danger {
+    color: #dc3545 !important;
+  }
+  
+  /* Additional styles for better table row highlighting */
+  tr {
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  tr:hover {
+    background-color: #f1f1f1;
+    transform: scale(1.01);
+  }
+  
+  /* Custom styling for better readability */
+  .table th, .table td {
+    vertical-align: middle;
+    text-align: center;
+    padding: 12px;
+    font-family: 'Roboto', sans-serif;
+  }
+  
+  .table th {
+    background-color: #343a40;
+    color: #ffffff;
+  }
+  

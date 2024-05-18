@@ -41,9 +41,12 @@ const StockMonitor = () => {
   }, [cookies.userName, cookies.userRole, navigate]);
 
   const getScopeColor = (scope) => {
-    if (parseFloat(scope.replace("%", "")) >= 50) {
+    const scopeValue = parseFloat(scope.replace("%", ""));
+    if (scopeValue <= 10) {
+      return "table-danger";
+    } else if (scopeValue >= 50) {
       return "text-success";
-    } else if (parseFloat(scope.replace("%", "")) >= 30) {
+    } else if (scopeValue >= 30) {
       return "text-warning";
     } else {
       return "text-danger";
@@ -119,7 +122,7 @@ const StockMonitor = () => {
                 </thead>
                 <tbody>
                   {filteredData.map((row, index) => (
-                    <tr key={index}>
+                    <tr key={index} className={parseFloat(row.scopeToGrow.replace("%", "")) <= 10 ? "table-danger" : ""}>
                       <td>{row.stockName}</td>
                       <td>{row.Sector}</td>
                       <td>{row.pe}</td>

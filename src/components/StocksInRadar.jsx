@@ -84,9 +84,9 @@ const StockInRadar = () => {
   return (
     <div className="container mt-3">
       <div className="row justify-content-center align-items-center" style={{ minHeight: "80vh" }}>
-        <div className="col-sm-12 mt-5">
+        <div className="col-sm-12 " style={{marginTop: "70px"}}>
           <div className="table-responsive">
-            <table className="table table-striped">
+            <table className="table table-striped" style={{marginBottom: "100px"}}>
               <thead>
                 <tr>
                   <th>Stock</th>
