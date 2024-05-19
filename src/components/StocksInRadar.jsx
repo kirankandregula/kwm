@@ -39,7 +39,6 @@ const StockInRadar = () => {
       }
     };
     
-
     if (!cookies.userName || !cookies.userRole) {
       navigate('/login');
     } else {
@@ -55,6 +54,13 @@ const StockInRadar = () => {
     } else {
       return "text-danger";
     }
+  };
+
+  const handleSort = (columnName) => {
+    const sortedData = [...data].sort((a, b) =>
+      a[columnName] > b[columnName] ? 1 : -1
+    );
+    setData(sortedData);
   };
 
   if (loading) {
@@ -89,12 +95,12 @@ const StockInRadar = () => {
             <table className="table table-striped" style={{marginBottom: "100px"}}>
               <thead>
                 <tr>
-                  <th>Stock</th>
-                  <th>Industry</th>
-                  <th>PE</th>
-                  <th>LTP</th>
-                  <th>Target</th>
-                  <th>Scope to Grow</th>
+                  <th onClick={() => handleSort("stock")}>Stock</th>
+                  <th onClick={() => handleSort("industry")}>Industry</th>
+                  <th onClick={() => handleSort("pe")}>PE</th>
+                  <th onClick={() => handleSort("ltp")}>LTP</th>
+                  <th onClick={() => handleSort("target")}>Target</th>
+                  <th onClick={() => handleSort("stg")}>Scope to Grow</th>
                 </tr>
               </thead>
               <tbody>
