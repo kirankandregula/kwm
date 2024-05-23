@@ -24,6 +24,7 @@ function UserDetails() {
   const [averagePE, setAveragePE] = useState(0);
   const [averageScopeToGrow, setAverageScopeToGrow] = useState(0);
   const [cardsLoading, setCardsLoading] = useState(true);
+  const [quarterlyReturn, setQuarterlyReturn] = useState(null);
   const { userId } = useParams();
   const navigate = useNavigate();
 
@@ -70,6 +71,12 @@ function UserDetails() {
             setAveragePE((weightedPETotal / total).toFixed(2));
             setAverageScopeToGrow((weightedScopeTotal / total).toFixed(2));
             setUserFinancialData(userData);
+
+            const preValue = parseFloat(userData ? userData.Previous_Value : 0);
+            const presentValue = parseFloat(total) + (userData ? parseFloat(userData.Gold) : 0) + (userData ? parseFloat(userData.Debt) : 0);
+            const quarterlyReturn = ((presentValue - preValue) / preValue * 100).toFixed(2);
+            setQuarterlyReturn(quarterlyReturn);
+
             setCardsLoading(false);
           })
           .catch(error => {
@@ -105,7 +112,6 @@ function UserDetails() {
       return match.toUpperCase();
     });
   }
-  
 
   return (
     <div className="container-fluid user-details">
@@ -148,10 +154,16 @@ function UserDetails() {
               <ClipLoader color={"#36D7B7"} loading={cardsLoading} css={override} size={150} />
             </div>
           ) : (
-            <BillDetailsCard
-              preValue={userFinancialData ? userFinancialData.Previous_Value : 0}
-              presentValue={parseFloat(totalLatestValue) + (userFinancialData ? parseFloat(userFinancialData.Gold) : 0) + (userFinancialData ? parseFloat(userFinancialData.Debt) : 0)}
-            />
+            quarterlyReturn < 5 ? (
+              <div className="alert alert-warning" role="alert">
+                  Billing is applicable for quarterly returns above 5%. Since your portfolio's quarterly return is below this threshold, billing is not applicable at this time.
+              </div>
+            ) : (
+              <BillDetailsCard
+                preValue={userFinancialData ? userFinancialData.Previous_Value : 0}
+                presentValue={parseFloat(totalLatestValue) + (userFinancialData ? parseFloat(userFinancialData.Gold) : 0) + (userFinancialData ? parseFloat(userFinancialData.Debt) : 0)}
+              />
+            )
           )}
         </div>
       </div>
