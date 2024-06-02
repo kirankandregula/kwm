@@ -1,6 +1,6 @@
 import React from "react";
 import StockDetails from "./StockDetails";
-import '../css/StockTable.css'; // Importing. custom CSS for styling
+import "../css/StockTable.css"; // Importing. custom CSS for styling
 
 function StockTable({ filteredData }) {
   return (

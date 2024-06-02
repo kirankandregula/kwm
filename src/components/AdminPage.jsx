@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+// AdminPage.js
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import { useData } from "./DataProvider";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { css } from "@emotion/react";
 import { ClipLoader } from "react-spinners";
-import { useNavigate } from "react-router-dom";
-import { useCookies } from "react-cookie";
 
 const override = css`
   display: block;
@@ -17,25 +18,13 @@ function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [cookies] = useCookies(["userName"]);
   const navigate = useNavigate();
-
+  const { financialData } = useData(); // Changed from DataProvider() to useData()
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const response = await axios.get(
-        "https://script.google.com/macros/s/AKfycbymorTjnVzmJr56gY5zoBlD-dUp8bwC-dYwIKdAm2WRjnfpwjgMLpUut9E15rgCbXah/exec"
-      );
-
-      const userData = response.data;
-      setUserData(userData);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
+    if (financialData) {
+      setUserData(financialData);
       setLoading(false);
     }
-  };
+  }, [financialData]);
 
   const handleRowClick = (userId) => {
     navigate(`/user-details/${userId}`);
@@ -72,11 +61,11 @@ function AdminPage() {
         {getGreet()}... {toPascalCase(cookies.userName)}
       </h4>
       <div
-        className="d-flex justify-content-center align-items-center"
+        className="d-flex justify-content-center"
         style={{ minHeight: "80vh" }}
       >
         {loading ? (
-          <div className="sweet-loading">
+          <div className="sweet-loading  align-items-center">
             <ClipLoader
               color={"#36D7B7"}
               loading={loading}
@@ -85,7 +74,10 @@ function AdminPage() {
             />
           </div>
         ) : (
-          <table className="table table-striped table-bordered w-50">
+          <table
+            className="table table-striped table-bordered w-50"
+            style={{ marginBottom: "100px" }}
+          >
             <thead>
               <tr>
                 <th>Click on Username for Personal Portfolio:</th>
@@ -98,9 +90,7 @@ function AdminPage() {
                   onClick={() => handleRowClick(user.user_id)}
                   style={{ cursor: "pointer" }}
                 >
-                  <td className="text-center p-3">
-                    {user.Name.toUpperCase()}
-                  </td>
+                  <td className="text-center">{user.Name.toUpperCase()}</td>
                 </tr>
               ))}
             </tbody>
