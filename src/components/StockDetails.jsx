@@ -1,7 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { useData } from "./DataProvider";
-import "../css/StockDetails.css"; // Importing custom CSS for styling
+import { TableRow, TableCell } from "@mui/material";
+import { green, orange, grey, red } from "@mui/material/colors"; // Import Material-UI colors
+import "../css/StockDetails.css"; // Importing custom CSS for additional styling if needed
 
 function StockDetails({ stock }) {
   const { individualStockData } = useData(); // Get stock details data from context
@@ -12,9 +14,9 @@ function StockDetails({ stock }) {
 
   if (!stockData) {
     return (
-      <tr>
-        <td>Loading...</td>
-      </tr>
+      <TableRow>
+        <TableCell colSpan={12}>Loading...</TableCell>
+      </TableRow>
     );
   }
 
@@ -24,39 +26,53 @@ function StockDetails({ stock }) {
   const scopeValue = parseInt(stockData.scopeToGrow.replace("%", ""));
   const rowClassName = scopeValue <= 10 ? "table-danger" : "";
 
+  const getColorClass = (quarterlyReturn) => {
+    if (quarterlyReturn >= 10) {
+      return green[500]; // Use green for success
+    } else if (quarterlyReturn < 10 && quarterlyReturn >= 5) {
+      return orange[500]; // Use orange for warning
+    } else {
+      return grey[500]; // Use grey for secondary
+    }
+  };
+
   return (
-    <tr className={rowClassName}>
-      <td>{stockData.stockName}</td>
-      <td>{stockData.Sector}</td>
-      <td>{stockData.pe}</td>
-      <td>{stockData.marketCap}</td>
-      <td
-        className={stockData.action === "Hold" ? "text-success" : "text-danger"}
+    <TableRow className={rowClassName}>
+      <TableCell>{stockData.stockName}</TableCell>
+      <TableCell>{stockData.Sector}</TableCell>
+      <TableCell>{stockData.pe}</TableCell>
+      <TableCell>{stockData.marketCap}</TableCell>
+      <TableCell
+        style={{ color: stockData.action === "Hold" ? green[500] : red[500] }}
       >
         {stockData.action}
-      </td>
-      <td className={stockData.average === "Average" ? "text-danger" : ""}>
+      </TableCell>
+      <TableCell
+        style={{
+          color: stockData.average === "Average" ? red[500] : "inherit",
+        }}
+      >
         {stockData.average}
-      </td>
-      <td>{stock.quantity}</td>
-      <td>{stockData.LTP}</td>
-      <td>{stockData.targetPrice}</td>
-      <td>{latestValue}</td> {/* Display rounded latest value */}
-      <td style={{ color: getScopeToGrowColor(scopeValue) }}>
+      </TableCell>
+      <TableCell>{stock.quantity}</TableCell>
+      <TableCell>{stockData.LTP}</TableCell>
+      <TableCell>{stockData.targetPrice}</TableCell>
+      <TableCell>{latestValue}</TableCell> {/* Display rounded latest value */}
+      <TableCell style={{ color: getScopeToGrowColor(scopeValue) }}>
         {stockData.scopeToGrow}
-      </td>
-      <td>{stockData.presentQuarter}</td>
-    </tr>
+      </TableCell>
+      <TableCell>{stockData.presentQuarter}</TableCell>
+    </TableRow>
   );
 }
 
 function getScopeToGrowColor(scopeValue) {
   if (scopeValue < 30) {
-    return "red";
+    return red[500];
   } else if (scopeValue >= 30 && scopeValue <= 50) {
-    return "orange";
+    return orange[500];
   } else {
-    return "green";
+    return green[500];
   }
 }
 

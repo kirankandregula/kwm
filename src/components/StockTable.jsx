@@ -1,34 +1,43 @@
 import React from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+} from "@mui/material";
 import StockDetails from "./StockDetails";
-import "../css/StockTable.css"; // Importing. custom CSS for styling
+import "../css/StockTable.css"; // Importing custom CSS for additional styling if needed
 
 function StockTable({ filteredData }) {
   return (
-    <div className="table-responsive stock-table-container">
-      <table className="table table-hover">
-        <thead className="thead-dark">
-          <tr>
-            <th>Stock Name</th>
-            <th>Sector</th>
-            <th>PE</th>
-            <th>Market Cap</th>
-            <th>Action</th>
-            <th>Average</th>
-            <th>Quantity</th>
-            <th>LTP</th>
-            <th>Target Price</th>
-            <th>Latest Value</th>
-            <th>Scope to Grow</th>
-            <th>Present Quarter</th>
-          </tr>
-        </thead>
-        <tbody>
+    <TableContainer component={Paper} className="stock-table-container">
+      <Table className="table-hover" aria-label="stock table">
+        <TableHead className="thead-dark">
+          <TableRow>
+            <TableCell>Stock Name</TableCell>
+            <TableCell>Sector</TableCell>
+            <TableCell>PE</TableCell>
+            <TableCell>Market Cap</TableCell>
+            <TableCell>Action</TableCell>
+            <TableCell>Average</TableCell>
+            <TableCell>Quantity</TableCell>
+            <TableCell>LTP</TableCell>
+            <TableCell>Target Price</TableCell>
+            <TableCell>Latest Value</TableCell>
+            <TableCell>Scope to Grow</TableCell>
+            <TableCell>Present Quarter</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
           {filteredData.map((stock, index) => (
             <StockDetails key={index} stock={stock} />
           ))}
-        </tbody>
-      </table>
-    </div>
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 }
 

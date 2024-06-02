@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { css } from "@emotion/react";
-import { ClipLoader } from "react-spinners";
+import {
+  CircularProgress,
+  Box,
+  Container,
+  Typography,
+  Grid,
+  Button,
+  Alert,
+} from "@mui/material";
 import { useCookies } from "react-cookie";
 import UserMetricsCard from "./UserMetricsCard";
 import BillDetailsCard from "./BillDetailsCard";
@@ -9,15 +16,8 @@ import StockTable from "./StockTable";
 import "../css/UserDetails.css";
 import { useData } from "./DataProvider";
 
-const override = css`
-  display: block;
-  margin: 0 auto;
-  border-color: red;
-`;
-
 function UserDetails() {
   const { financialData, stockData, individualStockData, loading } = useData(); // Use the correct variable from the DataContext
-
   const [filteredData, setFilteredData] = useState([]);
   const [userFinancialData, setUserFinancialData] = useState(null);
   const [cookies] = useCookies(["userId", "userName", "userRole"]);
@@ -31,7 +31,7 @@ function UserDetails() {
 
   useEffect(() => {
     if (!loading) {
-      if (!loading && financialData && stockData && individualStockData) {
+      if (financialData && stockData && individualStockData) {
         const userData = financialData.find(
           (user) => user.user_id === parseInt(userId)
         );
@@ -105,45 +105,45 @@ function UserDetails() {
 
   if (loading) {
     return (
-      <div className="spinner-container">
-        <ClipLoader
-          color={"#36D7B7"}
-          loading={loading}
-          css={override}
-          size={150}
-        />
-      </div>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="80vh"
+      >
+        <CircularProgress />
+      </Box>
     );
   }
 
   return (
-    <div className="container-fluid user-details">
-      <h3 className="text-center text-secondary" style={{ marginTop: "60px" }}>
+    <Container className="user-details" sx={{ mt: 10 }}>
+      <Typography variant="h4" align="center" color="textSecondary">
         {userFinancialData
           ? `${getGreeting()}.... ${toPascalCase(userFinancialData.Name)}`
           : "Loading Portfolio Details....."}
-      </h3>
+      </Typography>
       {!userFinancialData && (
-        <p className="text-center text-secondary">
+        <Typography align="center" color="textSecondary">
           It will take a few seconds. Please wait...
-        </p>
+        </Typography>
       )}
       {filteredData && filteredData.length === 0 && (
-        <p className="text-center text-danger">
+        <Typography align="center" color="error">
           You don't have any holdings now.
-        </p>
+        </Typography>
       )}
-      <div className="row mt-4">
-        <div className="col-lg-6 col-md-12 mb-4">
+      <Grid container spacing={4} sx={{ mt: 4 }}>
+        <Grid item xs={12} md={6}>
           {cardsLoading ? (
-            <div className="spinner-container">
-              <ClipLoader
-                color={"#36D7B7"}
-                loading={cardsLoading}
-                css={override}
-                size={150}
-              />
-            </div>
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              minHeight="80vh"
+            >
+              <CircularProgress />
+            </Box>
           ) : (
             <UserMetricsCard
               averagePE={averagePE}
@@ -161,23 +161,23 @@ function UserDetails() {
               }
             />
           )}
-        </div>
-        <div className="col-lg-6 col-md-12 mb-4">
+        </Grid>
+        <Grid item xs={12} md={6}>
           {cardsLoading ? (
-            <div className="spinner-container">
-              <ClipLoader
-                color={"#36D7B7"}
-                loading={cardsLoading}
-                css={override}
-                size={150}
-              />
-            </div>
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              minHeight="80vh"
+            >
+              <CircularProgress />
+            </Box>
           ) : quarterlyReturn < 5 ? (
-            <div className="alert alert-warning" role="alert">
+            <Alert severity="warning">
               Billing is applicable for quarterly returns above 5%. Since your
               portfolio's quarterly return is below this threshold, billing is
               not applicable at this time.
-            </div>
+            </Alert>
           ) : (
             <BillDetailsCard
               preValue={
@@ -190,35 +190,37 @@ function UserDetails() {
               }
             />
           )}
-        </div>
-      </div>
-      <div className="row mt-4">
-        <div className="col-12">
-          <h4 className="text-center mb-4">Stock Holdings</h4>
+        </Grid>
+      </Grid>
+      <Grid container spacing={4} sx={{ mt: 4 }}>
+        <Grid item xs={12}>
+          <Typography variant="h4" align="center" gutterBottom>
+            Stock Holdings
+          </Typography>
           {loading ? (
-            <div className="spinner-container">
-              <ClipLoader
-                color={"#36D7B7"}
-                loading={loading}
-                css={override}
-                size={150}
-              />
-            </div>
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              minHeight="80vh"
+            >
+              <CircularProgress />
+            </Box>
           ) : (
             <StockTable filteredData={filteredData} />
           )}
-        </div>
-      </div>
-      <div className="row mt-4">
-        <div className="col-12 text-center mb-5">
+        </Grid>
+      </Grid>
+      <Grid container spacing={4} sx={{ mb: 10 }}>
+        <Grid item xs={12} textAlign="center">
           {cookies.userRole === "Admin" && (
-            <button className="btn btn-secondary" onClick={handleBack}>
+            <Button variant="contained" color="secondary" onClick={handleBack}>
               Back
-            </button>
+            </Button>
           )}
-        </div>
-      </div>
-    </div>
+        </Grid>
+      </Grid>
+    </Container>
   );
 
   function handleBack() {
