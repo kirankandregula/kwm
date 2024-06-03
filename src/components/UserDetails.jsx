@@ -8,6 +8,8 @@ import {
   Grid,
   Button,
   Alert,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { useCookies } from "react-cookie";
 import UserMetricsCard from "./UserMetricsCard";
@@ -15,9 +17,12 @@ import BillDetailsCard from "./BillDetailsCard";
 import StockTable from "./StockTable";
 import "../css/UserDetails.css";
 import { useData } from "./DataProvider";
+import { FaSync } from "react-icons/fa";
+import CompactStockView from "./CompactStockView ";
 
 function UserDetails() {
-  const { financialData, stockData, individualStockData, loading } = useData(); // Use the correct variable from the DataContext
+  const { financialData, stockData, individualStockData, loading, fetchData } =
+    useData();
   const [filteredData, setFilteredData] = useState([]);
   const [userFinancialData, setUserFinancialData] = useState(null);
   const [cookies] = useCookies(["userId", "userName", "userRole"]);
@@ -28,7 +33,9 @@ function UserDetails() {
   const [quarterlyReturn, setQuarterlyReturn] = useState(null);
   const { userId } = useParams();
   const navigate = useNavigate();
-
+  const theme = useTheme();
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"));
+  console.log(cookies.userRole);
   useEffect(() => {
     if (!loading) {
       if (financialData && stockData && individualStockData) {
@@ -118,22 +125,40 @@ function UserDetails() {
 
   return (
     <Container className="user-details" sx={{ mt: 10 }}>
-      <Typography variant="h4" align="center" color="textSecondary">
+      <Typography
+        variant="h4"
+        align="center"
+        color="textSecondary"
+        gutterBottom
+      >
         {userFinancialData
           ? `${getGreeting()}.... ${toPascalCase(userFinancialData.Name)}`
           : "Loading Portfolio Details....."}
       </Typography>
+      <Box display="flex" justifyContent="center" mb={3}>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<FaSync />}
+          onClick={() => {
+            setCardsLoading(true);
+            fetchData();
+          }}
+        >
+          Refresh Data
+        </Button>
+      </Box>
       {!userFinancialData && (
-        <Typography align="center" color="textSecondary">
+        <Typography align="center" color="textSecondary" gutterBottom>
           It will take a few seconds. Please wait...
         </Typography>
       )}
       {filteredData && filteredData.length === 0 && (
-        <Typography align="center" color="error">
+        <Typography align="center" color="error" gutterBottom>
           You don't have any holdings now.
         </Typography>
       )}
-      <Grid container spacing={4} sx={{ mt: 4 }}>
+      <Grid container spacing={4}>
         <Grid item xs={12} md={6}>
           {cardsLoading ? (
             <Box
@@ -197,7 +222,7 @@ function UserDetails() {
           <Typography variant="h4" align="center" gutterBottom>
             Stock Holdings
           </Typography>
-          {loading ? (
+          {cardsLoading ? (
             <Box
               display="flex"
               justifyContent="center"
@@ -206,13 +231,19 @@ function UserDetails() {
             >
               <CircularProgress />
             </Box>
-          ) : (
+          ) : isLargeScreen ? (
             <StockTable filteredData={filteredData} />
+          ) : (
+            <CompactStockView
+              filteredData={filteredData}
+              individualStockData={individualStockData}
+            />
           )}
         </Grid>
       </Grid>
       <Grid container spacing={4} sx={{ mb: 10 }}>
         <Grid item xs={12} textAlign="center">
+      
           {cookies.userRole === "Admin" && (
             <Button variant="contained" color="secondary" onClick={handleBack}>
               Back

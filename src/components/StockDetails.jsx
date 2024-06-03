@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { useData } from "./DataProvider";
 import { TableRow, TableCell } from "@mui/material";
-import { green, orange, grey, red } from "@mui/material/colors"; // Import Material-UI colors
+import { green, orange, red } from "@mui/material/colors"; // Import Material-UI colors
 import "../css/StockDetails.css"; // Importing custom CSS for additional styling if needed
 
 function StockDetails({ stock }) {
@@ -26,15 +26,15 @@ function StockDetails({ stock }) {
   const scopeValue = parseInt(stockData.scopeToGrow.replace("%", ""));
   const rowClassName = scopeValue <= 10 ? "table-danger" : "";
 
-  const getColorClass = (quarterlyReturn) => {
-    if (quarterlyReturn >= 10) {
-      return green[500]; // Use green for success
-    } else if (quarterlyReturn < 10 && quarterlyReturn >= 5) {
-      return orange[500]; // Use orange for warning
-    } else {
-      return grey[500]; // Use grey for secondary
-    }
-  };
+  // const getColorClass = (quarterlyReturn) => {
+  //   if (quarterlyReturn >= 10) {
+  //     return green[500]; // Use green for success
+  //   } else if (quarterlyReturn < 10 && quarterlyReturn >= 5) {
+  //     return orange[500]; // Use orange for warning
+  //   } else {
+  //     return grey[500]; // Use grey for secondary
+  //   }
+  // };
 
   return (
     <TableRow className={rowClassName}>

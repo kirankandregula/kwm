@@ -5,7 +5,7 @@ import { useData } from "./DataProvider";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { css } from "@emotion/react";
 import { ClipLoader } from "react-spinners";
-import { FaUser } from "react-icons/fa";
+import { FaUser, FaSync } from "react-icons/fa"; // Importing FaSync icon
 import {
   Table,
   TableBody,
@@ -14,6 +14,11 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Button,
+  useMediaQuery,
+  Box,
+  Typography,
+  Grid,
 } from "@mui/material";
 import { green, red, yellow } from "@mui/material/colors";
 
@@ -28,7 +33,8 @@ function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [cookies] = useCookies(["userName"]);
   const navigate = useNavigate();
-  const { financialData, stockData, individualStockData } = useData();
+  const { financialData, stockData, individualStockData, fetchData } = useData();
+  const isLargeScreen = useMediaQuery('(min-width:1200px)');
 
   useEffect(() => {
     if (financialData && stockData && individualStockData) {
@@ -37,12 +43,18 @@ function AdminPage() {
           (stock) => stock.user_id === user.user_id
         );
         let total = 0;
+        let weightedPETotal = 0;
+        let weightedScopeTotal = 0;
         userStocks.forEach((stock) => {
           const stockInfo = individualStockData.find(
             (item) => item.stock_id === stock.stock_id
           );
           if (stockInfo) {
-            total += stock.quantity * stockInfo.LTP;
+            const latestValue = stock.quantity * stockInfo.LTP;
+            total += latestValue;
+            weightedPETotal += stockInfo.pe * latestValue;
+            weightedScopeTotal +=
+              parseInt(stockInfo.scopeToGrow.replace("%", "")) * latestValue;
           }
         });
         const preValue = parseFloat(user.Previous_Value || 0);
@@ -58,6 +70,8 @@ function AdminPage() {
           presentValue: presentValue.toFixed(2),
           quarterlyReturn,
           billableAmount,
+          averagePE: (weightedPETotal / total).toFixed(2),
+          averageScopeToGrow: (weightedScopeTotal / total).toFixed(2),
         };
       });
       setUserData(updatedUserData);
@@ -102,10 +116,20 @@ function AdminPage() {
       <p className="text-center text-info">
         Click on the respective column to view portfolio individual details.
       </p>
-      <div
-        className="d-flex justify-content-center"
-        style={{ minHeight: "80vh" }}
-      >
+      <div className="d-flex justify-content-center mb-3">
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<FaSync />}
+          onClick={() => {
+            setLoading(true);
+            fetchData();
+          }}
+        >
+          Refresh Data
+        </Button>
+      </div>
+      <div className="d-flex justify-content-center" style={{ minHeight: "80vh" }}>
         {loading ? (
           <div className="sweet-loading align-items-center">
             <ClipLoader
@@ -116,55 +140,132 @@ function AdminPage() {
             />
           </div>
         ) : (
-          <TableContainer component={Paper} style={{ marginBottom: "100px" }}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell className="text-center">Username</TableCell>
-                  <TableCell className="text-center">Present Value</TableCell>
-                  <TableCell className="text-center">Debt</TableCell>
-                  <TableCell className="text-center">
-                    Quarterly Return
-                  </TableCell>
-                  <TableCell className="text-center">Billing Amount</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
+          <>
+            {isLargeScreen ? (
+              <TableContainer component={Paper} style={{ marginBottom: "100px" }}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell className="">Username</TableCell>
+                      <TableCell className="text-center">Present Value</TableCell>
+                      <TableCell className="text-center">Debt</TableCell>
+                      <TableCell className="text-center">Quarterly Return</TableCell>
+                      <TableCell className="text-center">Billing Amount</TableCell>
+                      <TableCell className="text-center">Av-PE</TableCell>
+                      <TableCell className="text-center">Av-STG</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {userData.map((user, index) => (
+                      <TableRow
+                        key={index}
+                        onClick={() => handleRowClick(user.user_id)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        <TableCell className="" style={{ fontWeight: "600" }}>
+                          <FaUser style={{ marginRight: "8px" }} />
+                          {user.Name.toUpperCase()}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          ₹{user.presentValue}
+                        </TableCell>
+                        <TableCell className="text-center">₹{user.Debt}</TableCell>
+                        <TableCell
+                          className="text-center"
+                          style={{
+                            color:
+                              user.quarterlyReturn < 5
+                                ? red[500]
+                                : user.quarterlyReturn < 10
+                                ? yellow[700]
+                                : green[500],
+                          }}
+                        >
+                          {user.quarterlyReturn}%
+                        </TableCell>
+                        <TableCell className="text-center">
+                          ₹{user.billableAmount}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {user.averagePE}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {user.averageScopeToGrow}%
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            ) : (
+              <Box className="compact-stock-container" sx={{ mb: 10 }}>
                 {userData.map((user, index) => (
-                  <TableRow
+                  <Box
                     key={index}
+                    className="compact-stock-view"
                     onClick={() => handleRowClick(user.user_id)}
-                    style={{ cursor: "pointer" }}
+                    style={{ cursor: "pointer", marginBottom: "16px" }}
                   >
-                    <TableCell className="" style={{ fontWeight: "600" }}>
-                      <FaUser style={{ marginRight: "8px" }} />
-                      {user.Name.toUpperCase()}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      ₹{user.presentValue}
-                    </TableCell>
-                    <TableCell className="text-center">₹{user.Gold}</TableCell>
-                    <TableCell
-                      className="text-center"
-                      style={{
-                        color:
-                          user.quarterlyReturn < 5
-                            ? red[500]
-                            : user.quarterlyReturn < 10
-                            ? yellow[700]
-                            : green[500],
-                      }}
-                    >
-                      {user.quarterlyReturn}%
-                    </TableCell>
-                    <TableCell className="text-center">
-                      ₹{user.billableAmount}
-                    </TableCell>
-                  </TableRow>
+                    <Grid container alignItems="center" className="stock-header">
+                      <Grid item xs={4}>
+                        <Typography variant="body2" className="stock-name">
+                          <strong>{user.Name.toUpperCase() }</strong>
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={4} style={{ textAlign: "center" }}>
+                        <Typography
+                          variant="body2"
+                          style={{
+                            color:
+                              user.quarterlyReturn < 5
+                                ? red[500]
+                                : user.quarterlyReturn < 10
+                                ? yellow[700]
+                                : green[500],
+                          }}
+                        >
+                          {user.quarterlyReturn}%
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={4} style={{ textAlign: "right" }}>
+                        <Typography variant="body2" className="stock-name">
+                          <strong> ₹{user.presentValue}</strong>
+                        </Typography>
+                      </Grid>
+                      
+                    </Grid>
+                    <Grid container spacing={0.5} className="stock-details">
+                      {/* <Grid item xs={6}>
+                        <Typography variant="caption">
+                          PV: ₹{user.presentValue}
+                        </Typography>
+                      </Grid> */}
+                      <Grid item xs={6}>
+                        <Typography variant="caption">
+                          Debt: ₹{user.Debt}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={6} style={{ textAlign: "right" }}>
+                        <Typography variant="caption">
+                          Bill: ₹{user.billableAmount}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Typography variant="caption">
+                          Av-PE: {user.averagePE}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={6} style={{ textAlign: "right" }}>
+                        <Typography variant="caption">
+                          Av-STG: {user.averageScopeToGrow}%
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </Box>
                 ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+              </Box>
+            )}
+          </>
         )}
       </div>
     </div>

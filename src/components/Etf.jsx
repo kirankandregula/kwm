@@ -1,13 +1,14 @@
 import React from "react";
-import { ClipLoader } from "react-spinners";
-import { css } from "@emotion/react";
+// import { ClipLoader } from "react-spinners";
 import { useData } from "./DataProvider"; // Import the DataProvider
+import { Box, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper } from "@mui/material";
+// import { css } from "@emotion/react";
 
-const override = css`
-  display: block;
-  margin: 0 auto;
-  border-color: red;
-`;
+// const override = css`
+//   display: block;
+//   margin: 0 auto;
+//   border-color: red;
+// `;
 
 const EtfService = () => {
   const { etfServiceData, loading } = useData(); // Access the etfServiceData and loading state from DataProvider
@@ -25,19 +26,14 @@ const EtfService = () => {
 
   if (loading) {
     return (
-      <div
-        className="d-flex justify-content-center align-items-center"
-        style={{ minHeight: "100vh" }}
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
       >
-        <div className="sweet-loading">
-          <ClipLoader
-            color={"#36D7B7"}
-            loading={loading}
-            css={override}
-            size={150}
-          />
-        </div>
-      </div>
+        <CircularProgress />
+      </Box>
     );
   }
 
@@ -48,41 +44,40 @@ const EtfService = () => {
     );
 
   return (
-    <div>
-      <div
-        className="table-responsive "
-        style={{ marginTop: "80px", marginBottom: "80px" }}
-      >
-        <h2 className="text-success text-center">ETF Service</h2>
-        <table className="table table-bordered table-striped shadow">
-          <thead className="bg-primary text-white">
-            <tr>
-              <th>Stock</th>
-              <th>CMP</th>
+    <Box sx={{ marginTop: 10, marginBottom: 10 }}>
+      <Typography variant="h2" align="center" color="textSecondary" gutterBottom>
+        ETF Service
+      </Typography>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Stock</TableCell>
+              <TableCell>CMP</TableCell>
               {triggerColumns.map((col) => (
-                <th key={col}>{col}</th>
+                <TableCell key={col}>{col}</TableCell>
               ))}
-            </tr>
-          </thead>
-          <tbody>
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {Object.entries(filteredData).map(([stock, details]) => (
-              <tr key={stock}>
-                <td>{details["ETF Name"]}</td>
-                <td>{details.CMP}</td>
+              <TableRow key={stock}>
+                <TableCell>{details["ETF Name"]}</TableCell>
+                <TableCell>{details.CMP}</TableCell>
                 {triggerColumns.map((col) => (
-                  <td
+                  <TableCell
                     key={col}
-                    className={details[col] === "TRIGGER" ? "text-danger" : ""}
+                    sx={{ color: details[col] === "TRIGGER" ? "error.main" : "inherit" }}
                   >
                     {details[col]}
-                  </td>
+                  </TableCell>
                 ))}
-              </tr>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
   );
 };
 

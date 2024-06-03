@@ -116,13 +116,8 @@ const StockInRadar = () => {
 
   return (
     <Box mt={3}>
-      <Typography
-        variant="h2"
-        color="success"
-        textAlign="center"
-        sx={{ marginTop: "70px" }}
-      >
-        Stocks in our Radar
+      <Typography variant="h2" align="center" color="textSecondary" gutterBottom>
+        ETF Service
       </Typography>
       <Box my={2}>
         <TextField

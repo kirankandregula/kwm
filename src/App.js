@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, Routes, Route, Navigate, BrowserRouter } from "react-router-dom";
+import { Link, Routes, Route, BrowserRouter,  Navigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import StockMoniter from "./components/StockMoniter";
 import About from "./components/About";
@@ -16,17 +16,19 @@ import HomePage from "./components/HomePage";
 import StockInRadar from "./components/StocksInRadar";
 import { DataProvider } from "./components/DataProvider";
 
-export default function App() {
+const App = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [cookies, , removeCookie] = useCookies(["userName", "userRole"]);
+  const [cookies, removeCookie] = useCookies(["userName", "userRole"]);
+
 
   const toggleNavbar = () => {
     setIsOpen(!isOpen);
   };
 
   const handleLogout = () => {
-    removeCookie("userName", { path: "/" });
-    removeCookie("userRole", { path: "/" });
+    removeCookie("userName");
+    removeCookie("userRole");
+    console.log("logout******");
     return <Navigate to="/login" />;
   };
 
@@ -36,14 +38,14 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top ">
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div className="container">
           <Link className="navbar-brand" to="/">
-            <img
+            {/* <img
               src="https://i.ibb.co/SsdfRXP/KK-Wealth-Mills-transparent.png"
               alt="KK Wealth Mills Logo"
               style={{ maxWidth: "40px", marginRight: "10px" }}
-            />
+            /> */}
             KK Wealth Mills
           </Link>
           <button
@@ -54,9 +56,7 @@ export default function App() {
             <span className="navbar-toggler-icon"></span>
           </button>
           <div
-            className={`collapse navbar-collapse ${
-              isOpen ? "show" : ""
-            } justify-content-end`}
+            className={`collapse navbar-collapse ${isOpen ? "show" : ""} justify-content-end`}
           >
             <ul className="navbar-nav ms-auto">
               <li className="nav-item">
@@ -64,7 +64,6 @@ export default function App() {
                   Home
                 </Link>
               </li>
-
               <li className="nav-item">
                 <Link className="nav-link" to="/spying" onClick={handleClick}>
                   Stock Moniter
@@ -132,4 +131,8 @@ export default function App() {
       </footer>
     </BrowserRouter>
   );
-}
+};
+
+
+
+export default App;

@@ -1,0 +1,26 @@
+.compact-stock-container {
+    padding: 8px;
+  }
+  
+  .compact-stock-view {
+    padding: 8px;
+    border: 1px solid #ccc;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    font-size: 0.75rem;
+  }
+  
+  .stock-header {
+    margin-bottom: 4px;
+  }
+  
+  .stock-name {
+    font-weight: bold;
+  }
+  
+  .stock-details .MuiTypography-caption {
+    font-size: 0.65rem;
+    color: #333;
+  }
+  
