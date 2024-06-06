@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { useData } from "./DataProvider";
+import { useData } from "../DataProvider";
 import { TableRow, TableCell } from "@mui/material";
 import { green, orange, red } from "@mui/material/colors"; // Import Material-UI colors
-import "../css/StockDetails.css"; // Importing custom CSS for additional styling if needed
+import "../../css/StockDetails.css"; // Importing custom CSS for additional styling if needed
 
 function StockDetails({ stock }) {
   const { individualStockData } = useData(); // Get stock details data from context

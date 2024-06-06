@@ -8,7 +8,7 @@ const YourPortfolio = () => {
 
 
   useEffect(() => {
-    if (!cookies.userId) {
+    if (!cookies.userName) {
       navigate('/login');
     } else {
       // Redirect based on user role and pass userId as parameter
@@ -18,7 +18,7 @@ const YourPortfolio = () => {
         navigate(`/user-details/${cookies.userId}`);
       }
     }
-  }, [cookies.userId, cookies.userRole, navigate]);
+  }, [cookies.userName, cookies.userRole,cookies.userId, navigate]);
 
   return <div>Loading...</div>; // You can add a loading spinner here if needed
 };

@@ -9,7 +9,7 @@ import {
   Paper,
 } from "@mui/material";
 import StockDetails from "./StockDetails";
-import "../css/StockTable.css"; // Importing custom CSS for additional styling if needed
+import "../../css/StockTable.css"; // Importing custom CSS for additional styling if needed
 
 function StockTable({ filteredData }) {
   return (

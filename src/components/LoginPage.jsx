@@ -2,8 +2,19 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { ClipLoader } from "react-spinners";
-import { BsPersonFill, BsLockFill } from "react-icons/bs"; // Import Bootstrap icons
+import { BsPersonFill } from "react-icons/bs"; // Import Bootstrap icons
 import { useData } from "./DataProvider"; // Adjust the import path as necessary
+import {
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+  Typography,
+  Button,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import "../css/Loginpage.css";
 
 const LoginPage = () => {
   const [credentials, setCredentials] = useState({
@@ -31,7 +42,7 @@ const LoginPage = () => {
     setLoading(true);
 
     await fetchData();
-   
+
     const user = financialData.find(
       (u) =>
         u.Name.toLowerCase() === credentials.userName.toLowerCase() &&
@@ -49,63 +60,92 @@ const LoginPage = () => {
     setLoading(false);
   };
 
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
   return (
-    <div
-      className="container d-flex justify-content-center align-items-center"
-      style={{ marginTop: "80px" }}
-    >
-      <div className="card w-75" style={{ borderRadius: "15px", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)" }}>
-        <div className="card-body" style={{ backgroundColor: "#f5f5f5" }}>
-          <h2 className="card-title text-center mb-4" style={{ color: "#333" }}>User Login</h2>
+    <div className="login-container d-flex justify-content-center align-items-center vh-100">
+      <div className="login-card">
+        <div className="login-card-body">
+          <Typography
+            variant="h5"
+            align="left"
+            sx={{ mb: 3 }}
+            style={{ color: "black" }}
+            gutterBottom
+          >
+            Login
+          </Typography>
           {errorMessage && (
             <p className="text-center text-danger">{errorMessage}</p>
           )}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
-              <div className="input-group">
-                <span className="input-group-text" style={{ backgroundColor: "#e0e0e0" }}>
-                  <BsPersonFill style={{ color: "#757575" }} />
-                </span>
-                <input
+              <FormControl fullWidth variant="outlined">
+                <InputLabel htmlFor="outlined-adornment-username">
+                  Username
+                </InputLabel>
+                <OutlinedInput
+                  id="outlined-adornment-username"
                   type="text"
-                  id="userName"
-                  name="userName"
                   value={credentials.userName}
                   onChange={handleChange}
-                  className="form-control"
-                  placeholder="Username"
-                  required
-                  style={{ borderRadius: "0 15px 15px 0" }}
+                  name="userName"
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton edge="end">
+                        <BsPersonFill style={{ color: "#757575" }} />
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  label="Username"
                 />
-              </div>
+              </FormControl>
             </div>
             <div className="mb-3">
-              <div className="input-group">
-                <span className="input-group-text" style={{ backgroundColor: "#e0e0e0" }}>
-                  <BsLockFill style={{ color: "#757575" }} />
-                </span>
-                <input
-                  type="password"
-                  id="passWord"
-                  name="passWord"
+              <FormControl fullWidth variant="outlined">
+                <InputLabel htmlFor="outlined-adornment-password">
+                  Password
+                </InputLabel>
+                <OutlinedInput
+                  id="outlined-adornment-password"
+                  type={showPassword ? "text" : "password"}
                   value={credentials.passWord}
                   onChange={handleChange}
-                  className="form-control"
-                  placeholder="Password"
-                  required
-                  style={{ borderRadius: "0 15px 15px 0" }}
+                  name="passWord"
+                  autoComplete="current-password" // Add autocomplete attribute here
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  label="Password"
                 />
-              </div>
+              </FormControl>
             </div>
-            <button
+            <Button
               type="submit"
-              className="btn w-100"
-              style={{ backgroundColor: "#007bff", color: "white", borderRadius: "15px" }}
-              disabled={loading} // Disable the button while loading
+              fullWidth
+              variant="contained"
+              color="primary"
+              disabled={loading}
+              style={{ borderRadius: "0px", height: "45px" }}
             >
-              {loading && <ClipLoader color={"#ffffff"} size={20} />} 
+              {loading && <ClipLoader color={"#ffffff"} size={20} />}
               {!loading && "Login"}
-            </button>
+            </Button>
           </form>
         </div>
       </div>

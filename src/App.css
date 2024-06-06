@@ -38,14 +38,24 @@
   align-items: center;
   height: 100vh;
 }
+/* App.css */
+/* App.css */
+/* .app-bar, .footer {
+  background-color: #e7ecf1; /* Dark color *
+  color: rgb(168, 168, 168);
+}
 
 .footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background-color: #343a40;
-  color: white;
-  text-align: center;
   padding: 10px 0;
 }
 
+.app-bar a, .footer a {
+  color: white;
+  text-decoration: none;
+}
+
+@media (max-width: 768px) {
+  .app-bar {
+    justify-content: space-between;
+  }
+} */
