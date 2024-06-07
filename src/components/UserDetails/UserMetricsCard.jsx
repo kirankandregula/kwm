@@ -11,7 +11,6 @@ function UserMetricsCard({
     ((totalLatestValue - preValue) / preValue) *
     100
   ).toFixed(2); // Calculate Quarterly Return
- console.log(quarterlyReturn);
 
   const profitLoss = (totalLatestValue - preValue).toFixed(2);
 
@@ -26,10 +25,10 @@ function UserMetricsCard({
       }}
     >
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
-        <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+        <Typography variant="caption" sx={{ fontWeight: "bold" }}>
           Previous
         </Typography>
-        <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+        <Typography variant="caption" sx={{ fontWeight: "bold" }}>
           Current
         </Typography>
       </Box>
@@ -43,11 +42,13 @@ function UserMetricsCard({
       </Box>
       <Box sx={{ borderBottom: "1px solid black", mb: 1 }} />
       <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
-        <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-          P&L <span style={{ color: profitLoss >= 0 ? green[500] : red[500] }}>{profitLoss >= 0 ? `+${profitLoss}` : profitLoss}</span>
+        <Typography variant="caption" sx={{ fontWeight: "bold" }}>
+          <span>P&L </span>
+          <span style={{ color: profitLoss >= 0 ? green[500] : red[500] }}>{profitLoss >= 0 ? `+${profitLoss}` : profitLoss}</span>
         </Typography>
-        <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-          Return <span  style={{ color: profitLoss >= 0 ? green[500] : red[500] }}>{quarterlyReturn}%</span>
+        <Typography variant="caption" sx={{ fontWeight: "bold" }}>
+          <span>Return </span>
+          <span  style={{ color: profitLoss >= 0 ? green[500] : red[500] }}>{quarterlyReturn}%</span>
         </Typography>
       </Box>
     </Box>

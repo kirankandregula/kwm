@@ -13,8 +13,10 @@ const usePullToRefresh = (onRefresh) => {
       touchEndY = e.touches[0].clientY;
     };
 
-    const handleTouchEnd = () => {
-      if (touchEndY > touchStartY + 50 && window.scrollY === 0) {
+    const handleTouchEnd = (e) => {
+      // Increase the pull-down distance to 100px
+      if (touchEndY > touchStartY + 100 && window.scrollY === 0) {
+        e.preventDefault();
         onRefresh();
       }
     };

@@ -7,7 +7,7 @@ import {
   Grid,
   Button,
   useMediaQuery,
-  useTheme
+  useTheme,
 } from "@mui/material";
 import { useCookies } from "react-cookie";
 import UserMetricsCard from "./UserMetricsCard";
@@ -25,7 +25,7 @@ function UserDetails() {
   const { financialData, stockData, individualStockData, loading, fetchData } =
     useData();
   const [filteredData, setFilteredData] = useState([]);
-  const [ setLoading] = useState(true);
+  const [setLoading] = useState(true);
   const [userFinancialData, setUserFinancialData] = useState(null);
   const [cookies] = useCookies(["userId", "userName", "userRole"]);
   const [totalLatestValue, setTotalLatestValue] = useState(0);
@@ -96,16 +96,16 @@ function UserDetails() {
   return (
     <Container className="user-details" sx={{ mt: 3 }}>
       <Box display="flex" justifyContent="center" mb={3}>
-      <div className="d-flex justify-content-center mb-3">
-        {isLargeScreen && (
-          <RefreshButton
-            handleClick={() => {
-              setLoading(true);
-              fetchData();
-            }}
-          />
-        )}
-      </div>
+        <div className="d-flex justify-content-center mb-3">
+          {isLargeScreen && (
+            <RefreshButton
+              handleClick={() => {
+                setLoading(true);
+                fetchData();
+              }}
+            />
+          )}
+        </div>
       </Box>
       {!userFinancialData && (
         <Box textAlign="center" color="textSecondary" mb={3}>
@@ -118,7 +118,7 @@ function UserDetails() {
         </Box>
       )}
       <Grid container spacing={1}>
-        <Grid item xs={12} md={4} sx={{mt:3}}>
+        <Grid item xs={12} md={4}>
           {cardsLoading ? (
             <Box
               display="flex"
@@ -217,9 +217,9 @@ function UserDetails() {
           )}
         </Grid>
       </Grid>
-      <Grid container spacing={4} sx={{ mb: 10 }}>
+      <Grid container spacing={4} sx={{ mb: 8, mt: "1px" }}>
         <Grid item xs={12} textAlign="center">
-          {cookies.userRole === "Admin" && (
+          {(isLargeScreen || isMidScreen) && cookies.userRole === "Admin" && (
             <Button variant="contained" color="secondary" onClick={handleBack}>
               Back
             </Button>
@@ -230,7 +230,7 @@ function UserDetails() {
   );
 
   function handleBack() {
-    if (cookies.userRole === "Admin") {
+    if (cookies.userRole === "Admin" && isLargeScreen) {
       navigate(`/portfolio/${cookies.userId}`);
     } else {
       navigate("/");

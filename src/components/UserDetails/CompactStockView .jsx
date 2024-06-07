@@ -49,16 +49,22 @@ const CompactStockView = ({ filteredData, individualStockData }) => {
               color: "black",
               width: "100%",
             }}
-            style ={{marginBottom: "2px"}}
+            style={{ marginBottom: "2px" }}
           >
-            <Grid container  alignItems="center" className="stock-header" > 
-              <Grid item xs={12} className="stock-details" >
+            <Grid container alignItems="center" className="stock-header">
+              <Grid item xs={12} className="stock-details">
                 <Grid container justifyContent="space-between">
                   <Grid item>
                     <Typography variant="caption">
                       Qty. {stock.quantity}
-                      <span style={{ marginLeft: "2px" }}></span> PE.{" "}
-                      {stockDetails.pe}
+                      <Typography
+                        variant="caption"
+                        component="span"
+                        sx={{ mx: 0.5 }}
+                      >
+                        &bull;
+                      </Typography>
+                      PE. {stockDetails.pe}
                     </Typography>
                   </Grid>
                   <Grid item>
@@ -80,7 +86,8 @@ const CompactStockView = ({ filteredData, individualStockData }) => {
                   <Grid item className="text-left">
                     <Typography>
                       <strong variant="body2">{stockDetails.stockName}</strong>
-                      <span variant="caption">
+
+                      <span variant="caption" style={{ fontSize: "0.7rem" }}>
                         {" "}
                         {(stockDetails.LTP * stock.quantity).toFixed(2)}
                       </span>
@@ -104,14 +111,28 @@ const CompactStockView = ({ filteredData, individualStockData }) => {
               <Grid item xs={6} style={{ textAlign: "left" }}>
                 <Typography variant="caption">
                   {stockDetails.Sector}{" "}
-                  <span style={{ marginLeft: "5px" }}></span>{" "}
+                  <Typography
+                    variant="caption"
+                    component="span"
+                    sx={{ mx: 0.5 }}
+                  >
+                    &bull;
+                  </Typography>
                   {stockDetails.marketCap}
                 </Typography>
               </Grid>
               <Grid item xs={6} style={{ textAlign: "right" }}>
-                LTP. {stockDetails.LTP}{" "}
-                <span style={{ marginLeft: "5px" }}></span>TP.{" "}
-                {stockDetails.targetPrice}
+                <Typography variant="caption">
+                  LTP. {stockDetails.LTP}{" "}
+                  <Typography
+                    variant="caption"
+                    component="span"
+                    sx={{ mx: 0.5 }}
+                  >
+                    &bull;
+                  </Typography>
+                  TP. {stockDetails.targetPrice}
+                </Typography>
               </Grid>
             </Grid>
           </Box>

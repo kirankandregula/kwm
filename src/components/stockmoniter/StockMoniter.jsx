@@ -13,6 +13,7 @@ import { useData } from "../DataProvider"; // Adjust the import path as needed
 import CompactView from "./CompactMoniter"; // Adjust the import path as needed
 import StockMonTable from "./StockMonTable";
 import RefreshButton from "../RefreshButton ";
+import usePullToRefresh from "../usePullToRefresh";
 
 const override = css`
   display: block;
@@ -31,6 +32,8 @@ const StockMonitor = () => {
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"));
   const [data, setData] = useState([]);
   const [setLoading] = useState(true);
+
+  usePullToRefresh(fetchData);
 
   useEffect(() => {
     if (!cookies.userName || !cookies.userRole) {
@@ -89,7 +92,7 @@ const StockMonitor = () => {
           </Box>
         ) : (
           <Box className="col-md-12" >
-            <Box className="form-group sm-12 my-1">
+            <Box className="form-group sm-12 mt-5 my-2">
               <TextField
                 fullWidth
                 label="Filter by Stock Name or Sector"

@@ -20,21 +20,21 @@ function DiversificationDiv({
         height: "130px"
       }}
     >
-      <Box sx={{ textAlign: "center", mt: 3 }}>
-        <Typography variant="h6" sx={{ fontWeight: "bold" ,mb: 1 }}>
-          Current Value: {totalLatestValue.toLocaleString()}
+      <Box sx={{ textAlign: "center", mt: 4 }}>
+        <Typography variant="h6">
+          Current Value <strong>{totalLatestValue.toLocaleString()}</strong>
         </Typography>
       </Box>
       <Box sx={{ borderBottom: "1px solid black", mb: 1 }} />
       <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
-        <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-          Equity: {equity.toLocaleString()}
+        <Typography variant="caption" >
+          Equity: <strong>{equity.toLocaleString()}</strong>
         </Typography>
-        <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-          Gold: {gold.toLocaleString()}
+        <Typography variant="caption" >
+          Gold: <strong>{gold.toLocaleString()}</strong>
         </Typography>
-        <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-          Debt: {debt.toLocaleString()}
+        <Typography variant="caption" >
+          Debt: <strong>{debt.toLocaleString()}</strong>
         </Typography>
       </Box>
     </Box>

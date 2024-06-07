@@ -9,7 +9,7 @@ import {
   TableCell,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import  { tableCellClasses } from "@mui/material/TableCell";
+import { tableCellClasses } from "@mui/material/TableCell";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -51,82 +51,90 @@ const getMarketCapColor = (marketCap) => {
   }
 };
 
-const StockMonTable = ({ data, handleSort }) => (
-  <TableContainer component={Paper} sx={{ marginBottom: "20px" }}>
-    <Table>
-      <TableHead>
-        <TableRow>
-          <StyledTableCell onClick={() => handleSort("stockName")}>
-            Stock Name
-          </StyledTableCell>
-          <StyledTableCell onClick={() => handleSort("Sector")}>
-            Sector
-          </StyledTableCell>
-          <StyledTableCell onClick={() => handleSort("pe")}>
-            PE
-          </StyledTableCell>
-          <StyledTableCell onClick={() => handleSort("marketCap")}>
-            Market Cap
-          </StyledTableCell>
-          <StyledTableCell onClick={() => handleSort("LTP")}>
-            LTP
-          </StyledTableCell>
-          <StyledTableCell onClick={() => handleSort("targetPrice")}>
-            Target Price
-          </StyledTableCell>
-          <StyledTableCell onClick={() => handleSort("scopeToGrow")}>
-            Scope to Grow
-          </StyledTableCell>
-          <StyledTableCell onClick={() => handleSort("action")}>
-            Hold/Sell
-          </StyledTableCell>
-          <StyledTableCell onClick={() => handleSort("average")}>
-            Average
-          </StyledTableCell>
-          <StyledTableCell onClick={() => handleSort("presentQuarter")}>
-            Present Quarter
-          </StyledTableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {data.map((row, index) => (
-          <TableRow
-            key={index}
-            sx={{
-              bgcolor:
-                parseFloat(row.scopeToGrow.replace("%", "")) <= 10
-                  ? "error.light"
-                  : "inherit",
-            }}
-          >
-            <TableCell>{row.stockName}</TableCell>
-            <TableCell>{row.Sector}</TableCell>
-            <TableCell>{row.pe}</TableCell>
-            <TableCell sx={{ color: getMarketCapColor(row.marketCap) }}>
-              {row.marketCap}
-            </TableCell>
-            <TableCell>{row.LTP}</TableCell>
-            <TableCell>{row.targetPrice}</TableCell>
-            <TableCell sx={{ color: getScopeColor(row.scopeToGrow) }}>
-              {row.scopeToGrow}
-            </TableCell>
-            <TableCell sx={{ color: getHoldSellColor(row.action) }}>
-              {row.action}
-            </TableCell>
-            <TableCell
+const StockMonTable = ({ data, handleSort }) => {
+  // Sort the data by `scopeToGrow` in descending order
+  const sortedData = [...data].sort((a, b) => {
+    const scopeA = parseFloat(a.scopeToGrow.replace("%", ""));
+    const scopeB = parseFloat(b.scopeToGrow.replace("%", ""));
+    return scopeB - scopeA; // Sort in descending order
+  });
+
+  return (
+    <TableContainer component={Paper} sx={{ marginBottom: "20px" }}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <StyledTableCell onClick={() => handleSort("stockName")}>
+              Stock Name
+            </StyledTableCell>
+            <StyledTableCell onClick={() => handleSort("Sector")}>
+              Sector
+            </StyledTableCell>
+            <StyledTableCell onClick={() => handleSort("pe")}>
+              PE
+            </StyledTableCell>
+            <StyledTableCell onClick={() => handleSort("marketCap")}>
+              Market Cap
+            </StyledTableCell>
+            <StyledTableCell onClick={() => handleSort("LTP")}>
+              LTP
+            </StyledTableCell>
+            <StyledTableCell onClick={() => handleSort("targetPrice")}>
+              Target Price
+            </StyledTableCell>
+            <StyledTableCell onClick={() => handleSort("scopeToGrow")}>
+              Scope to Grow
+            </StyledTableCell>
+            <StyledTableCell onClick={() => handleSort("action")}>
+              Hold/Sell
+            </StyledTableCell>
+            <StyledTableCell onClick={() => handleSort("average")}>
+              Average
+            </StyledTableCell>
+            <StyledTableCell onClick={() => handleSort("presentQuarter")}>
+              Present Quarter
+            </StyledTableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {sortedData.map((row, index) => (
+            <TableRow
+              key={index}
               sx={{
-                color:
-                  row.average === "Average" ? "error.main" : "inherit",
+                bgcolor:
+                  parseFloat(row.scopeToGrow.replace("%", "")) <= 10
+                    ? "error.light"
+                    : "inherit",
               }}
             >
-              {row.average}
-            </TableCell>
-            <TableCell>{row.presentQuarter}</TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  </TableContainer>
-);
+              <TableCell>{row.stockName}</TableCell>
+              <TableCell>{row.Sector}</TableCell>
+              <TableCell>{row.pe}</TableCell>
+              <TableCell sx={{ color: getMarketCapColor(row.marketCap) }}>
+                {row.marketCap}
+              </TableCell>
+              <TableCell>{row.LTP}</TableCell>
+              <TableCell>{row.targetPrice}</TableCell>
+              <TableCell sx={{ color: getScopeColor(row.scopeToGrow) }}>
+                {row.scopeToGrow}
+              </TableCell>
+              <TableCell sx={{ color: getHoldSellColor(row.action) }}>
+                {row.action}
+              </TableCell>
+              <TableCell
+                sx={{
+                  color: row.average === "Average" ? "error.main" : "inherit",
+                }}
+              >
+                {row.average}
+              </TableCell>
+              <TableCell>{row.presentQuarter}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+};
 
 export default StockMonTable;

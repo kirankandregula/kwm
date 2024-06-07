@@ -5,6 +5,8 @@ import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import InfoIcon from "@mui/icons-material/Info";
 import ContactSupportIcon from "@mui/icons-material/ContactSupport";
 import LogoutIcon from "@mui/icons-material/Logout";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings"; // For Moniter
+import RadarIcon from "@mui/icons-material/Radar"; // For Radar
 import { Link, useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 
@@ -33,8 +35,8 @@ const BottomNavigationComponent = ({ handleLogout }) => {
       <BottomNavigationAction label="Etf" value="/etf" icon={<MonetizationOnIcon />} />
       {cookies.userRole === "Admin" ? (
         [
-          <BottomNavigationAction key="moniter" label="Moniter" value="/spying" icon={<InfoIcon />} />,
-          <BottomNavigationAction key="radar" label="Radar" value="/radar" icon={<ContactSupportIcon />} />
+          <BottomNavigationAction key="moniter" label="Moniter" value="/spying" icon={<AdminPanelSettingsIcon />} />,
+          <BottomNavigationAction key="radar" label="Radar" value="/radar" icon={<RadarIcon />} />
         ]
       ) : (
         [

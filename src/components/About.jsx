@@ -1,5 +1,28 @@
-import React from 'react';
-import "./../App.css";
+import React from "react";
+import {
+  Container,
+  Typography,
+  Paper,
+  List,
+  ListItem,
+  ListItemText,
+} from "@mui/material";
+import { styled } from "@mui/system";
+
+const AboutContainer = styled(Container)(({ theme }) => ({
+  marginTop: theme.spacing(10),
+  marginBottom: theme.spacing(10),
+  padding: theme.spacing(2),
+  background: "linear-gradient(45deg, #ADD8E6, #ffc3a0)",
+  borderRadius: "20px",
+}));
+
+const BillingDetails = styled(Paper)(({ theme }) => ({
+  background: "#f2f2f2",
+  borderRadius: "10px",
+  padding: theme.spacing(3),
+  marginTop: theme.spacing(4),
+}));
 
 const About = () => {
   // Example profit amount and initial investment
@@ -19,30 +42,51 @@ const About = () => {
   const totalCharge = calculateCharge(profit);
 
   return (
-    <div className="about-us-container p-2 " style={{ background: "linear-gradient(45deg, #ADD8E6, #ffc3a0)", marginTop: "80px", borderRadius: "20px", marginBottom: "80px" }}>
-      <h2 className='text-center'>About Us</h2>
-      <div className="text-center mb-4">
-        <img src="https://i.ibb.co/SsdfRXP/KK-Wealth-Mills-transparent.png" alt="KK Wealth Mills Logo" style={{ maxWidth: "200px", marginBottom: "20px" }} />
-      </div>
-      <p>Welcome to KK Wealth Mills, your personal finance portfolio management solution founded by Kiran Kandregula.</p>
-      <p>At KK Wealth Mills, we are dedicated to helping you manage and grow your personal finance portfolio efficiently. Our goal is to provide you with the tools and resources needed to achieve your financial objectives.</p>
+    <AboutContainer maxWidth="md">
+      <Typography variant="h4" align="center" gutterBottom>
+        About Us
+      </Typography>
+      <Typography variant="body2" paragraph>
+        Welcome to KK Wealth Mills, your personal finance portfolio management solution founded by Kiran Kandregula.
+      </Typography>
+      <Typography variant="body2" paragraph>
+        At KK Wealth Mills, we are dedicated to helping you manage and grow your personal finance portfolio efficiently. Our goal is to provide you with the tools and resources needed to achieve your financial objectives.
+      </Typography>
 
       {/* Billing Details */}
-      <div className="billing-details p-3 mt-4" style={{ background: "#f2f2f2", borderRadius: "10px" }}>
-        <h3 className="text-center">Billing Details</h3>
-        <p>We charge for every quarter based on your profit only. Here's how our billing works:</p>
-        <ul>
-          <li>We won't charge for the first 5% profit.</li>
-          <li>For the remaining profit, we charge 20%.</li>
-        </ul>
-        <p>This transparent billing policy ensures that our customers can easily understand our pricing structure.</p>
+      <BillingDetails elevation={3}>
+        <Typography variant="h5" align="center" gutterBottom>
+          Billing Details
+        </Typography>
+        <Typography variant="body2" paragraph>
+          We charge for every quarter based on your profit only. Here's how our billing works:
+        </Typography>
+        <List>
+          <ListItem>
+            <ListItemText primary="We won't charge for the first 5% profit." />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary="For the remaining profit, we charge 20%." />
+          </ListItem>
+        </List>
+        <Typography variant="body2" paragraph>
+          This transparent billing policy ensures that our customers can easily understand our pricing structure.
+        </Typography>
         {/* Additional details based on example profit */}
-        <p>Let's say your profit for the quarter is ₹{profit}. The initial investment is ₹{initialInvestment}.</p>
-        <p>1. We won't charge for the first 5% profit, which is ₹{Math.min(5000, profit)}.</p>
-        <p>2. For the remaining profit (₹{Math.max(profit - 5000, 0)}), we charge 20%, which is ₹{totalCharge}.</p>
-        <p>So, the total charge for this quarter would be ₹{Math.max(totalCharge, 0)}.</p>
-      </div>
-    </div>
+        <Typography variant="body2" paragraph>
+          Let's say your profit for the quarter is ₹{profit}. The initial investment is ₹{initialInvestment}.
+        </Typography>
+        <Typography variant="body2" paragraph>
+          1. We won't charge for the first 5% profit, which is ₹{Math.min(5000, profit)}.
+        </Typography>
+        <Typography variant="body2" paragraph>
+          2. For the remaining profit (₹{Math.max(profit - 5000, 0)}), we charge 20%, which is ₹{totalCharge}.
+        </Typography>
+        <Typography variant="body2" paragraph>
+          So, the total charge for this quarter would be ₹{Math.max(totalCharge, 0)}.
+        </Typography>
+      </BillingDetails>
+    </AboutContainer>
   );
 };
 

@@ -132,6 +132,11 @@ const AppBarComponent = ({ handleLogout }) => {
                     </Button>
                   </>
                 )}
+                {cookies.userName && (
+                  <Button color="inherit" component={Link} to="/etf">
+                    ETF Service
+                  </Button>
+                )}
               </MenuItem>
               <Button color="inherit" component={Link} to="/about">
                 About

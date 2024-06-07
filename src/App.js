@@ -1,6 +1,6 @@
 // src/App.js
 import React from "react";
-import { Routes, Route, BrowserRouter } from "react-router-dom";
+import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import AppBarComponent from "./components/navigation/AppBarComponent";
 import BottomNavigationComponent from "./components/navigation/BottomNavigationComponent";
@@ -11,12 +11,15 @@ import Contact from "./components/Contact";
 import LoginPage from "./components/LoginPage";
 import "./App.css";
 import UserDetails from "./components/UserDetails/UserDetails";
-import EtfService from "./components/Etf";
+
 import AdminPage from "./components/Admin/AdminPage";
 import ViewerPage from "./components/ViewerPage";
 import YourPortfolio from "./components/YourPortFolio";
-import StockInRadar from "./components/StocksInRadar";
+
+
 import { DataProvider } from "./components/DataProvider";
+import EtfService from "./components/Etf/EtfService";
+import StockInRadar from "./components/stockradar/StockInRadar";
 
 const App = () => {
   const [cookies, , removeCookie] = useCookies(["userName", "userRole"]);
@@ -25,7 +28,7 @@ const App = () => {
     removeCookie("userName");
     removeCookie("userRole");
     removeCookie("userId");
-    window.location.href = "/login"; // redirect to login page after logout
+    return <Navigate to="/login" />;
   };
 
   return (

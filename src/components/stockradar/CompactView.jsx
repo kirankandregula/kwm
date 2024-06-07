@@ -1,3 +1,4 @@
+// CompactView.jsx
 import React from "react";
 import { Box, Card, CardContent, Typography, Grid } from "@mui/material";
 
@@ -7,28 +8,9 @@ const getQuarterlyReturnColor = (quarterlyReturn) => {
   return "red";
 };
 
-const renderAvg = (average) => {
-  if (average === "Average") {
-    return (
-      <span style={{ color: "red" }} className="mx-2">
-        AVG
-      </span>
-    );
-  }
-  return null;
-};
-
-const renderAction = (action) => {
-  if (action === "Hold") {
-    return <span style={{ color: "green" }}>HOLD</span>;
-  } else {
-    return <span style={{ color: "red" }}>SELL</span>;
-  }
-};
-
-const CompactMoniter = ({ data }) => {
+const CompactView = ({ data }) => {
   return (
-    <Box  sx={{ mb: 8 }}>
+    <Box sx={{ mb: 8 }}>
       {data.map((item, index) => (
         <Card
           key={index}
@@ -52,14 +34,6 @@ const CompactMoniter = ({ data }) => {
                       Qtr. {item.presentQuarter}
                     </Typography>
                   </Grid>
-                  <Grid item>
-                    <Typography
-                      variant="caption"
-                      style={{ textAlign: "right" }}
-                    >
-                      {renderAvg(item.average)} {renderAction(item.action)}
-                    </Typography>
-                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
@@ -78,6 +52,7 @@ const CompactMoniter = ({ data }) => {
                         color: getQuarterlyReturnColor(
                           parseFloat(item.scopeToGrow)
                         ),
+                        fontSize: "1.2rem", // Make the text larger
                       }}
                     >
                       {item.scopeToGrow}
@@ -96,16 +71,22 @@ const CompactMoniter = ({ data }) => {
                     sx={{ mx: 0.5 }}
                   >
                     &bull;
-                  </Typography>{" "}
+                  </Typography>
                   {item.marketCap}
                 </Typography>
               </Grid>
               <Grid item xs={6} style={{ textAlign: "right" }}>
-                LTP {item.LTP}
-                <Typography variant="caption" component="span" sx={{ mx: 0.5 }}>
-                  &bull;
+                <Typography variant="caption">
+                  LTP {item.LTP}
+                  <Typography
+                    variant="caption"
+                    component="span"
+                    sx={{ mx: 0.5 }}
+                  >
+                    &bull;
+                  </Typography>
+                  TP {item.targetPrice}
                 </Typography>
-                TP {item.targetPrice}
               </Grid>
             </Grid>
           </CardContent>
@@ -115,4 +96,4 @@ const CompactMoniter = ({ data }) => {
   );
 };
 
-export default CompactMoniter;
+export default CompactView;
