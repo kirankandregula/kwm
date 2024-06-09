@@ -19,13 +19,18 @@ import DiversificationDiv from "./diversificationdiv";
 import BillableDiv from "./BillableDiv";
 import CompactStockView from "./CompactStockView ";
 import usePullToRefresh from "../usePullToRefresh";
-import RefreshButton from "../RefreshButton ";
+import RefreshButton from "../RefreshButton";
 
 function UserDetails() {
-  const { financialData, stockData, individualStockData, loading, fetchData } =
-    useData();
+  const {
+    financialData,
+    stockData,
+    individualStockData,
+    loading,
+    fetchData,
+    setLoading,
+  } = useData();
   const [filteredData, setFilteredData] = useState([]);
-  const [setLoading] = useState(true);
   const [userFinancialData, setUserFinancialData] = useState(null);
   const [cookies] = useCookies(["userId", "userName", "userRole"]);
   const [totalLatestValue, setTotalLatestValue] = useState(0);

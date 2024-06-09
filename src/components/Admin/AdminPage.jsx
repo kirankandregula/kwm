@@ -9,9 +9,8 @@ import { useMediaQuery } from "@mui/material";
 import AdminTable from "./AdminTable";
 
 import CompactUserView from "./CompactUserView";
-import RefreshButton from "../RefreshButton ";
+import RefreshButton from "../RefreshButton";
 import usePullToRefresh from "../usePullToRefresh";
-
 
 const override = css`
   display: block;
@@ -27,7 +26,7 @@ function AdminPage() {
   const { financialData, stockData, individualStockData, fetchData } =
     useData();
   const isLargeScreen = useMediaQuery("(min-width:1200px)");
-  const isMidScreen = useMediaQuery("(min-width:600px)");
+  // const isMidScreen = useMediaQuery("(min-width:600px)");
 
   useEffect(() => {
     if (!cookies.userName) {

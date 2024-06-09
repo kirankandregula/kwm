@@ -19,7 +19,7 @@ import {
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import DuplicateIcon from "@mui/icons-material/Error"; // Assuming this is the icon for duplicates
-import LargeScreenTable from "./LargeScreenTable ";
+import LargeScreenTable from "./LargeScreenTable";
 import CompactView from "./CompactView";
 import { useData } from "../DataProvider";
 import usePullToRefresh from "../usePullToRefresh";
@@ -31,11 +31,10 @@ const override = css`
 `;
 
 const StockInRadar = () => {
-  const { stockInRadarData, stockMonitorData, loading ,fetchData} = useData();
+  const { stockInRadarData, stockMonitorData, loading, fetchData } = useData();
   const [filterValue, setFilterValue] = useState("");
   const [cookies] = useCookies(["userName", "userRole"]);
   const navigate = useNavigate();
-  const [hasStocks, setHasStocks] = useState(false);
   const [sortedData, setSortedData] = useState([]);
   const [duplicateStocks, setDuplicateStocks] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -60,12 +59,7 @@ const StockInRadar = () => {
         }
       });
 
-  
       setDuplicateStocks([...new Set(duplicates)]); // Remove duplicate entries in duplicates
-
-      if (uniqueData.some((stock) => stock.stockName !== "")) {
-        setHasStocks(true);
-      }
 
       const sorted = [...uniqueData].sort(
         (a, b) =>
@@ -74,7 +68,13 @@ const StockInRadar = () => {
       );
       setSortedData(sorted);
     }
-  }, [cookies.userName, cookies.userRole, navigate, stockInRadarData, stockMonitorData]);
+  }, [
+    cookies.userName,
+    cookies.userRole,
+    navigate,
+    stockInRadarData,
+    stockMonitorData,
+  ]);
 
   const handleSort = (columnName) => {
     const sorted = [...sortedData].sort((a, b) =>
@@ -92,14 +92,6 @@ const StockInRadar = () => {
       row.stockName.toLowerCase().includes(filterValue.toLowerCase()) ||
       row.Sector.toLowerCase().includes(filterValue.toLowerCase())
   );
-
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
 
   if (loading) {
     return (
@@ -119,7 +111,7 @@ const StockInRadar = () => {
     );
   }
 
-  if (!hasStocks) {
+  if (filteredData.length === 0) {
     return (
       <Box
         display="flex"
@@ -127,7 +119,7 @@ const StockInRadar = () => {
         alignItems="center"
         minHeight="80vh"
       >
-        <Typography variant="h4" color="error">
+        <Typography variant="body2" color="error">
           There are no stocks to buy now. Please wait for a few days.
         </Typography>
       </Box>
@@ -148,7 +140,7 @@ const StockInRadar = () => {
         {duplicateStocks.length > 0 && (
           <Box display="flex" justifyContent="center" alignItems="center">
             <Tooltip title="Show Duplicates">
-              <IconButton color="error" onClick={handleOpenModal}>
+              <IconButton color="error" onClick={() => setIsModalOpen(true)}>
                 <DuplicateIcon />
               </IconButton>
             </Tooltip>
@@ -169,7 +161,7 @@ const StockInRadar = () => {
       </Box>
       <Modal
         open={isModalOpen}
-        onClose={handleCloseModal}
+        onClose={() => setIsModalOpen(false)}
         aria-labelledby="duplicate-stocks-modal"
         aria-describedby="modal-to-show-duplicate-stocks"
       >

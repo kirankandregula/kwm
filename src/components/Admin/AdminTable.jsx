@@ -9,7 +9,7 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
-import { green, red, yellow } from "@mui/material/colors";
+import { green, red } from "@mui/material/colors";
 
 const AdminTable = ({ userData, handleRowClick }) => (
   <TableContainer component={Paper}>
@@ -53,19 +53,18 @@ const AdminTable = ({ userData, handleRowClick }) => (
             <TableCell
               className="text-center"
               style={{
-                color:
-                  user.quarterlyReturn < 5
-                    ? red[500]
-                    : user.quarterlyReturn < 10
-                    ? yellow[700]
-                    : green[500],
+                color: user.quarterlyReturn < 0 ? red[500] : green[500],
               }}
             >
               {user.quarterlyReturn}%
             </TableCell>
-            <TableCell className="text-center">₹{user.billableAmount}</TableCell>
+            <TableCell className="text-center">
+              ₹{user.billableAmount}
+            </TableCell>
             <TableCell className="text-center">{user.averagePE}</TableCell>
-            <TableCell className="text-center">{user.averageScopeToGrow}%</TableCell>
+            <TableCell className="text-center">
+              {user.averageScopeToGrow}%
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>

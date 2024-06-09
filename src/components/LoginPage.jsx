@@ -49,9 +49,11 @@ const LoginPage = () => {
         u.Password === credentials.passWord
     );
     if (user) {
-      setCookie("userName", user.Name);
-      setCookie("userRole", user.Role);
-      setCookie("userId", user.user_id);
+      // Set cookie with expiration time (e.g., 30 minutes)
+      const expirationTime = new Date(new Date().getTime() + 30 * 60 * 1000); // 30 minutes
+      setCookie("userName", user.Name, { expires: expirationTime });
+      setCookie("userRole", user.Role, { expires: expirationTime });
+      setCookie("userId", user.user_id, { expires: expirationTime });
       navigate(`/portfolio/${user.user_id}`);
     } else {
       setErrorMessage("Invalid username or password");

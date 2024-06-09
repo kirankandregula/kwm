@@ -1,4 +1,3 @@
-// src/App.js
 import React from "react";
 import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
@@ -11,15 +10,13 @@ import Contact from "./components/Contact";
 import LoginPage from "./components/LoginPage";
 import "./App.css";
 import UserDetails from "./components/UserDetails/UserDetails";
-
 import AdminPage from "./components/Admin/AdminPage";
 import ViewerPage from "./components/ViewerPage";
 import YourPortfolio from "./components/YourPortFolio";
-
-
 import { DataProvider } from "./components/DataProvider";
 import EtfService from "./components/Etf/EtfService";
 import StockInRadar from "./components/stockradar/StockInRadar";
+import ActionComponent from "./components/Action/ActionComponent";
 
 const App = () => {
   const [cookies, , removeCookie] = useCookies(["userName", "userRole"]);
@@ -41,7 +38,7 @@ const App = () => {
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<LoginPage />} />
           <Route
-            path="//user-details/:userId"
+            path="/user-details/:userId"
             element={
               <ProtectedRoute isAllowed={!!cookies.userRole}>
                 <UserDetails />
@@ -80,7 +77,6 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/spying"
             element={
@@ -94,6 +90,14 @@ const App = () => {
             element={
               <ProtectedRoute isAllowed={cookies.userRole === "Admin"}>
                 <StockInRadar />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/action"
+            element={
+              <ProtectedRoute isAllowed={!!cookies.userRole}>
+                <ActionComponent />
               </ProtectedRoute>
             }
           />

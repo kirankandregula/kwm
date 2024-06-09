@@ -1,4 +1,3 @@
-// src/components/navigation/AppBarComponent.js
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
@@ -85,26 +84,33 @@ const AppBarComponent = ({ handleLogout }) => {
                 >
                   Contact
                 </MenuItem>
-                {cookies.userRole === "Admin"
-                  ? [
-                      <MenuItem
-                        key="moniter"
-                        onClick={handleMenuClose}
-                        component={Link}
-                        to="/spying"
-                      >
-                        Stock Moniter
-                      </MenuItem>,
-                      <MenuItem
-                        key="radar"
-                        onClick={handleMenuClose}
-                        component={Link}
-                        to="/radar"
-                      >
-                        Stock In Radar
-                      </MenuItem>,
-                    ]
-                  : null}
+                {cookies.userRole === "Admin" && (
+                  <>
+                    <MenuItem
+                      onClick={handleMenuClose}
+                      component={Link}
+                      to="/spying"
+                    >
+                      Stock Monitor
+                    </MenuItem>
+                    <MenuItem
+                      onClick={handleMenuClose}
+                      component={Link}
+                      to="/radar"
+                    >
+                      Stock In Radar
+                    </MenuItem>
+                  </>
+                )}
+                {cookies.userRole === "Viewer" && (
+                  <MenuItem
+                    onClick={handleMenuClose}
+                    component={Link}
+                    to="/action"
+                  >
+                    Action
+                  </MenuItem>
+                )}
                 {cookies.userName && cookies.userRole ? (
                   <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 ) : (
@@ -120,43 +126,41 @@ const AppBarComponent = ({ handleLogout }) => {
             </>
           ) : (
             <>
-              <MenuItem onClick={handleMenuClose} component={Link} to="/">
+              <Button color="inherit" component={Link} to="/">
                 Home
-                {cookies.userRole === "Admin" && (
-                  <>
-                    <Button color="inherit" component={Link} to="/spying">
-                      Stock Moniter
-                    </Button>
-                    <Button color="inherit" component={Link} to="/radar">
-                      Stock In Radar
-                    </Button>
-                  </>
-                )}
-                {cookies.userName && (
-                  <Button color="inherit" component={Link} to="/etf">
-                    ETF Service
-                  </Button>
-                )}
-              </MenuItem>
+              </Button>
+              <Button color="inherit" component={Link} to="/etf">
+                Etf-Service
+              </Button>
               <Button color="inherit" component={Link} to="/about">
                 About
               </Button>
               <Button color="inherit" component={Link} to="/contact">
                 Contact
               </Button>
+              {cookies.userRole === "Admin" && (
+                <>
+                  <Button color="inherit" component={Link} to="/spying">
+                    Stock Monitor
+                  </Button>
+                  <Button color="inherit" component={Link} to="/radar">
+                    Stock In Radar
+                  </Button>
+                </>
+              )}
+              {cookies.userRole === "Viewer" && (
+                <Button color="inherit" component={Link} to="/action">
+                  Action
+                </Button>
+              )}
               {cookies.userName && cookies.userRole ? (
-                <MenuItem key="logout" onClick={handleLogout}>
+                <Button color="inherit" onClick={handleLogout}>
                   Logout
-                </MenuItem>
+                </Button>
               ) : (
-                <MenuItem key="login" onClick={handleMenuClose}>
-                  <Link
-                    to="/login"
-                    style={{ color: "inherit", textDecoration: "none" }}
-                  >
-                    Login
-                  </Link>
-                </MenuItem>
+                <Button color="inherit" component={Link} to="/login">
+                  Login
+                </Button>
               )}
             </>
           )}

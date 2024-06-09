@@ -23,17 +23,20 @@ export const DataProvider = ({ children }) => {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
+      // Load financialData first synchronously
+      const financialResponse = await axios.get(
+        "https://script.google.com/macros/s/AKfycbymorTjnVzmJr56gY5zoBlD-dUp8bwC-dYwIKdAm2WRjnfpwjgMLpUut9E15rgCbXah/exec"
+      );
+      setFinancialData(financialResponse.data);
+
+      // Load the remaining data asynchronously
       const [
-        financialResponse,
         stockResponse,
         individualStockResponse,
         stockInRadarResponse,
         stockMonitorResponse,
-        etfServiceData,
+        etfServiceResponse,
       ] = await Promise.all([
-        axios.get(
-          "https://script.google.com/macros/s/AKfycbymorTjnVzmJr56gY5zoBlD-dUp8bwC-dYwIKdAm2WRjnfpwjgMLpUut9E15rgCbXah/exec"
-        ),
         axios.get(
           "https://script.googleusercontent.com/macros/echo?user_content_key=697rrLjwFYb7dZdxmz2WtAK0v7TSdy_D-aQmRL37y1N41_jSxXQRfQ-mNHnJcfFAr-L-FKjj2r5kFAsBYKPkbO6jqPx4ghSfm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnDZ1xou3Yh4_OfOhrnVFN_l_7UgENfxTtMYqWp-LqOc5fnHnWUGSpRLqjn72R3VFhw9KRDVeiat-iXRlSyZY22LMiOySTcSiOg&lib=MDgztCdXOLOYDH2WnKkUSaorbG83cRkUz"
         ),
@@ -51,12 +54,11 @@ export const DataProvider = ({ children }) => {
         ),
       ]);
 
-      setFinancialData(financialResponse.data);
       setStockData(stockResponse.data);
       setIndividualStockData(individualStockResponse.data);
       setStockInRadarData(stockInRadarResponse.data);
       setStockMonitorData(stockMonitorResponse.data);
-      setEtfServiceData(etfServiceData.data);
+      setEtfServiceData(etfServiceResponse.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -79,6 +81,7 @@ export const DataProvider = ({ children }) => {
         etfServiceData,
         loading,
         fetchData, // Expose the fetchData function
+        setLoading, // Expose the setLoading function
       }}
     >
       {children}

@@ -6,6 +6,7 @@ import { useCookies } from "react-cookie";
 
 const MenuComp = ({ anchorEl, handleMenuClose, handleLogout }) => {
   const [cookies] = useCookies(["userName", "userRole"]);
+
   return (
     <Menu
       id="menu-appbar"
@@ -38,29 +39,53 @@ const MenuComp = ({ anchorEl, handleMenuClose, handleLogout }) => {
         </Link>
       </MenuItem>
       <MenuItem key="contact" onClick={handleMenuClose}>
-        <Link to="/contact" style={{ color: "inherit", textDecoration: "none" }}>
+        <Link
+          to="/contact"
+          style={{ color: "inherit", textDecoration: "none" }}
+        >
           Contact
         </Link>
       </MenuItem>
       {cookies.userRole === "Admin" && (
-        <MenuItem key="spying" onClick={handleMenuClose}>
-          <Link to="/spying" style={{ color: "inherit", textDecoration: "none" }}>
-            Stock Moniter
-          </Link>
-        </MenuItem>
+        <>
+          <MenuItem key="spying" onClick={handleMenuClose}>
+            <Link
+              to="/spying"
+              style={{ color: "inherit", textDecoration: "none" }}
+            >
+              Stock Monitor
+            </Link>
+          </MenuItem>
+          <MenuItem key="radar" onClick={handleMenuClose}>
+            <Link
+              to="/radar"
+              style={{ color: "inherit", textDecoration: "none" }}
+            >
+              Stock In Radar
+            </Link>
+          </MenuItem>
+        </>
       )}
-      {cookies.userRole === "Admin" && (
-        <MenuItem key="radar" onClick={handleMenuClose}>
-          <Link to="/radar" style={{ color: "inherit", textDecoration: "none" }}>
-            Stock In Radar
+      {cookies.userRole === "Viewer" && (
+        <MenuItem key="action" onClick={handleMenuClose}>
+          <Link
+            to="/action"
+            style={{ color: "inherit", textDecoration: "none" }}
+          >
+            Action
           </Link>
         </MenuItem>
       )}
       {cookies.userName && cookies.userRole ? (
-        <MenuItem key="logout" onClick={handleLogout}>Logout</MenuItem>
+        <MenuItem key="logout" onClick={handleLogout}>
+          Logout
+        </MenuItem>
       ) : (
         <MenuItem key="login" onClick={handleMenuClose}>
-          <Link to="/login" style={{ color: "inherit", textDecoration: "none" }}>
+          <Link
+            to="/login"
+            style={{ color: "inherit", textDecoration: "none" }}
+          >
             Login
           </Link>
         </MenuItem>

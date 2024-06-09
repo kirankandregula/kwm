@@ -3,16 +3,12 @@ import { css } from "@emotion/react";
 import { ClipLoader } from "react-spinners";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import {
-  TextField,
-  Box,
-  useMediaQuery
-} from "@mui/material";
+import { TextField, Box, useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useData } from "../DataProvider"; // Adjust the import path as needed
 import CompactView from "./CompactMoniter"; // Adjust the import path as needed
 import StockMonTable from "./StockMonTable";
-import RefreshButton from "../RefreshButton ";
+import RefreshButton from "../RefreshButton";
 import usePullToRefresh from "../usePullToRefresh";
 
 const override = css`
@@ -21,13 +17,11 @@ const override = css`
   border-color: red;
 `;
 
-
 const StockMonitor = () => {
- 
-  const { stockMonitorData, loading,fetchData } = useData();
+  const { stockMonitorData, loading, fetchData } = useData();
   const [filterValue, setFilterValue] = useState("");
   const [cookies] = useCookies(["userName", "userRole"]);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"));
   const [data, setData] = useState([]);
@@ -47,7 +41,6 @@ const StockMonitor = () => {
       setData(sortedData);
     }
   }, [cookies.userName, cookies.userRole, navigate, stockMonitorData]);
-
 
   const handleSort = (columnName) => {
     const sortedData = [...data].sort((a, b) =>
@@ -69,51 +62,50 @@ const StockMonitor = () => {
 
   return (
     <Box className="container">
-       <Box display="flex" justifyContent="center" mb={1}>
-          <div className="d-flex justify-content-center mb-3">
-            {isLargeScreen && (
-              <RefreshButton
-                handleClick={() => {
-                  setLoading(true);
-                  fetchData();
-                }}
-              />
-            )}
-          </div>
+      <Box display="flex" justifyContent="center" mb={1}>
+        <div className="d-flex justify-content-center mb-3">
+          {isLargeScreen && (
+            <RefreshButton
+              handleClick={() => {
+                setLoading(true);
+                fetchData();
+              }}
+            />
+          )}
+        </div>
+      </Box>
+      {loading ? (
+        <Box className="col-sm-12 text-center">
+          <ClipLoader
+            color={"#36D7B7"}
+            loading={loading}
+            css={override}
+            size={50}
+          />
         </Box>
-        {loading ? (
-          <Box className="col-sm-12 text-center">
-            <ClipLoader
-              color={"#36D7B7"}
-              loading={loading}
-              css={override}
-              size={50}
+      ) : (
+        <Box className="col-md-12">
+          <Box className="form-group sm-12 mt-5 my-2">
+            <TextField
+              fullWidth
+              label="Filter by Stock Name or Sector"
+              variant="outlined"
+              value={filterValue}
+              onChange={handleFilterChange}
             />
           </Box>
-        ) : (
-          <Box className="col-md-12" >
-            <Box className="form-group sm-12 mt-5 my-2">
-              <TextField
-                fullWidth
-                label="Filter by Stock Name or Sector"
-                variant="outlined"
-                value={filterValue}
-                onChange={handleFilterChange}
-              />
-            </Box>
-            <Box sx={{ display: { xs: "none", md: "block" } }}>
-              <StockMonTable
-                data={data}
-                filteredData={filteredData}
-                handleSort={handleSort}
-              />
-            </Box>
-            <Box sx={{ display: { xs: "block", md: "none" } }}>
-              <CompactView data={filteredData} />
-            </Box>
+          <Box sx={{ display: { xs: "none", md: "block" } }}>
+            <StockMonTable
+              data={data}
+              filteredData={filteredData}
+              handleSort={handleSort}
+            />
           </Box>
-        )}
-      
+          <Box sx={{ display: { xs: "block", md: "none" } }}>
+            <CompactView data={filteredData} />
+          </Box>
+        </Box>
+      )}
     </Box>
   );
 };
