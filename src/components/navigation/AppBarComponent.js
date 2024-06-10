@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -13,12 +13,26 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useCookies } from "react-cookie";
 import Greet from "./Greet";
+import Badge from "@mui/material/Badge";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import { useData } from "../DataProvider";
 
 const AppBarComponent = ({ handleLogout }) => {
   const theme = useTheme();
   const isMediumDevice = useMediaQuery(theme.breakpoints.down("md"));
   const [anchorEl, setAnchorEl] = useState(null);
+  const [notificationsAnchorEl, setNotificationsAnchorEl] = useState(null);
   const [cookies] = useCookies(["userName", "userRole"]);
+  const { notifications, resetNotificationCount, sellingRecommendations } = useData();
+  const navigate = useNavigate();
+  const [badgeContent, setBadgeContent] = useState(0);
+
+  useEffect(() => {
+    // Calculate the total count of notifications and selling recommendations
+    const totalCount = notifications.length + sellingRecommendations.length;
+    // Update the badge content
+    setBadgeContent(totalCount);
+  }, [notifications, sellingRecommendations]);
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -26,6 +40,34 @@ const AppBarComponent = ({ handleLogout }) => {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleNotificationsOpen = (event) => {
+    setNotificationsAnchorEl(event.currentTarget);
+  };
+
+  const handleNotificationsClose = () => {
+    setNotificationsAnchorEl(null);
+    resetNotificationCount();
+  };
+
+  const handleNotificationClick = () => {
+    handleNotificationsClose();
+    navigate("/action");
+  };
+
+  const renderNotifications = () => {
+    if (sellingRecommendations.length === 0) {
+      return <MenuItem>No sell recommendations now</MenuItem>;
+    } else {
+      return (
+        <MenuItem onClick={handleNotificationClick}>
+          <Typography variant="body2">
+            You have {sellingRecommendations.length} sell recommendation(s) now
+          </Typography>
+        </MenuItem>
+      );
+    }
   };
 
   return (
@@ -164,6 +206,36 @@ const AppBarComponent = ({ handleLogout }) => {
               )}
             </>
           )}
+          <IconButton
+            color="inherit"
+            onClick={handleNotificationsOpen}
+            aria-controls="notifications-menu"
+            aria-haspopup="true"
+          >
+            <Badge badgeContent={badgeContent} color="error">
+              <NotificationsIcon />
+            </Badge>
+          </IconButton>
+          <Menu
+            id="notifications-menu"
+            anchorEl={notificationsAnchorEl}
+            keepMounted
+            open={Boolean(notificationsAnchorEl)}
+            onClose={handleNotificationsClose}
+          >
+            {notifications.length === 0 ? (
+              <MenuItem>No notifications now</MenuItem>
+            ) : (
+              notifications.map((notification) => (
+                <MenuItem key={notification.id}>
+                  {notification.type === "buy"
+                    ? "You have one buy recommendation now"
+                    : "You have one sell recommendation now"}
+                </MenuItem>
+              ))
+            )}
+            {renderNotifications()}
+          </Menu>
         </Toolbar>
       </Container>
     </AppBar>

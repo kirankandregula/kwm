@@ -41,6 +41,8 @@ const ActionComponent = () => {
     (user) => user.user_id === userId
   );
   const userStocks = stockData.filter((stock) => stock.user_id === userId);
+  
+  console.log("Rendering ActionComponent");
 
   return (
     <Box className="action-container" p={3} sx={{ width: "100%", mt: 8 }}>
@@ -49,10 +51,7 @@ const ActionComponent = () => {
         userStocks={userStocks}
         individualStockData={uniqueData}
       />
-      <SellingAdvice
-        userStocks={userStocks}
-        individualStockData={stockMonitorData}
-      />
+      <SellingAdvice />
     </Box>
   );
 };

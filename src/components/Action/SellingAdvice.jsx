@@ -10,34 +10,17 @@ import {
 } from "@mui/material";
 import WarningIcon from "@mui/icons-material/Warning";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { useData } from "../DataProvider";
 
-const SellingAdvice = ({ userStocks, individualStockData }) => {
+const SellingAdvice = () => {
   const [showAdviceDialog, setShowAdviceDialog] = React.useState(false);
-  const [sellingRecommendations, setSellingRecommendations] = React.useState(
-    []
-  );
-
-  const generateSellingAdvice = () => {
-    const recommendations = userStocks
-      .map((stock) => {
-        const stockDetails = individualStockData.find(
-          (s) => s.stock_id === stock.stock_id
-        );
-        return {
-          stockName: stockDetails.stockName,
-          price: stockDetails.LTP,
-          scopeToGrow: parseInt(stockDetails.scopeToGrow.replace("%", "")),
-          action: stockDetails.action,
-        };
-      })
-      .filter((stock) => stock.scopeToGrow <= 10 || stock.action === "Sell");
-    setSellingRecommendations(recommendations);
-  };
+  const { userStocks, sellingRecommendations, generateSellingAdvice } =
+    useData();
 
   const userHasStocks = userStocks.length > 0;
 
   const handleGenerateAdviceClick = () => {
-    generateSellingAdvice();
+    generateSellingAdvice(); // Ensure recommendations are up-to-date
     setShowAdviceDialog(true);
   };
 
@@ -75,18 +58,20 @@ const SellingAdvice = ({ userStocks, individualStockData }) => {
             : "You don't have stocks to sell."}
         </Typography>
         <Button
-          variant="contained"
+          variant="outlined"
           color="primary"
           endIcon={<ArrowForwardIosIcon />}
           onClick={handleGenerateAdviceClick}
+          size="small"
           sx={{
-            backgroundColor: "red",
-            color: "white",
-            fontSize: "14px",
-            padding: "8px 16px",
+            color: "red",
+            borderColor: "red",
+            fontSize: "12px",
+            padding: "4px 8px",
             marginTop: "8px",
             "&:hover": {
-              backgroundColor: "darkred",
+              backgroundColor: "rgba(255, 0, 0, 0.1)", // light red background on hover
+              borderColor: "darkred",
             },
           }}
           disabled={!userHasStocks}

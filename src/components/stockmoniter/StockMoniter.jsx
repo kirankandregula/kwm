@@ -18,14 +18,14 @@ const override = css`
 `;
 
 const StockMonitor = () => {
-  const { stockMonitorData, loading, fetchData } = useData();
+  const { stockMonitorData, loading, fetchData,setLoading } = useData();
   const [filterValue, setFilterValue] = useState("");
   const [cookies] = useCookies(["userName", "userRole"]);
   const navigate = useNavigate();
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"));
   const [data, setData] = useState([]);
-  const [setLoading] = useState(true);
+
 
   usePullToRefresh(fetchData);
 
@@ -35,8 +35,9 @@ const StockMonitor = () => {
     } else {
       const sortedData = [...stockMonitorData].sort(
         (a, b) =>
-          parseFloat(b.scopeToGrow.replace("%", "")) -
-          parseFloat(a.scopeToGrow.replace("%", ""))
+          parseFloat(a.scopeToGrow.replace("%", ""))-
+          parseFloat(b.scopeToGrow.replace("%", "")) 
+         
       );
       setData(sortedData);
     }

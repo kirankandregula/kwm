@@ -2,18 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { ClipLoader } from "react-spinners";
-import { BsPersonFill } from "react-icons/bs"; // Import Bootstrap icons
-import { useData } from "./DataProvider"; // Adjust the import path as necessary
-import {
-  FormControl,
-  IconButton,
-  InputAdornment,
-  InputLabel,
-  OutlinedInput,
-  Typography,
-  Button,
-} from "@mui/material";
+import { BsPersonFill } from "react-icons/bs";
+import { FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput, Typography, Button } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useData } from "./DataProvider"; // Adjust the import path as necessary
 import "../css/Loginpage.css";
 
 const LoginPage = () => {
@@ -25,7 +17,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [cookies, setCookie] = useCookies(["userName", "userRole", "userId"]);
   const [loading, setLoading] = useState(false);
-  const { financialData, fetchData } = useData(); // Use the financialData from the context
+  const { fetchData } = useData();
 
   useEffect(() => {
     if (cookies.userName && cookies.userRole && cookies.userId) {
@@ -40,26 +32,34 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setErrorMessage("");
 
-    await fetchData();
+    try {
+      const response = await fetch(
+        "https://script.google.com/macros/s/AKfycbymorTjnVzmJr56gY5zoBlD-dUp8bwC-dYwIKdAm2WRjnfpwjgMLpUut9E15rgCbXah/exec"
+      );
 
-    const user = financialData.find(
-      (u) =>
-        u.Name.toLowerCase() === credentials.userName.toLowerCase() &&
-        u.Password === credentials.passWord
-    );
-    if (user) {
-      // Set cookie with expiration time (e.g., 30 minutes)
-      const expirationTime = new Date(new Date().getTime() + 30 * 60 * 1000); // 30 minutes
-      setCookie("userName", user.Name, { expires: expirationTime });
-      setCookie("userRole", user.Role, { expires: expirationTime });
-      setCookie("userId", user.user_id, { expires: expirationTime });
-      navigate(`/portfolio/${user.user_id}`);
-    } else {
-      setErrorMessage("Invalid username or password");
+      const users = await response.json();
+
+      const user = users.find(user => user.Name === credentials.userName && user.Password === credentials.passWord);
+
+      if (user) {
+        const expirationTime = new Date(new Date().getTime() + 30 * 60 * 1000);
+        setCookie("userName", user.Name, { expires: expirationTime });
+        setCookie("userRole", user.Role, { expires: expirationTime });
+        setCookie("userId", user.user_id, { expires: expirationTime });
+
+        await fetchData();
+
+        navigate(`/portfolio/${user.user_id}`);
+      } else {
+        setErrorMessage("Invalid username or password");
+      }
+    } catch (error) {
+      setErrorMessage("An error occurred. Please try again later.");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   const [showPassword, setShowPassword] = useState(false);
@@ -120,7 +120,7 @@ const LoginPage = () => {
                   value={credentials.passWord}
                   onChange={handleChange}
                   name="passWord"
-                  autoComplete="current-password" // Add autocomplete attribute here
+                  autoComplete="current-password"
                   endAdornment={
                     <InputAdornment position="end">
                       <IconButton

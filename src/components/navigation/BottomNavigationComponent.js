@@ -15,7 +15,6 @@ const BottomNavigationComponent = ({ handleLogout }) => {
   const [value, setValue] = useState(0);
   const [cookies] = useCookies(["userName", "userRole"]);
   const navigate = useNavigate();
-
   const handleChange = (event, newValue) => {
     setValue(newValue);
     if (newValue === "logout") {
@@ -55,6 +54,13 @@ const BottomNavigationComponent = ({ handleLogout }) => {
           value="/action"
           icon={<ManageAccountsIcon />}
         />,
+      ];
+    }
+  };
+
+  const renderLogoutActions = () => {
+    if (!cookies.userName && !cookies.userRole) {
+      return [
         <BottomNavigationAction
           key="contact"
           label="Contact"
@@ -79,12 +85,15 @@ const BottomNavigationComponent = ({ handleLogout }) => {
       style={{ position: "fixed", bottom: 0, width: "100%" }}
     >
       <BottomNavigationAction label="Home" value="/" icon={<HomeIcon />} />
-      <BottomNavigationAction
-        label="Etf"
-        value="/etf"
-        icon={<MonetizationOnIcon />}
-      />
-      {renderUserRoleActions(cookies.userRole)}
+      {cookies.userRole !== "Admin" && (
+        <BottomNavigationAction
+          label="Etf"
+          value="/etf"
+          icon={<MonetizationOnIcon />}
+        />
+      )}
+      {cookies.userName && cookies.userRole && renderUserRoleActions(cookies.userRole)}
+      {renderLogoutActions()}
       {cookies.userName && cookies.userRole && (
         <BottomNavigationAction
           label="Logout"

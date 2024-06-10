@@ -56,7 +56,7 @@ const StockMonTable = ({ data, handleSort }) => {
   const sortedData = [...data].sort((a, b) => {
     const scopeA = parseFloat(a.scopeToGrow.replace("%", ""));
     const scopeB = parseFloat(b.scopeToGrow.replace("%", ""));
-    return scopeB - scopeA; // Sort in descending order
+    return scopeA - scopeB; // Sort in descending order
   });
 
   return (

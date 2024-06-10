@@ -1,3 +1,4 @@
+// App.js
 import React from "react";
 import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
@@ -17,6 +18,7 @@ import { DataProvider } from "./components/DataProvider";
 import EtfService from "./components/Etf/EtfService";
 import StockInRadar from "./components/stockradar/StockInRadar";
 import ActionComponent from "./components/Action/ActionComponent";
+import NotificationComponent from "./components/NotificationComponent"; // Import NotificationComponent
 
 const App = () => {
   const [cookies, , removeCookie] = useCookies(["userName", "userRole"]);
@@ -32,6 +34,7 @@ const App = () => {
     <BrowserRouter>
       <DataProvider>
         <AppBarComponent handleLogout={handleLogout} />
+        <NotificationComponent /> {/* Add NotificationComponent here */}
         <Routes>
           <Route path="/" element={<YourPortfolio />} />
           <Route path="/about" element={<About />} />

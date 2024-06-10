@@ -140,7 +140,7 @@ const StockInRadar = () => {
         {duplicateStocks.length > 0 && (
           <Box display="flex" justifyContent="center" alignItems="center">
             <Tooltip title="Show Duplicates">
-              <IconButton color="error" onClick={() => setIsModalOpen(true)}>
+              <IconButton color="error" onClick={() => setIsModalOpen(true)} type="button">
                 <DuplicateIcon />
               </IconButton>
             </Tooltip>
