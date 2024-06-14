@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, CircularProgress, Typography, useMediaQuery, useTheme } from "@mui/material";
-import { useData } from "../DataProvider";
+import { useData } from "../dataprovider/DataProvider";
 import EtfTable from './EtfTable'; // Import the EtfTable component
 import Star from "@mui/icons-material/Star";
 import CompactETFCard from '../Etf/CompactETFCard'; // Import the corrected CompactETFCard component

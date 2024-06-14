@@ -1,6 +1,6 @@
 // NotificationComponent.js
 import React from "react";
-import { useData } from "./DataProvider"; // Adjust the import path if necessary
+import { useData } from "./dataprovider/DataProvider"; // Adjust the import path if necessary
 
 const NotificationComponent = () => {
   const { notifications, handleNotificationClick } = useData();

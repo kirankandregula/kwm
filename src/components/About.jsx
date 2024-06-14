@@ -47,7 +47,7 @@ const About = () => {
         About Us
       </Typography>
       <Typography variant="body2" paragraph>
-        Welcome to KK Wealth Mills, your personal finance portfolio management solution founded by Kiran Kandregula.
+        Welcome to Aartha Investments, your personal finance portfolio management solution founded by Kiran Kandregula.
       </Typography>
       <Typography variant="body2" paragraph>
         At KK Wealth Mills, we are dedicated to helping you manage and grow your personal finance portfolio efficiently. Our goal is to provide you with the tools and resources needed to achieve your financial objectives.

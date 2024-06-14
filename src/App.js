@@ -14,19 +14,22 @@ import UserDetails from "./components/UserDetails/UserDetails";
 import AdminPage from "./components/Admin/AdminPage";
 import ViewerPage from "./components/ViewerPage";
 import YourPortfolio from "./components/YourPortFolio";
-import { DataProvider } from "./components/DataProvider";
+import { DataProvider, useData } from "./components/dataprovider/DataProvider";
 import EtfService from "./components/Etf/EtfService";
 import StockInRadar from "./components/stockradar/StockInRadar";
 import ActionComponent from "./components/Action/ActionComponent";
 import NotificationComponent from "./components/NotificationComponent"; // Import NotificationComponent
 
+
 const App = () => {
   const [cookies, , removeCookie] = useCookies(["userName", "userRole"]);
-
+  const {setBuyRecommendations ,setSellingRecommendations} = useData();
   const handleLogout = () => {
     removeCookie("userName");
     removeCookie("userRole");
     removeCookie("userId");
+    setBuyRecommendations([]);
+    setSellingRecommendations([]);
     return <Navigate to="/login" />;
   };
 

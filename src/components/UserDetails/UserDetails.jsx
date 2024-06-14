@@ -13,7 +13,7 @@ import { useCookies } from "react-cookie";
 import UserMetricsCard from "./UserMetricsCard";
 import StockTable from "./StockTable";
 import "../../css/UserDetails.css";
-import { useData } from "../DataProvider";
+import { useData } from "../dataprovider/DataProvider";
 
 import DiversificationDiv from "./diversificationdiv";
 import BillableDiv from "./BillableDiv";

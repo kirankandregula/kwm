@@ -21,8 +21,8 @@ import { useTheme } from "@mui/material/styles";
 import DuplicateIcon from "@mui/icons-material/Error"; // Assuming this is the icon for duplicates
 import LargeScreenTable from "./LargeScreenTable";
 import CompactView from "./CompactView";
-import { useData } from "../DataProvider";
-import usePullToRefresh from "../usePullToRefresh";
+import { useData } from "../dataprovider/DataProvider";
+
 
 const override = css`
   display: block;
@@ -31,7 +31,7 @@ const override = css`
 `;
 
 const StockInRadar = () => {
-  const { stockInRadarData, stockMonitorData, loading, fetchData } = useData();
+  const { stockInRadarData, individualStockData, loading } = useData();
   const [filterValue, setFilterValue] = useState("");
   const [cookies] = useCookies(["userName", "userRole"]);
   const navigate = useNavigate();
@@ -41,13 +41,13 @@ const StockInRadar = () => {
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"));
 
-  usePullToRefresh(fetchData);
+
 
   useEffect(() => {
     if (!cookies.userName || !cookies.userRole) {
       navigate("/login");
     } else {
-      const combinedData = [...stockInRadarData, ...stockMonitorData];
+      const combinedData = [...stockInRadarData, ...individualStockData];
       const uniqueData = [];
       const duplicates = [];
 
@@ -73,7 +73,7 @@ const StockInRadar = () => {
     cookies.userRole,
     navigate,
     stockInRadarData,
-    stockMonitorData,
+    individualStockData,
   ]);
 
   const handleSort = (columnName) => {

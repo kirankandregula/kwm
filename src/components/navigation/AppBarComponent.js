@@ -15,7 +15,7 @@ import { useCookies } from "react-cookie";
 import Greet from "./Greet";
 import Badge from "@mui/material/Badge";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import { useData } from "../DataProvider";
+import { useData } from "../dataprovider/DataProvider";
 
 const AppBarComponent = ({ handleLogout }) => {
   const theme = useTheme();
@@ -23,16 +23,24 @@ const AppBarComponent = ({ handleLogout }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [notificationsAnchorEl, setNotificationsAnchorEl] = useState(null);
   const [cookies] = useCookies(["userName", "userRole"]);
-  const { notifications, resetNotificationCount, sellingRecommendations } = useData();
+  const {
+    notifications,
+    resetNotificationCount,
+    sellingRecommendations,
+    buyRecommendations,
+  } = useData();
   const navigate = useNavigate();
   const [badgeContent, setBadgeContent] = useState(0);
 
   useEffect(() => {
-    // Calculate the total count of notifications and selling recommendations
-    const totalCount = notifications.length + sellingRecommendations.length;
+    // Calculate the total count of notifications and recommendations
+    const totalCount =
+      notifications.length +
+      sellingRecommendations.length +
+      (buyRecommendations.length > 0 ? 1 : 0);
     // Update the badge content
     setBadgeContent(totalCount);
-  }, [notifications, sellingRecommendations]);
+  }, [notifications, sellingRecommendations, buyRecommendations]);
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -49,6 +57,7 @@ const AppBarComponent = ({ handleLogout }) => {
   const handleNotificationsClose = () => {
     setNotificationsAnchorEl(null);
     resetNotificationCount();
+    setBadgeContent(0); // Update the badge content to 0
   };
 
   const handleNotificationClick = () => {
@@ -57,18 +66,30 @@ const AppBarComponent = ({ handleLogout }) => {
   };
 
   const renderNotifications = () => {
-    if (sellingRecommendations.length === 0) {
-      return <MenuItem>No sell recommendations now</MenuItem>;
-    } else {
-      return (
-        <MenuItem onClick={handleNotificationClick}>
-          <Typography variant="body2">
-            You have {sellingRecommendations.length} sell recommendation(s) now
-          </Typography>
-        </MenuItem>
-      );
-    }
+    return (
+      <>
+        {sellingRecommendations.length > 0 && (
+          <div style={{ backgroundColor: '#ffcccc', padding: '10px', marginBottom: '10px', borderRadius: '5px' }}>
+            <MenuItem onClick={handleNotificationClick}>
+              <Typography variant="body2" style={{ color: '#cc0000' }}>
+                You have {sellingRecommendations.length} sell recommendation(s) now
+              </Typography>
+            </MenuItem>
+          </div>
+        )}
+        {buyRecommendations.length > 0 && (
+          <div style={{ backgroundColor: '#ccffcc', padding: '10px', marginBottom: '10px', borderRadius: '5px' }}>
+            <MenuItem onClick={handleNotificationClick}>
+              <Typography variant="body2" style={{ color: '#006600' }}>
+                You have {buyRecommendations.length} buy recommendation(s) now
+              </Typography>
+            </MenuItem>
+          </div>
+        )}
+      </>
+    );
   };
+  
 
   return (
     <AppBar position="fixed" className="app-bar">
@@ -79,7 +100,7 @@ const AppBarComponent = ({ handleLogout }) => {
               <Greet userName={cookies.userName} />
             ) : (
               <Link to="/" style={{ color: "inherit", textDecoration: "none" }}>
-                Wealth Wave
+              Artha Investments
               </Link>
             )}
           </Typography>
@@ -206,16 +227,19 @@ const AppBarComponent = ({ handleLogout }) => {
               )}
             </>
           )}
-          <IconButton
-            color="inherit"
-            onClick={handleNotificationsOpen}
-            aria-controls="notifications-menu"
-            aria-haspopup="true"
-          >
-            <Badge badgeContent={badgeContent} color="error">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
+          {badgeContent > 0 && (
+            <IconButton
+              color="inherit"
+              onClick={handleNotificationsOpen}
+              aria-controls="notifications-menu"
+              aria-haspopup="true"
+              sx={{ marginLeft: 2 }} 
+            >
+              <Badge badgeContent={badgeContent} color="error">
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
+          )}
           <Menu
             id="notifications-menu"
             anchorEl={notificationsAnchorEl}
@@ -223,18 +247,22 @@ const AppBarComponent = ({ handleLogout }) => {
             open={Boolean(notificationsAnchorEl)}
             onClose={handleNotificationsClose}
           >
-            {notifications.length === 0 ? (
+            {notifications.length === 0 &&
+            sellingRecommendations.length === 0 &&
+            buyRecommendations.length === 0 ? (
               <MenuItem>No notifications now</MenuItem>
             ) : (
-              notifications.map((notification) => (
-                <MenuItem key={notification.id}>
-                  {notification.type === "buy"
-                    ? "You have one buy recommendation now"
-                    : "You have one sell recommendation now"}
-                </MenuItem>
-              ))
+              <>
+                {notifications.map((notification) => (
+                  <MenuItem key={notification.id}>
+                    {notification.type === "buy"
+                      ? "You have one buy recommendation now"
+                      : "You have one sell recommendation now"}
+                  </MenuItem>
+                ))}
+                {renderNotifications()}
+              </>
             )}
-            {renderNotifications()}
           </Menu>
         </Toolbar>
       </Container>

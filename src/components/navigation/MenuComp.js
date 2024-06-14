@@ -23,31 +23,37 @@ const MenuComp = ({ anchorEl, handleMenuClose, handleLogout }) => {
       open={Boolean(anchorEl)}
       onClose={handleMenuClose}
     >
-      <MenuItem key="home" onClick={handleMenuClose}>
-        <Link to="/" style={{ color: "inherit", textDecoration: "none" }}>
-          Home
-        </Link>
-      </MenuItem>
-      <MenuItem key="etf" onClick={handleMenuClose}>
-        <Link to="/etf" style={{ color: "inherit", textDecoration: "none" }}>
-          Etf-Service
-        </Link>
-      </MenuItem>
-      <MenuItem key="about" onClick={handleMenuClose}>
-        <Link to="/about" style={{ color: "inherit", textDecoration: "none" }}>
-          About
-        </Link>
-      </MenuItem>
-      <MenuItem key="contact" onClick={handleMenuClose}>
-        <Link
-          to="/contact"
-          style={{ color: "inherit", textDecoration: "none" }}
-        >
-          Contact
-        </Link>
-      </MenuItem>
-      {cookies.userRole === "Admin" && (
-        <>
+      {[
+        <MenuItem key="home" onClick={handleMenuClose}>
+          <Link to="/" style={{ color: "inherit", textDecoration: "none" }}>
+            Home
+          </Link>
+        </MenuItem>,
+        <MenuItem key="etf" onClick={handleMenuClose}>
+          <Link
+            to="/etf"
+            style={{ color: "inherit", textDecoration: "none" }}
+          >
+            Etf-Service
+          </Link>
+        </MenuItem>,
+        <MenuItem key="about" onClick={handleMenuClose}>
+          <Link
+            to="/about"
+            style={{ color: "inherit", textDecoration: "none" }}
+          >
+            About
+          </Link>
+        </MenuItem>,
+        <MenuItem key="contact" onClick={handleMenuClose}>
+          <Link
+            to="/contact"
+            style={{ color: "inherit", textDecoration: "none" }}
+          >
+            Contact
+          </Link>
+        </MenuItem>,
+        cookies.userRole === "Admin" && (
           <MenuItem key="spying" onClick={handleMenuClose}>
             <Link
               to="/spying"
@@ -56,6 +62,8 @@ const MenuComp = ({ anchorEl, handleMenuClose, handleLogout }) => {
               Stock Monitor
             </Link>
           </MenuItem>
+        ),
+        cookies.userRole === "Admin" && (
           <MenuItem key="radar" onClick={handleMenuClose}>
             <Link
               to="/radar"
@@ -64,32 +72,32 @@ const MenuComp = ({ anchorEl, handleMenuClose, handleLogout }) => {
               Stock In Radar
             </Link>
           </MenuItem>
-        </>
-      )}
-      {cookies.userRole === "Viewer" && (
-        <MenuItem key="action" onClick={handleMenuClose}>
-          <Link
-            to="/action"
-            style={{ color: "inherit", textDecoration: "none" }}
-          >
-            Action
-          </Link>
-        </MenuItem>
-      )}
-      {cookies.userName && cookies.userRole ? (
-        <MenuItem key="logout" onClick={handleLogout}>
-          Logout
-        </MenuItem>
-      ) : (
-        <MenuItem key="login" onClick={handleMenuClose}>
-          <Link
-            to="/login"
-            style={{ color: "inherit", textDecoration: "none" }}
-          >
-            Login
-          </Link>
-        </MenuItem>
-      )}
+        ),
+        cookies.userRole === "Viewer" && (
+          <MenuItem key="action" onClick={handleMenuClose}>
+            <Link
+              to="/action"
+              style={{ color: "inherit", textDecoration: "none" }}
+            >
+              Action
+            </Link>
+          </MenuItem>
+        ),
+        cookies.userName && cookies.userRole ? (
+          <MenuItem key="logout" onClick={handleLogout}>
+            Logout
+          </MenuItem>
+        ) : (
+          <MenuItem key="login" onClick={handleMenuClose}>
+            <Link
+              to="/login"
+              style={{ color: "inherit", textDecoration: "none" }}
+            >
+              Login
+            </Link>
+          </MenuItem>
+        ),
+      ]}
     </Menu>
   );
 };

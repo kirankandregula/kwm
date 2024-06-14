@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
-import { useData } from "../DataProvider";
+import { useData } from "../dataprovider/DataProvider";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { css } from "@emotion/react";
 import { ClipLoader } from "react-spinners";

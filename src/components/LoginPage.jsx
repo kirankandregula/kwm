@@ -5,7 +5,7 @@ import { ClipLoader } from "react-spinners";
 import { BsPersonFill } from "react-icons/bs";
 import { FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput, Typography, Button } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { useData } from "./DataProvider"; // Adjust the import path as necessary
+import { useData } from "./dataprovider/DataProvider"; // Adjust the import path as necessary
 import "../css/Loginpage.css";
 
 const LoginPage = () => {

@@ -5,11 +5,11 @@ import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import { TextField, Box, useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { useData } from "../DataProvider"; // Adjust the import path as needed
+import { useData } from "../dataprovider/DataProvider"; // Adjust the import path as needed
 import CompactView from "./CompactMoniter"; // Adjust the import path as needed
 import StockMonTable from "./StockMonTable";
 import RefreshButton from "../RefreshButton";
-import usePullToRefresh from "../usePullToRefresh";
+
 
 const override = css`
   display: block;
@@ -18,7 +18,7 @@ const override = css`
 `;
 
 const StockMonitor = () => {
-  const { stockMonitorData, loading, fetchData,setLoading } = useData();
+  const { individualStockData, loading, fetchData,setLoading } = useData();
   const [filterValue, setFilterValue] = useState("");
   const [cookies] = useCookies(["userName", "userRole"]);
   const navigate = useNavigate();
@@ -27,13 +27,13 @@ const StockMonitor = () => {
   const [data, setData] = useState([]);
 
 
-  usePullToRefresh(fetchData);
+ 
 
   useEffect(() => {
     if (!cookies.userName || !cookies.userRole) {
       navigate("/login");
     } else {
-      const sortedData = [...stockMonitorData].sort(
+      const sortedData = [...individualStockData].sort(
         (a, b) =>
           parseFloat(a.scopeToGrow.replace("%", ""))-
           parseFloat(b.scopeToGrow.replace("%", "")) 
@@ -41,7 +41,7 @@ const StockMonitor = () => {
       );
       setData(sortedData);
     }
-  }, [cookies.userName, cookies.userRole, navigate, stockMonitorData]);
+  }, [cookies.userName, cookies.userRole, navigate, individualStockData]);
 
   const handleSort = (columnName) => {
     const sortedData = [...data].sort((a, b) =>
