@@ -22,7 +22,8 @@ const ConfirmationDialog = ({
     <DialogTitle id="confirmation-dialog-title">Confirm Generation</DialogTitle>
     <DialogContent>
       <DialogContentText id="confirmation-dialog-description">
-        Are you sure you want to generate buying advices?
+        Please share a screenshot after the transaction is completed. That will
+        be helpful for future advice
       </DialogContentText>
     </DialogContent>
     <DialogActions>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -11,14 +11,29 @@ import {
 import WarningIcon from "@mui/icons-material/Warning";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { useData } from "../dataprovider/DataProvider";
+import ConfirmationDialog from "./ConfirmationDialog";
 
 const SellingAdvice = () => {
-  const [showAdviceDialog, setShowAdviceDialog] = React.useState(false);
-  const { sellingRecommendations, generateSellingAdvice, numberOfStocksToSell } = useData();
+  const [showAdviceDialog, setShowAdviceDialog] = useState(false);
+  const [confirmationOpen, setConfirmationOpen] = useState(false);
+  const {
+    sellingRecommendations,
+    generateSellingAdvice,
+    numberOfStocksToSell,
+  } = useData();
 
   const handleGenerateAdviceClick = () => {
+    setConfirmationOpen(true);
+  };
+
+  const handleCloseConfirmation = () => {
+    setConfirmationOpen(false);
+  };
+
+  const handleConfirmGenerateAdvice = () => {
     generateSellingAdvice(); // Ensure recommendations are up-to-date
     setShowAdviceDialog(true);
+    handleCloseConfirmation(); // Close confirmation dialog after confirming
   };
 
   const handleCloseDialog = () => {
@@ -44,21 +59,24 @@ const SellingAdvice = () => {
         borderRadius="8px"
         backgroundColor="#f9f9f9"
         width={400}
-       boxShadow= "0px 0px 10px rgba(0, 0, 0, 0.2)"
+        boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)"
         mb={3}
         sx={{
           position: "relative",
-          "&:after": numberOfStocksToSell > 0 ? {
-            content: '""',
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            borderRadius: "8px",
-            boxShadow: "0 0 10px red",
-            zIndex: -1,
-          } : {},
+          "&:after":
+            numberOfStocksToSell > 0
+              ? {
+                  content: '""',
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  borderRadius: "8px",
+                  boxShadow: "0 0 10px red",
+                  zIndex: -1,
+                }
+              : {},
         }}
       >
         <Typography variant="h6" color="red">
@@ -81,7 +99,7 @@ const SellingAdvice = () => {
             fontSize: "12px",
             padding: "4px 8px",
             marginTop: "8px",
-            boxShadow:"0px 0px 10px rgba(255, 0, 0, 0.7)",
+            boxShadow: "0px 0px 10px rgba(255, 0, 0, 0.7)",
             "&:hover": {
               backgroundColor: "rgba(255, 0, 0, 0.1)", // light red background on hover
               borderColor: "darkred",
@@ -92,10 +110,17 @@ const SellingAdvice = () => {
           Generate Advice
         </Button>
         {sellingRecommendations.length > 0 && (
-          <Box display="flex" alignItems="center" justifyContent="center" mt={2}>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            mt={2}
+          >
             <WarningIcon color="error" />
             <Typography variant="body1" color="error" ml={1}>
-              {`You have ${sellingRecommendations.length} stock${sellingRecommendations.length > 1 ? 's' : ''} to consider for selling.`}
+              {`You have ${sellingRecommendations.length} stock${
+                sellingRecommendations.length > 1 ? "s" : ""
+              } to consider for selling.`}
             </Typography>
           </Box>
         )}
@@ -119,11 +144,22 @@ const SellingAdvice = () => {
                     </Typography>
                   </Grid>
                   <Grid item xs={3}>
-                    <Typography variant="body1"><strong>Price:</strong> ${rec.price.toFixed(2)}</Typography>
+                    <Typography variant="body1">
+                      <strong>Price:</strong> {rec.price.toFixed(2)}
+                    </Typography>
                   </Grid>
                   <Grid item xs={3}>
-                    <Typography variant="body1" color={rec.scopeToGrow <= 5 || rec.action === "Sell" ? "error" : "primary"}>
-                      {rec.scopeToGrow <= 5 || rec.action === "Sell" ? "Sell Now" : "Hold"}
+                    <Typography
+                      variant="body1"
+                      color={
+                        rec.scopeToGrow <= 5 || rec.action === "Sell"
+                          ? "error"
+                          : "primary"
+                      }
+                    >
+                      {rec.scopeToGrow <= 5 || rec.action === "Sell"
+                        ? "Sell Now"
+                        : "Hold"}
                     </Typography>
                   </Grid>
                 </Grid>
@@ -138,12 +174,19 @@ const SellingAdvice = () => {
             <Box display="flex" alignItems="center" mb={1}>
               <WarningIcon color="warning" />
               <Typography variant="body1" color="warning.main" ml={1}>
-                No stocks currently meet the criteria for selling. Please check back later.
+                No stocks currently meet the criteria for selling. Please check
+                back later.
               </Typography>
             </Box>
           )}
         </DialogContent>
       </Dialog>
+
+      <ConfirmationDialog
+        confirmationOpen={confirmationOpen}
+        handleCloseConfirmation={handleCloseConfirmation}
+        handleConfirmGenerateAdvice={handleConfirmGenerateAdvice}
+      />
     </Box>
   );
 };

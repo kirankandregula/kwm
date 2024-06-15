@@ -18,8 +18,16 @@ export const useProcessStockData = (
       }
     });
 
-    const sorted = uniqueData.sort(
-      (a, b) => parseFloat(b.scopeToGrow.replace("%", "")) - parseFloat(a.scopeToGrow.replace("%", ""))
+    const filteredData = uniqueData.filter(
+      (stock) =>
+        stock.approved === "yes" &&
+        parseFloat(stock.scopeToGrow.replace("%", "")) > 30
+    );
+
+    const sorted = filteredData.sort(
+      (a, b) =>
+        parseFloat(b.scopeToGrow.replace("%", "")) -
+        parseFloat(a.scopeToGrow.replace("%", ""))
     );
 
     setStocksToConsider(sorted);

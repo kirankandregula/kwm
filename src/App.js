@@ -20,16 +20,15 @@ import StockInRadar from "./components/stockradar/StockInRadar";
 import ActionComponent from "./components/Action/ActionComponent";
 import NotificationComponent from "./components/NotificationComponent"; // Import NotificationComponent
 
-
 const App = () => {
   const [cookies, , removeCookie] = useCookies(["userName", "userRole"]);
-  const {setBuyRecommendations ,setSellingRecommendations} = useData();
+  const { resetNotificationCount } = useData();
   const handleLogout = () => {
+    console.log("*********");
     removeCookie("userName");
     removeCookie("userRole");
     removeCookie("userId");
-    setBuyRecommendations([]);
-    setSellingRecommendations([]);
+    resetNotificationCount();
     return <Navigate to="/login" />;
   };
 

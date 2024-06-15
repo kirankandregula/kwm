@@ -23,12 +23,8 @@ const AppBarComponent = ({ handleLogout }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [notificationsAnchorEl, setNotificationsAnchorEl] = useState(null);
   const [cookies] = useCookies(["userName", "userRole"]);
-  const {
-    notifications,
-    resetNotificationCount,
-    sellingRecommendations,
-    buyRecommendations,
-  } = useData();
+  const { notifications, sellingRecommendations, buyRecommendations } =
+    useData();
   const navigate = useNavigate();
   const [badgeContent, setBadgeContent] = useState(0);
 
@@ -40,7 +36,12 @@ const AppBarComponent = ({ handleLogout }) => {
       (buyRecommendations.length > 0 ? 1 : 0);
     // Update the badge content
     setBadgeContent(totalCount);
-  }, [notifications, sellingRecommendations, buyRecommendations]);
+  }, [
+    notifications,
+    sellingRecommendations,
+    buyRecommendations,
+    setBadgeContent,
+  ]);
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -56,7 +57,6 @@ const AppBarComponent = ({ handleLogout }) => {
 
   const handleNotificationsClose = () => {
     setNotificationsAnchorEl(null);
-    resetNotificationCount();
     setBadgeContent(0); // Update the badge content to 0
   };
 
@@ -69,18 +69,33 @@ const AppBarComponent = ({ handleLogout }) => {
     return (
       <>
         {sellingRecommendations.length > 0 && (
-          <div style={{ backgroundColor: '#ffcccc', padding: '10px', marginBottom: '10px', borderRadius: '5px' }}>
+          <div
+            style={{
+              backgroundColor: "#ffcccc",
+              padding: "10px",
+              marginBottom: "10px",
+              borderRadius: "5px",
+            }}
+          >
             <MenuItem onClick={handleNotificationClick}>
-              <Typography variant="body2" style={{ color: '#cc0000' }}>
-                You have {sellingRecommendations.length} sell recommendation(s) now
+              <Typography variant="body2" style={{ color: "#cc0000" }}>
+                You have {sellingRecommendations.length} sell recommendation(s)
+                now
               </Typography>
             </MenuItem>
           </div>
         )}
         {buyRecommendations.length > 0 && (
-          <div style={{ backgroundColor: '#ccffcc', padding: '10px', marginBottom: '10px', borderRadius: '5px' }}>
+          <div
+            style={{
+              backgroundColor: "#ccffcc",
+              padding: "10px",
+              marginBottom: "10px",
+              borderRadius: "5px",
+            }}
+          >
             <MenuItem onClick={handleNotificationClick}>
-              <Typography variant="body2" style={{ color: '#006600' }}>
+              <Typography variant="body2" style={{ color: "#006600" }}>
                 You have {buyRecommendations.length} buy recommendation(s) now
               </Typography>
             </MenuItem>
@@ -89,7 +104,6 @@ const AppBarComponent = ({ handleLogout }) => {
       </>
     );
   };
-  
 
   return (
     <AppBar position="fixed" className="app-bar">
@@ -100,7 +114,7 @@ const AppBarComponent = ({ handleLogout }) => {
               <Greet userName={cookies.userName} />
             ) : (
               <Link to="/" style={{ color: "inherit", textDecoration: "none" }}>
-              Artha Investments
+                Artha Investments
               </Link>
             )}
           </Typography>
@@ -132,6 +146,13 @@ const AppBarComponent = ({ handleLogout }) => {
                 </MenuItem>
                 <MenuItem onClick={handleMenuClose} component={Link} to="/etf">
                   Etf-Service
+                </MenuItem>
+                <MenuItem
+                  onClick={handleMenuClose}
+                  component={Link}
+                  to="/action"
+                >
+                  Action
                 </MenuItem>
                 <MenuItem
                   onClick={handleMenuClose}
@@ -192,15 +213,13 @@ const AppBarComponent = ({ handleLogout }) => {
               <Button color="inherit" component={Link} to="/">
                 Home
               </Button>
-              <Button color="inherit" component={Link} to="/etf">
-                Etf-Service
-              </Button>
-              <Button color="inherit" component={Link} to="/about">
-                About
-              </Button>
-              <Button color="inherit" component={Link} to="/contact">
-                Contact
-              </Button>
+              {cookies.userRole === "Viewer" ||
+                ("Admin" && (
+                  <Button color="inherit" component={Link} to="/action">
+                    Action
+                  </Button>
+                ))}
+
               {cookies.userRole === "Admin" && (
                 <>
                   <Button color="inherit" component={Link} to="/spying">
@@ -211,11 +230,16 @@ const AppBarComponent = ({ handleLogout }) => {
                   </Button>
                 </>
               )}
-              {cookies.userRole === "Viewer" && (
-                <Button color="inherit" component={Link} to="/action">
-                  Action
-                </Button>
-              )}
+              <Button color="inherit" component={Link} to="/etf">
+                Etf-Service
+              </Button>
+              <Button color="inherit" component={Link} to="/about">
+                About
+              </Button>
+              <Button color="inherit" component={Link} to="/contact">
+                Contact
+              </Button>
+
               {cookies.userName && cookies.userRole ? (
                 <Button color="inherit" onClick={handleLogout}>
                   Logout
@@ -227,19 +251,18 @@ const AppBarComponent = ({ handleLogout }) => {
               )}
             </>
           )}
-          {badgeContent > 0 && (
-            <IconButton
-              color="inherit"
-              onClick={handleNotificationsOpen}
-              aria-controls="notifications-menu"
-              aria-haspopup="true"
-              sx={{ marginLeft: 2 }} 
-            >
-              <Badge badgeContent={badgeContent} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-          )}
+          <IconButton
+            color="inherit"
+            onClick={handleNotificationsOpen}
+            aria-controls="notifications-menu"
+            aria-haspopup="true"
+            sx={{ marginLeft: 2 }}
+          >
+            <Badge badgeContent={badgeContent} color="error">
+              <NotificationsIcon />
+            </Badge>
+          </IconButton>
+
           <Menu
             id="notifications-menu"
             anchorEl={notificationsAnchorEl}

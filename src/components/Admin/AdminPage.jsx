@@ -7,7 +7,6 @@ import { css } from "@emotion/react";
 import { ClipLoader } from "react-spinners";
 import { useMediaQuery } from "@mui/material";
 import AdminTable from "./AdminTable";
-
 import CompactUserView from "./CompactUserView";
 import RefreshButton from "../RefreshButton";
 import usePullToRefresh from "../usePullToRefresh";
@@ -26,7 +25,6 @@ function AdminPage() {
   const { financialData, stockData, individualStockData, fetchData } =
     useData();
   const isLargeScreen = useMediaQuery("(min-width:1200px)");
-  // const isMidScreen = useMediaQuery("(min-width:600px)");
 
   useEffect(() => {
     if (!cookies.userName) {
@@ -88,7 +86,7 @@ function AdminPage() {
 
   const refreshData = () => {
     setLoading(true);
-    fetchData();
+    fetchData().then(() => setLoading(false)); // Ensure loading state is handled correctly
   };
 
   usePullToRefresh(refreshData);
@@ -96,14 +94,7 @@ function AdminPage() {
   return (
     <div className="container" style={{ overflowY: "auto", height: "100vh" }}>
       <div className="d-flex justify-content-center">
-        {isLargeScreen && (
-          <RefreshButton
-            handleClick={() => {
-              setLoading(true);
-              fetchData();
-            }}
-          />
-        )}
+        {isLargeScreen && <RefreshButton handleClick={refreshData} />}
       </div>
       <div
         className="d-flex justify-content-center"

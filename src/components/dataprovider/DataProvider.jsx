@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 import { useCookies } from "react-cookie";
 import { useFetchData } from "./useFetchData";
 import { useTotalPortfolioValue } from "./useTotalPortfolioValue";
@@ -26,8 +32,7 @@ export const DataProvider = ({ children }) => {
   const [portfolioPE, setPortfolioPE] = useState(0);
   const [cookies] = useCookies(["userId"]);
 
-
-  useFetchData(
+  const fetchData = useFetchData(
     setFinancialData,
     setStockData,
     setIndividualStockData,
@@ -37,40 +42,54 @@ export const DataProvider = ({ children }) => {
   );
 
   useEffect(() => {
-    if (stockData.length > 0) {
-      const filteredUserStocks = stockData.filter(stock => stock.user_id === cookies.userId);
+    if (stockData.length > 0 && individualStockData.length > 0) {
+      const filteredUserStocks = stockData
+        .filter((stock) => stock.user_id === cookies.userId)
+        .map((stock) => {
+          const stockDetails = individualStockData.find(
+            (s) => s.stock_id === stock.stock_id
+          );
+          return {
+            ...stock,
+            ...stockDetails,
+          };
+        })
+        .filter((stock) => stock.stock_id); // Filter out undefined stock details
       setUserStocks(filteredUserStocks);
     }
-  }, [stockData, cookies.userId]);
+  }, [stockData, individualStockData, cookies.userId]);
 
   useEffect(() => {
     if (financialData.length > 0) {
-      const filteredUserFinancialData = financialData.find(data => data.user_id === cookies.userId);
+      const filteredUserFinancialData = financialData.find(
+        (data) => data.user_id === cookies.userId
+      );
       setUserFinancialData(filteredUserFinancialData);
     }
   }, [financialData, cookies.userId]);
 
-  const { calculateTotalAmount } = useTotalPortfolioValue(individualStockData, financialData);
+  const { calculateTotalAmount } = useTotalPortfolioValue(
+    individualStockData,
+    financialData
+  );
 
   const calculatePortfolioPE = useCallback(() => {
     const totalValue = userStocks.reduce((acc, stock) => {
-      const stockDetails = individualStockData.find(s => s.stock_id === stock.stock_id);
-      return acc + (stockDetails ? stock.quantity * stockDetails.LTP : 0);
+      return acc + stock.quantity * stock.LTP;
     }, 0);
 
     const weightedPETotal = userStocks.reduce((acc, stock) => {
-      const stockDetails = individualStockData.find(s => s.stock_id === stock.stock_id);
-      return acc + (stockDetails ? stock.quantity * stockDetails.LTP * stockDetails.pe : 0);
+      return acc + stock.quantity * stock.LTP * stock.pe;
     }, 0);
 
     return totalValue === 0 ? 0 : weightedPETotal / totalValue;
-  }, [userStocks, individualStockData]);
+  }, [userStocks]);
 
   useEffect(() => {
-    if (userStocks.length > 0 && individualStockData.length > 0) {
+    if (userStocks.length > 0) {
       setPortfolioPE(calculatePortfolioPE());
     }
-  }, [userStocks, individualStockData, calculatePortfolioPE]);
+  }, [userStocks, calculatePortfolioPE]);
 
   const { generateBuyingAdvice, generateSellingAdvice } = useRecommendations(
     financialData,
@@ -78,8 +97,14 @@ export const DataProvider = ({ children }) => {
     individualStockData,
     cookies.userId,
     calculateTotalAmount,
-    useCallback((recommendations) => setBuyRecommendations(recommendations), []),
-    useCallback((recommendations) => setSellingRecommendations(recommendations), []),
+    useCallback(
+      (recommendations) => setBuyRecommendations(recommendations),
+      []
+    ),
+    useCallback(
+      (recommendations) => setSellingRecommendations(recommendations),
+      []
+    ),
     stocksToConsider,
     useCallback((warning) => setBuyingWarning(warning), []),
     portfolioPE,
@@ -128,7 +153,8 @@ export const DataProvider = ({ children }) => {
         resetNotificationCount,
         setBuyRecommendations,
         setSellingRecommendations,
-        portfolioPE
+        portfolioPE,
+        fetchData,
       }}
     >
       {children}

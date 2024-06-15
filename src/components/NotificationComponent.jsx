@@ -11,7 +11,12 @@ const NotificationComponent = () => {
         <div
           key={notification.id}
           onClick={handleNotificationClick}
-          style={{ cursor: "pointer", margin: "10px", padding: "10px", border: "1px solid black" }}
+          style={{
+            cursor: "pointer",
+            margin: "10px",
+            padding: "10px",
+            border: "1px solid black",
+          }}
         >
           {notification.message}
         </div>

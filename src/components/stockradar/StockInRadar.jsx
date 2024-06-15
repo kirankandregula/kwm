@@ -23,7 +23,6 @@ import LargeScreenTable from "./LargeScreenTable";
 import CompactView from "./CompactView";
 import { useData } from "../dataprovider/DataProvider";
 
-
 const override = css`
   display: block;
   margin: 0 auto;
@@ -40,8 +39,6 @@ const StockInRadar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"));
-
-
 
   useEffect(() => {
     if (!cookies.userName || !cookies.userRole) {
@@ -61,7 +58,13 @@ const StockInRadar = () => {
 
       setDuplicateStocks([...new Set(duplicates)]); // Remove duplicate entries in duplicates
 
-      const sorted = [...uniqueData].sort(
+      const filteredData = uniqueData.filter(
+        (stock) =>
+          stock.approved === "yes" &&
+          parseFloat(stock.scopeToGrow.replace("%", "")) > 30
+      );
+
+      const sorted = filteredData.sort(
         (a, b) =>
           parseFloat(b.scopeToGrow.replace("%", "")) -
           parseFloat(a.scopeToGrow.replace("%", ""))
@@ -111,21 +114,6 @@ const StockInRadar = () => {
     );
   }
 
-  if (filteredData.length === 0) {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="80vh"
-      >
-        <Typography variant="body2" color="error">
-          There are no stocks to buy now. Please wait for a few days.
-        </Typography>
-      </Box>
-    );
-  }
-
   return (
     <Box mt={10}>
       <Box my={2}>
@@ -140,7 +128,11 @@ const StockInRadar = () => {
         {duplicateStocks.length > 0 && (
           <Box display="flex" justifyContent="center" alignItems="center">
             <Tooltip title="Show Duplicates">
-              <IconButton color="error" onClick={() => setIsModalOpen(true)} type="button">
+              <IconButton
+                color="error"
+                onClick={() => setIsModalOpen(true)}
+                type="button"
+              >
                 <DuplicateIcon />
               </IconButton>
             </Tooltip>

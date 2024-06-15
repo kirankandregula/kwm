@@ -1,22 +1,28 @@
 import React from "react";
 import { Box } from "@mui/material";
-import { useData } from "../dataprovider/DataProvider";
 import BuyingAdvice from "./BuyingAdvice";
 import SellingAdvice from "./SellingAdvice";
 
-const ActionComponent = () => {
-  const { loading } = useData();
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
+const MainPage = () => {
   return (
-    <Box className="action-container" p={3} sx={{ width: "100%", mt: 8}}>
+    <Box
+      className="action-container"
+      p={3}
+      sx={{
+        width: "80%",
+        mt: 10,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "100vh",
+        margin: "0 auto",
+      }}
+    >
       <BuyingAdvice />
       <SellingAdvice />
     </Box>
   );
 };
 
-export default ActionComponent;
+export default MainPage;
