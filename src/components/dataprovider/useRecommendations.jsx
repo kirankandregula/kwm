@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 export const useRecommendations = (
   financialData,
@@ -11,21 +11,21 @@ export const useRecommendations = (
   stocksToConsider,
   setBuyingWarning,
   portfolioPE,
-  setPortfolioPE
+  setPortfolioPE,
+  sectors
 ) => {
+  const [previousRecommendations, setPreviousRecommendations] = useState([]);
+
   const generateBuyingAdvice = useCallback(
-    (selectedSectors = []) => {
+    (selectedSectors) => {
       const isNewUser = userStocks.length === 0;
       const { totalPortfolioValue, liquidFunds } = calculateTotalAmount(
         userStocks,
         userId
       );
 
-      // Extract the sectors the user already has stocks in
-      const userStockSectors = new Set(userStocks.map((stock) => stock.Sector));
-
       // Filter stocksToConsider by selectedSectors
-      const filteredRecommendations = selectedSectors.length
+      const sectorFilteredRecommendations = selectedSectors.length
         ? stocksToConsider.filter(
             (stock) =>
               selectedSectors.includes(stock.Sector) &&
@@ -33,12 +33,21 @@ export const useRecommendations = (
                 (userStock) => userStock.stock_id === stock.stock_id
               )
           )
-        : stocksToConsider.filter(
-            (stock) =>
-              !userStocks.some(
-                (userStock) => userStock.stock_id === stock.stock_id
-              )
-          );
+        : [];
+
+      const nonSectorFilteredRecommendations = stocksToConsider.filter(
+        (stock) =>
+          !userStocks.some(
+            (userStock) => userStock.stock_id === stock.stock_id
+          ) && !selectedSectors.includes(stock.Sector) // Ensure non-selected sectors
+      );
+
+      // Sort by scope to grow
+      nonSectorFilteredRecommendations.sort(
+        (a, b) =>
+          parseInt(b.scopeToGrow.replace("%", "")) -
+          parseInt(a.scopeToGrow.replace("%", ""))
+      );
 
       let allocatedAmount;
       let maxStocks;
@@ -67,7 +76,7 @@ export const useRecommendations = (
 
       if (allocatedAmountToEachStock > liquidFunds) {
         setBuyingWarning([
-          ` Minimum required is ${allocatedAmountToEachStock}, but you only have ${liquidFunds}.`,
+          `Minimum required is ${allocatedAmountToEachStock}, but you only have ${liquidFunds}.`,
         ]);
         return;
       }
@@ -77,50 +86,77 @@ export const useRecommendations = (
       let newPortfolioPE = portfolioPE;
       const includedSectors = new Set();
 
-      for (
-        let i = 0;
-        i < filteredRecommendations.length &&
-        newRecommendations.length < remainingStocksToRecommend;
-        i++
-      ) {
-        const stock = filteredRecommendations[i];
-        const sector = stock.Sector;
+      // Include one stock from each selected sector
+      sectorFilteredRecommendations.forEach((stock) => {
+        if (
+          !includedSectors.has(stock.Sector) &&
+          remainingFunds >= allocatedAmountToEachStock
+        ) {
+          const buyQuantity = Math.floor(
+            allocatedAmountToEachStock / stock.LTP
+          );
+          const totalCost = buyQuantity * stock.LTP;
+          const stockPE = stock.pe;
+          const updatedPortfolioPE =
+            (newPortfolioPE * totalPortfolioValue + stockPE * totalCost) /
+            (totalPortfolioValue + totalCost);
 
-        if (includedSectors.has(sector) || userStockSectors.has(sector)) {
-          continue; // Skip if sector is already included or user already has stocks in this sector
+          if (updatedPortfolioPE < 50) {
+            remainingFunds -= totalCost;
+            newPortfolioPE = updatedPortfolioPE;
+            includedSectors.add(stock.Sector);
+            newRecommendations.push({
+              stockName: stock.stockName,
+              LTP: stock.LTP,
+              PE: stock.pe,
+              TotalValue: totalCost,
+              buyQuantity,
+              scopeToGrow: stock.scopeToGrow,
+            });
+          }
         }
+      });
 
-        const buyQuantity = Math.floor(allocatedAmountToEachStock / stock.LTP);
-        const totalCost = buyQuantity * stock.LTP;
-        const stockPE = stock.pe;
-        const updatedPortfolioPE =
-          (newPortfolioPE * totalPortfolioValue + stockPE * totalCost) /
-          (totalPortfolioValue + totalCost);
+      // Fill remaining recommendations based on the highest scope to grow
+      nonSectorFilteredRecommendations.forEach((stock) => {
+        if (
+          newRecommendations.length < remainingStocksToRecommend &&
+          remainingFunds >= allocatedAmountToEachStock
+        ) {
+          const buyQuantity = Math.floor(
+            allocatedAmountToEachStock / stock.LTP
+          );
+          const totalCost = buyQuantity * stock.LTP;
+          const stockPE = stock.pe;
+          const updatedPortfolioPE =
+            (newPortfolioPE * totalPortfolioValue + stockPE * totalCost) /
+            (totalPortfolioValue + totalCost);
 
-        if (remainingFunds >= totalCost && updatedPortfolioPE < 50) {
-          remainingFunds -= totalCost;
-          newPortfolioPE = updatedPortfolioPE;
-          includedSectors.add(sector); // Mark sector as included
-          newRecommendations.push({
-            stockName: stock.stockName,
-            LTP: stock.LTP,
-            PE: stock.pe,
-            TotalValue: buyQuantity * stock.LTP,
-            buyQuantity,
-          });
-        } else {
-          setBuyingWarning([
-            `You need ${(totalCost - remainingFunds).toFixed(2)} more to buy ${
-              stock.stockName
-            }`,
-          ]);
-          break;
+          if (updatedPortfolioPE < 50) {
+            remainingFunds -= totalCost;
+            newPortfolioPE = updatedPortfolioPE;
+            newRecommendations.push({
+              stockName: stock.stockName,
+              LTP: stock.LTP,
+              PE: stock.pe,
+              TotalValue: totalCost,
+              buyQuantity,
+              scopeToGrow: stock.scopeToGrow,
+            });
+          }
         }
-      }
+      });
 
       if (isNewUser || newRecommendations.length > 0) {
-        setBuyRecommendations(newRecommendations);
-        setPortfolioPE(newPortfolioPE);
+        // Only update recommendations if there are changes
+        if (
+          JSON.stringify(previousRecommendations) !==
+          JSON.stringify(newRecommendations)
+        ) {
+          setPreviousRecommendations(newRecommendations);
+          setBuyRecommendations(newRecommendations);
+          setPortfolioPE(newPortfolioPE);
+        }
       } else {
         setBuyingWarning([
           `You need ${
@@ -138,6 +174,8 @@ export const useRecommendations = (
       portfolioPE,
       setPortfolioPE,
       userId,
+      previousRecommendations,
+      setPreviousRecommendations,
     ]
   );
 
@@ -171,7 +209,8 @@ export const useRecommendations = (
     () => ({
       generateBuyingAdvice,
       generateSellingAdvice,
+      sectors,
     }),
-    [generateBuyingAdvice, generateSellingAdvice]
+    [generateBuyingAdvice, generateSellingAdvice, sectors]
   );
 };

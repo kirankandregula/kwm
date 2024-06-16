@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Grid } from "@mui/material";
 
 const RecommendationBox = ({ recommendation }) => {
   const { stockName, LTP, buyQuantity, TotalValue, PE } = recommendation;
@@ -12,17 +12,50 @@ const RecommendationBox = ({ recommendation }) => {
       display="flex"
       justifyContent="space-between"
       alignItems="center"
-      mb={1}
+      mb={2}
       borderColor="lightgrey"
+      boxShadow={1}
     >
       <Box>
-        <Typography variant="caption">PE. {PE}</Typography>
-        <Typography variant="h6">{stockName}</Typography>
-        <Typography variant="caption">QTY. {buyQuantity}</Typography>
+        <Typography variant="caption" color="textSecondary">
+          PE: {PE}
+        </Typography>
+        <Typography variant="subtitle1" fontWeight="bold">
+          {stockName}
+        </Typography>
+        <Typography variant="caption" color="textSecondary">
+          Quantity: {buyQuantity}
+        </Typography>
       </Box>
       <Box textAlign="right">
-        <Typography variant="body2">LTP. {LTP}</Typography>
-        <Typography variant="body2">TOTAL. {Math.round(TotalValue)}</Typography>
+        <Grid
+          container
+          spacing={1}
+          alignItems="center"
+          justifyContent="flex-end"
+        >
+          <Grid item>
+            <Typography variant="caption" color="textSecondary">
+              LTP:
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Typography variant="subtitle1" fontWeight="bold">
+              {LTP}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} />
+          <Grid item>
+            <Typography variant="caption" color="textSecondary">
+              Total:
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Typography variant="subtitle1" fontWeight="bold">
+              {Math.round(TotalValue)}
+            </Typography>
+          </Grid>
+        </Grid>
       </Box>
     </Box>
   );

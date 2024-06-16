@@ -7,6 +7,8 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import WarningIcon from "@mui/icons-material/Warning";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -16,11 +18,9 @@ import ConfirmationDialog from "./ConfirmationDialog";
 const SellingAdvice = () => {
   const [showAdviceDialog, setShowAdviceDialog] = useState(false);
   const [confirmationOpen, setConfirmationOpen] = useState(false);
-  const {
-    sellingRecommendations,
-    generateSellingAdvice,
-    numberOfStocksToSell,
-  } = useData();
+  const { sellingRecommendations, generateSellingAdvice } = useData();
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleGenerateAdviceClick = () => {
     setConfirmationOpen(true);
@@ -31,9 +31,9 @@ const SellingAdvice = () => {
   };
 
   const handleConfirmGenerateAdvice = () => {
-    generateSellingAdvice(); // Ensure recommendations are up-to-date
+    generateSellingAdvice();
     setShowAdviceDialog(true);
-    handleCloseConfirmation(); // Close confirmation dialog after confirming
+    handleCloseConfirmation();
   };
 
   const handleCloseDialog = () => {
@@ -49,36 +49,18 @@ const SellingAdvice = () => {
       flexDirection="column"
       alignItems="center"
       mb={3}
-      marginTop={2}
+      mt={2}
     >
       <Box
         className="initial-recommendation"
         textAlign="center"
-        padding="24px"
+        padding={isSmallScreen ? "16px" : "24px"}
         border="1px solid #ccc"
         borderRadius="8px"
         backgroundColor="#f9f9f9"
-        width={380}
         boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)"
-        mb={3}
         minHeight={180}
-        sx={{
-          position: "relative",
-          "&:after":
-            numberOfStocksToSell > 0
-              ? {
-                  content: '""',
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  borderRadius: "8px",
-                  boxShadow: "0 0 10px red",
-                  zIndex: -1,
-                }
-              : {},
-        }}
+        minWidth={330}
       >
         <Typography variant="h6" color="red" sx={{ fontWeight: "bold" }}>
           Selling Recommendation
@@ -89,7 +71,7 @@ const SellingAdvice = () => {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            marginTop: "20px",
+            mt: "20px",
           }}
         >
           <Typography variant="body1">
@@ -108,10 +90,10 @@ const SellingAdvice = () => {
               borderColor: "red",
               fontSize: "12px",
               padding: "4px 8px",
-              marginTop: "8px",
+              mt: "8px",
               boxShadow: "0px 0px 10px rgba(255, 0, 0, 0.7)",
               "&:hover": {
-                backgroundColor: "rgba(255, 0, 0, 0.1)", // light red background on hover
+                backgroundColor: "rgba(255, 0, 0, 0.1)",
                 borderColor: "darkred",
               },
             }}

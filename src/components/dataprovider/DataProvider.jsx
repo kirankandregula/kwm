@@ -33,6 +33,8 @@ export const DataProvider = ({ children }) => {
   const [portfolioPE, setPortfolioPE] = useState(0);
   const [cookies, removeCookie] = useCookies(["userId"]);
   const navigate = useNavigate();
+  const [sectors, setSectors] = useState([]);
+  const [selectedSectors, setSelectedSectors] = useState([]);
   const fetchData = useFetchData(
     setFinancialData,
     setStockData,
@@ -54,6 +56,24 @@ export const DataProvider = ({ children }) => {
 
     return totalValue === 0 ? 0 : weightedPETotal / totalValue;
   }, [userStocks]);
+
+  useEffect(() => {
+    if (stocksToConsider.length > 0) {
+      const uniqueSectors = [
+        ...new Set(
+          stocksToConsider
+            .filter(
+              (stock) =>
+                !userStocks.some(
+                  (userStock) => userStock.Sector === stock.Sector
+                )
+            )
+            .map((stock) => stock.Sector)
+        ),
+      ];
+      setSectors(uniqueSectors);
+    }
+  }, [stocksToConsider, userStocks]);
 
   // Update userStocks when stockData or individualStockData changes
   useEffect(() => {
@@ -106,7 +126,9 @@ export const DataProvider = ({ children }) => {
     stocksToConsider,
     useCallback((warning) => setBuyingWarning(warning), []),
     portfolioPE,
-    setPortfolioPE
+    setPortfolioPE,
+    sectors,
+    selectedSectors
   );
 
   const { processStockData } = useProcessStockData(
@@ -119,13 +141,14 @@ export const DataProvider = ({ children }) => {
   useEffect(() => {
     if (cookies.userId && financialData.length > 0) {
       generateSellingAdvice();
-      generateBuyingAdvice();
+      generateBuyingAdvice(selectedSectors);
     }
   }, [
     cookies.userId,
     financialData,
     generateSellingAdvice,
     generateBuyingAdvice,
+    selectedSectors,
   ]);
 
   // Process stock data when stockInRadarData or individualStockData changes
@@ -137,6 +160,7 @@ export const DataProvider = ({ children }) => {
     setNotifications([]);
     setBuyRecommendations([]);
     setSellingRecommendations([]);
+    setSelectedSectors([]);
   }, []);
 
   const handleLogout = useCallback(() => {
@@ -170,6 +194,9 @@ export const DataProvider = ({ children }) => {
         portfolioPE,
         fetchData,
         handleLogout,
+        sectors,
+        setSelectedSectors,
+        selectedSectors,
       }}
     >
       {children}

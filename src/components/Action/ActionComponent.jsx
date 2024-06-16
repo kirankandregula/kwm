@@ -5,19 +5,7 @@ import SellingAdvice from "./SellingAdvice";
 
 const MainPage = () => {
   return (
-    <Box
-      className="action-container"
-      p={3}
-      sx={{
-        width: "80%",
-        mt: 12,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        margin: "0 auto",
-      }}
-    >
+    <Box className="container" sx={{ marginTop: "80px" }}>
       <BuyingAdvice />
       <SellingAdvice />
     </Box>
