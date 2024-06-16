@@ -115,16 +115,17 @@ const StockInRadar = () => {
   }
 
   return (
-    <Box mt={10}>
+    <Box mt={10} className="container">
       <Box my={2}>
-        <TextField
-          fullWidth
-          variant="outlined"
-          placeholder="Filter by stock name or industry"
-          value={filterValue}
-          onChange={handleFilterChange}
-          sx={{ marginBottom: "20px" }}
-        />
+        <Box className="form-group sm-12 mt-5 my-2">
+          <TextField
+            fullWidth
+            label="Filter by Stock Name or Sector"
+            variant="outlined"
+            value={filterValue}
+            onChange={handleFilterChange}
+          />
+        </Box>
         {duplicateStocks.length > 0 && (
           <Box display="flex" justifyContent="center" alignItems="center">
             <Tooltip title="Show Duplicates">

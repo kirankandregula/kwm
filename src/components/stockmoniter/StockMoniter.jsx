@@ -10,7 +10,6 @@ import CompactView from "./CompactMoniter"; // Adjust the import path as needed
 import StockMonTable from "./StockMonTable";
 import RefreshButton from "../RefreshButton";
 
-
 const override = css`
   display: block;
   margin: 0 auto;
@@ -18,7 +17,7 @@ const override = css`
 `;
 
 const StockMonitor = () => {
-  const { individualStockData, loading, fetchData,setLoading } = useData();
+  const { individualStockData, loading, fetchData, setLoading } = useData();
   const [filterValue, setFilterValue] = useState("");
   const [cookies] = useCookies(["userName", "userRole"]);
   const navigate = useNavigate();
@@ -26,18 +25,14 @@ const StockMonitor = () => {
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"));
   const [data, setData] = useState([]);
 
-
- 
-
   useEffect(() => {
     if (!cookies.userName || !cookies.userRole) {
       navigate("/login");
     } else {
       const sortedData = [...individualStockData].sort(
         (a, b) =>
-          parseFloat(a.scopeToGrow.replace("%", ""))-
-          parseFloat(b.scopeToGrow.replace("%", "")) 
-         
+          parseFloat(a.scopeToGrow.replace("%", "")) -
+          parseFloat(b.scopeToGrow.replace("%", ""))
       );
       setData(sortedData);
     }

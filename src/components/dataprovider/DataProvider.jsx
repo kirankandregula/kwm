@@ -10,6 +10,7 @@ import { useFetchData } from "./useFetchData";
 import { useTotalPortfolioValue } from "./useTotalPortfolioValue";
 import { useRecommendations } from "./useRecommendations";
 import { useProcessStockData } from "./useProcessStockData";
+import { useNavigate } from "react-router-dom";
 
 const DataContext = createContext();
 
@@ -30,8 +31,8 @@ export const DataProvider = ({ children }) => {
   const [buyingWarning, setBuyingWarning] = useState([]);
   const [userFinancialData, setUserFinancialData] = useState(null);
   const [portfolioPE, setPortfolioPE] = useState(0);
-  const [cookies] = useCookies(["userId"]);
-
+  const [cookies, removeCookie] = useCookies(["userId"]);
+  const navigate = useNavigate();
   const fetchData = useFetchData(
     setFinancialData,
     setStockData,
@@ -41,38 +42,7 @@ export const DataProvider = ({ children }) => {
     setLoading
   );
 
-  useEffect(() => {
-    if (stockData.length > 0 && individualStockData.length > 0) {
-      const filteredUserStocks = stockData
-        .filter((stock) => stock.user_id === cookies.userId)
-        .map((stock) => {
-          const stockDetails = individualStockData.find(
-            (s) => s.stock_id === stock.stock_id
-          );
-          return {
-            ...stock,
-            ...stockDetails,
-          };
-        })
-        .filter((stock) => stock.stock_id); // Filter out undefined stock details
-      setUserStocks(filteredUserStocks);
-    }
-  }, [stockData, individualStockData, cookies.userId]);
-
-  useEffect(() => {
-    if (financialData.length > 0) {
-      const filteredUserFinancialData = financialData.find(
-        (data) => data.user_id === cookies.userId
-      );
-      setUserFinancialData(filteredUserFinancialData);
-    }
-  }, [financialData, cookies.userId]);
-
-  const { calculateTotalAmount } = useTotalPortfolioValue(
-    individualStockData,
-    financialData
-  );
-
+  // Memoize calculatePortfolioPE to ensure it doesn't change on every render
   const calculatePortfolioPE = useCallback(() => {
     const totalValue = userStocks.reduce((acc, stock) => {
       return acc + stock.quantity * stock.LTP;
@@ -85,6 +55,33 @@ export const DataProvider = ({ children }) => {
     return totalValue === 0 ? 0 : weightedPETotal / totalValue;
   }, [userStocks]);
 
+  // Update userStocks when stockData or individualStockData changes
+  useEffect(() => {
+    if (stockData.length > 0 && individualStockData.length > 0) {
+      const filteredUserStocks = stockData
+        .filter((stock) => stock.user_id === cookies.userId)
+        .map((stock) => {
+          const stockDetails = individualStockData.find(
+            (s) => s.stock_id === stock.stock_id
+          );
+          return stockDetails ? { ...stock, ...stockDetails } : null;
+        })
+        .filter((stock) => stock); // Filter out null values
+      setUserStocks(filteredUserStocks);
+    }
+  }, [stockData, individualStockData, cookies.userId]);
+
+  // Update userFinancialData when financialData changes
+  useEffect(() => {
+    if (financialData.length > 0) {
+      const filteredUserFinancialData = financialData.find(
+        (data) => data.user_id === cookies.userId
+      );
+      setUserFinancialData(filteredUserFinancialData || null);
+    }
+  }, [financialData, cookies.userId]);
+
+  // Update portfolioPE when userStocks change
   useEffect(() => {
     if (userStocks.length > 0) {
       setPortfolioPE(calculatePortfolioPE());
@@ -96,7 +93,8 @@ export const DataProvider = ({ children }) => {
     userStocks,
     individualStockData,
     cookies.userId,
-    calculateTotalAmount,
+    useTotalPortfolioValue(individualStockData, financialData)
+      .calculateTotalAmount,
     useCallback(
       (recommendations) => setBuyRecommendations(recommendations),
       []
@@ -117,20 +115,36 @@ export const DataProvider = ({ children }) => {
     stockInRadarData
   );
 
+  // Generate advice when userId and financialData are available
   useEffect(() => {
-    if (financialData.length > 0) {
+    if (cookies.userId && financialData.length > 0) {
       generateSellingAdvice();
       generateBuyingAdvice();
     }
-  }, [financialData, generateSellingAdvice, generateBuyingAdvice]);
+  }, [
+    cookies.userId,
+    financialData,
+    generateSellingAdvice,
+    generateBuyingAdvice,
+  ]);
 
+  // Process stock data when stockInRadarData or individualStockData changes
   useEffect(() => {
     processStockData();
   }, [stockInRadarData, individualStockData, processStockData]);
 
   const resetNotificationCount = useCallback(() => {
     setNotifications([]);
+    setBuyRecommendations([]);
+    setSellingRecommendations([]);
   }, []);
+
+  const handleLogout = useCallback(() => {
+    removeCookie("userId");
+    removeCookie("userName"); // Clear the user ID cookie
+    resetNotificationCount(); // Reset notifications and recommendations
+    navigate("/login"); // Navigate to login page
+  }, [removeCookie, resetNotificationCount, navigate]);
 
   return (
     <DataContext.Provider
@@ -155,6 +169,7 @@ export const DataProvider = ({ children }) => {
         setSellingRecommendations,
         portfolioPE,
         fetchData,
+        handleLogout,
       }}
     >
       {children}

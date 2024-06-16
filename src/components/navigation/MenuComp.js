@@ -29,42 +29,50 @@ const MenuComp = ({ anchorEl, handleMenuClose, handleLogout }) => {
         Contact
       </Link>
     </MenuItem>,
-    cookies.userRole === "Admin" && (
+  ];
+
+  if (cookies.userRole === "Admin") {
+    menuItems.push(
       <MenuItem key="spying" onClick={handleMenuClose}>
         <Link to="/spying" style={{ color: "inherit", textDecoration: "none" }}>
           Stock Monitor
         </Link>
       </MenuItem>
-    ),
-    cookies.userRole === "Admin" && (
+    );
+    menuItems.push(
       <MenuItem key="radar" onClick={handleMenuClose}>
         <Link to="/radar" style={{ color: "inherit", textDecoration: "none" }}>
           Stock In Radar
         </Link>
       </MenuItem>
-    ),
-    cookies.userRole === "Viewer" && (
+    );
+  }
+
+  if (cookies.userRole === "Viewer") {
+    menuItems.push(
       <MenuItem key="action" onClick={handleMenuClose}>
         <Link to="/action" style={{ color: "inherit", textDecoration: "none" }}>
           Action
         </Link>
       </MenuItem>
-    ),
-    cookies.userName && cookies.userRole ? (
+    );
+  }
+
+  if (cookies.userName && cookies.userRole) {
+    menuItems.push(
       <MenuItem key="logout" onClick={handleLogout}>
         Logout
       </MenuItem>
-    ) : (
+    );
+  } else {
+    menuItems.push(
       <MenuItem key="login" onClick={handleMenuClose}>
         <Link to="/login" style={{ color: "inherit", textDecoration: "none" }}>
           Login
         </Link>
       </MenuItem>
-    ),
-  ];
-
-  // Filter out any null or false elements
-  const filteredMenuItems = menuItems.filter((item) => item);
+    );
+  }
 
   return (
     <Menu
@@ -82,7 +90,7 @@ const MenuComp = ({ anchorEl, handleMenuClose, handleLogout }) => {
       open={Boolean(anchorEl)}
       onClose={handleMenuClose}
     >
-      {filteredMenuItems}
+      {menuItems}
     </Menu>
   );
 };

@@ -3,7 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { ClipLoader } from "react-spinners";
 import { BsPersonFill } from "react-icons/bs";
-import { FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput, Typography, Button } from "@mui/material";
+import {
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+  Typography,
+  Button,
+} from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useData } from "./dataprovider/DataProvider"; // Adjust the import path as necessary
 import "../css/Loginpage.css";
@@ -41,7 +49,11 @@ const LoginPage = () => {
 
       const users = await response.json();
 
-      const user = users.find(user => user.Name === credentials.userName && user.Password === credentials.passWord);
+      const user = users.find(
+        (user) =>
+          user.Name === credentials.userName &&
+          user.Password === credentials.passWord
+      );
 
       if (user) {
         const expirationTime = new Date(new Date().getTime() + 30 * 60 * 1000);
@@ -50,7 +62,6 @@ const LoginPage = () => {
         setCookie("userId", user.user_id, { expires: expirationTime });
 
         await fetchData();
-
         navigate(`/portfolio/${user.user_id}`);
       } else {
         setErrorMessage("Invalid username or password");

@@ -17,7 +17,7 @@ import Badge from "@mui/material/Badge";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { useData } from "../dataprovider/DataProvider";
 
-const AppBarComponent = ({ handleLogout }) => {
+const AppBarComponent = ({ onLogout }) => {
   const theme = useTheme();
   const isMediumDevice = useMediaQuery(theme.breakpoints.down("md"));
   const [anchorEl, setAnchorEl] = useState(null);
@@ -29,18 +29,15 @@ const AppBarComponent = ({ handleLogout }) => {
   const [badgeContent, setBadgeContent] = useState(0);
 
   useEffect(() => {
-    // Calculate the total count of notifications and recommendations
     const totalCount =
       notifications.length +
       sellingRecommendations.length +
-      (buyRecommendations.length > 0 ? 1 : 0);
-    // Update the badge content
+      buyRecommendations.length;
     setBadgeContent(totalCount);
   }, [
-    notifications,
-    sellingRecommendations,
-    buyRecommendations,
-    setBadgeContent,
+    notifications.length,
+    sellingRecommendations.length,
+    buyRecommendations.length,
   ]);
 
   const handleMenuOpen = (event) => {
@@ -57,7 +54,7 @@ const AppBarComponent = ({ handleLogout }) => {
 
   const handleNotificationsClose = () => {
     setNotificationsAnchorEl(null);
-    setBadgeContent(0); // Update the badge content to 0
+    setBadgeContent(0);
   };
 
   const handleNotificationClick = () => {
@@ -66,9 +63,11 @@ const AppBarComponent = ({ handleLogout }) => {
   };
 
   const renderNotifications = () => {
-    return (
-      <>
-        {sellingRecommendations.length > 0 && (
+    const notificationsArray = [];
+
+    if (sellingRecommendations.length > 0) {
+      notificationsArray.push(
+        <MenuItem key="sell-recommendations" onClick={handleNotificationClick}>
           <div
             style={{
               backgroundColor: "#ffcccc",
@@ -77,15 +76,18 @@ const AppBarComponent = ({ handleLogout }) => {
               borderRadius: "5px",
             }}
           >
-            <MenuItem onClick={handleNotificationClick}>
-              <Typography variant="body2" style={{ color: "#cc0000" }}>
-                You have {sellingRecommendations.length} sell recommendation(s)
-                now
-              </Typography>
-            </MenuItem>
+            <Typography variant="body2" style={{ color: "#cc0000" }}>
+              You have {sellingRecommendations.length} sell recommendation(s)
+              now
+            </Typography>
           </div>
-        )}
-        {buyRecommendations.length > 0 && (
+        </MenuItem>
+      );
+    }
+
+    if (buyRecommendations.length > 0) {
+      notificationsArray.push(
+        <MenuItem key="buy-recommendations" onClick={handleNotificationClick}>
           <div
             style={{
               backgroundColor: "#ccffcc",
@@ -94,16 +96,102 @@ const AppBarComponent = ({ handleLogout }) => {
               borderRadius: "5px",
             }}
           >
-            <MenuItem onClick={handleNotificationClick}>
-              <Typography variant="body2" style={{ color: "#006600" }}>
-                You have {buyRecommendations.length} buy recommendation(s) now
-              </Typography>
-            </MenuItem>
+            <Typography variant="body2" style={{ color: "#006600" }}>
+              You have {buyRecommendations.length} buy recommendation(s) now
+            </Typography>
           </div>
-        )}
-      </>
-    );
+        </MenuItem>
+      );
+    }
+
+    return notificationsArray;
   };
+
+  const menuItems = [
+    <MenuItem key="home" onClick={handleMenuClose} component={Link} to="/">
+      Home
+    </MenuItem>,
+    <MenuItem key="etf" onClick={handleMenuClose} component={Link} to="/etf">
+      Etf-Service
+    </MenuItem>,
+    <MenuItem
+      key="action"
+      onClick={handleMenuClose}
+      component={Link}
+      to="/action"
+    >
+      Action
+    </MenuItem>,
+    <MenuItem
+      key="about"
+      onClick={handleMenuClose}
+      component={Link}
+      to="/about"
+    >
+      About
+    </MenuItem>,
+    <MenuItem
+      key="contact"
+      onClick={handleMenuClose}
+      component={Link}
+      to="/contact"
+    >
+      Contact
+    </MenuItem>,
+  ];
+
+  if (cookies.userRole === "Admin") {
+    menuItems.push(
+      <MenuItem
+        key="spying"
+        onClick={handleMenuClose}
+        component={Link}
+        to="/spying"
+      >
+        Stock Monitor
+      </MenuItem>,
+      <MenuItem
+        key="radar"
+        onClick={handleMenuClose}
+        component={Link}
+        to="/radar"
+      >
+        Stock In Radar
+      </MenuItem>
+    );
+  }
+
+  if (cookies.userRole === "Viewer") {
+    menuItems.push(
+      <MenuItem
+        key="action-viewer"
+        onClick={handleMenuClose}
+        component={Link}
+        to="/action"
+      >
+        Action
+      </MenuItem>
+    );
+  }
+
+  if (cookies.userName && cookies.userRole) {
+    menuItems.push(
+      <MenuItem key="logout" onClick={onLogout}>
+        Logout
+      </MenuItem>
+    );
+  } else {
+    menuItems.push(
+      <MenuItem
+        key="login"
+        onClick={handleMenuClose}
+        component={Link}
+        to="/login"
+      >
+        Login
+      </MenuItem>
+    );
+  }
 
   return (
     <AppBar position="fixed" className="app-bar">
@@ -141,71 +229,7 @@ const AppBarComponent = ({ handleLogout }) => {
                   horizontal: "right",
                 }}
               >
-                <MenuItem onClick={handleMenuClose} component={Link} to="/">
-                  Home
-                </MenuItem>
-                <MenuItem onClick={handleMenuClose} component={Link} to="/etf">
-                  Etf-Service
-                </MenuItem>
-                <MenuItem
-                  onClick={handleMenuClose}
-                  component={Link}
-                  to="/action"
-                >
-                  Action
-                </MenuItem>
-                <MenuItem
-                  onClick={handleMenuClose}
-                  component={Link}
-                  to="/about"
-                >
-                  About
-                </MenuItem>
-                <MenuItem
-                  onClick={handleMenuClose}
-                  component={Link}
-                  to="/contact"
-                >
-                  Contact
-                </MenuItem>
-                {cookies.userRole === "Admin" && (
-                  <>
-                    <MenuItem
-                      onClick={handleMenuClose}
-                      component={Link}
-                      to="/spying"
-                    >
-                      Stock Monitor
-                    </MenuItem>
-                    <MenuItem
-                      onClick={handleMenuClose}
-                      component={Link}
-                      to="/radar"
-                    >
-                      Stock In Radar
-                    </MenuItem>
-                  </>
-                )}
-                {cookies.userRole === "Viewer" && (
-                  <MenuItem
-                    onClick={handleMenuClose}
-                    component={Link}
-                    to="/action"
-                  >
-                    Action
-                  </MenuItem>
-                )}
-                {cookies.userName && cookies.userRole ? (
-                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                ) : (
-                  <MenuItem
-                    onClick={handleMenuClose}
-                    component={Link}
-                    to="/login"
-                  >
-                    Login
-                  </MenuItem>
-                )}
+                {menuItems}
               </Menu>
             </>
           ) : (
@@ -213,13 +237,12 @@ const AppBarComponent = ({ handleLogout }) => {
               <Button color="inherit" component={Link} to="/">
                 Home
               </Button>
-              {cookies.userRole === "Viewer" ||
-                ("Admin" && (
-                  <Button color="inherit" component={Link} to="/action">
-                    Action
-                  </Button>
-                ))}
-
+              {(cookies.userRole === "Viewer" ||
+                cookies.userRole === "Admin") && (
+                <Button color="inherit" component={Link} to="/action">
+                  Action
+                </Button>
+              )}
               {cookies.userRole === "Admin" && (
                 <>
                   <Button color="inherit" component={Link} to="/spying">
@@ -241,7 +264,7 @@ const AppBarComponent = ({ handleLogout }) => {
               </Button>
 
               {cookies.userName && cookies.userRole ? (
-                <Button color="inherit" onClick={handleLogout}>
+                <Button color="inherit" onClick={onLogout}>
                   Logout
                 </Button>
               ) : (
@@ -275,16 +298,16 @@ const AppBarComponent = ({ handleLogout }) => {
             buyRecommendations.length === 0 ? (
               <MenuItem>No notifications now</MenuItem>
             ) : (
-              <>
-                {notifications.map((notification) => (
+              [
+                ...notifications.map((notification) => (
                   <MenuItem key={notification.id}>
                     {notification.type === "buy"
                       ? "You have one buy recommendation now"
                       : "You have one sell recommendation now"}
                   </MenuItem>
-                ))}
-                {renderNotifications()}
-              </>
+                )),
+                ...renderNotifications(),
+              ]
             )}
           </Menu>
         </Toolbar>

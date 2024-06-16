@@ -61,7 +61,7 @@ const BottomNavigationComponent = ({ handleLogout }) => {
   };
 
   const renderLogoutActions = () => {
-    if (!cookies.userName && !cookies.userRole) {
+    if (!cookies.userName) {
       return [
         <BottomNavigationAction
           key="contact"

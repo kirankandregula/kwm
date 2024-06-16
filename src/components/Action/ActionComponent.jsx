@@ -10,12 +10,11 @@ const MainPage = () => {
       p={3}
       sx={{
         width: "80%",
-        mt: 10,
+        mt: 12,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        minHeight: "100vh",
         margin: "0 auto",
       }}
     >

@@ -58,9 +58,10 @@ const SellingAdvice = () => {
         border="1px solid #ccc"
         borderRadius="8px"
         backgroundColor="#f9f9f9"
-        width={400}
+        width={380}
         boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)"
         mb={3}
+        minHeight={180}
         sx={{
           position: "relative",
           "&:after":
@@ -79,36 +80,47 @@ const SellingAdvice = () => {
               : {},
         }}
       >
-        <Typography variant="h6" color="red">
+        <Typography variant="h6" color="red" sx={{ fontWeight: "bold" }}>
           Selling Recommendation
         </Typography>
-        <Typography variant="body1">
-          {sellingRecommendations.length > 0
-            ? "We have identified stocks that you might want to consider selling."
-            : "None of your stocks meet the criteria for selling."}
-        </Typography>
-        <Button
-          variant="outlined"
-          color="primary"
-          endIcon={<ArrowForwardIosIcon />}
-          onClick={handleGenerateAdviceClick}
-          size="small"
+        <Box
           sx={{
-            color: "red",
-            borderColor: "red",
-            fontSize: "12px",
-            padding: "4px 8px",
-            marginTop: "8px",
-            boxShadow: "0px 0px 10px rgba(255, 0, 0, 0.7)",
-            "&:hover": {
-              backgroundColor: "rgba(255, 0, 0, 0.1)", // light red background on hover
-              borderColor: "darkred",
-            },
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: "20px",
           }}
-          disabled={sellingRecommendations.length === 0}
         >
-          Generate Advice
-        </Button>
+          <Typography variant="body1">
+            {sellingRecommendations.length > 0
+              ? "We have identified stocks that you might want to consider selling."
+              : "None of your stocks meet the criteria for selling."}
+          </Typography>
+          <Button
+            variant="outlined"
+            color="primary"
+            endIcon={<ArrowForwardIosIcon />}
+            onClick={handleGenerateAdviceClick}
+            size="small"
+            sx={{
+              color: "red",
+              borderColor: "red",
+              fontSize: "12px",
+              padding: "4px 8px",
+              marginTop: "8px",
+              boxShadow: "0px 0px 10px rgba(255, 0, 0, 0.7)",
+              "&:hover": {
+                backgroundColor: "rgba(255, 0, 0, 0.1)", // light red background on hover
+                borderColor: "darkred",
+              },
+            }}
+            disabled={sellingRecommendations.length === 0}
+          >
+            Generate Advice
+          </Button>
+        </Box>
+
         {sellingRecommendations.length > 0 && (
           <Box
             display="flex"
