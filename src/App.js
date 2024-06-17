@@ -18,6 +18,7 @@ import EtfService from "./components/Etf/EtfService";
 import StockInRadar from "./components/stockradar/StockInRadar";
 import ActionComponent from "./components/Action/ActionComponent";
 import NotificationComponent from "./components/NotificationComponent"; // Import NotificationComponent
+import RegisterPage from "./components/RegisterPage";
 
 const App = () => {
   const [cookies] = useCookies(["userName", "userRole", "userId"]);
@@ -32,6 +33,7 @@ const App = () => {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route
           path="/user-details/:userId"
           element={

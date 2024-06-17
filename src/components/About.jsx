@@ -1,13 +1,11 @@
 import React from "react";
-import {
-  Container,
-  Typography,
-  Paper,
-  List,
-  ListItem,
-  ListItemText,
-} from "@mui/material";
+import { Container, Typography, Paper, Grid, Button } from "@mui/material";
 import { styled } from "@mui/system";
+import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
+import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+import PaymentIcon from "@mui/icons-material/Payment";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { useNavigate } from "react-router-dom";
 
 const AboutContainer = styled(Container)(({ theme }) => ({
   marginTop: theme.spacing(10),
@@ -17,75 +15,124 @@ const AboutContainer = styled(Container)(({ theme }) => ({
   borderRadius: "20px",
 }));
 
-const BillingDetails = styled(Paper)(({ theme }) => ({
+const SectionContainer = styled(Paper)(({ theme }) => ({
   background: "#f2f2f2",
   borderRadius: "10px",
   padding: theme.spacing(3),
   marginTop: theme.spacing(4),
 }));
 
+const IconContainer = styled(Grid)(({ theme }) => ({
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  marginBottom: theme.spacing(2),
+}));
+
+const StartJourneyContainer = styled(SectionContainer)(({ theme }) => ({
+  background: "#f2f2f2",
+  textAlign: "center",
+  boxShadow: "none",
+  marginTop: theme.spacing(6),
+}));
+
 const About = () => {
-  // Example profit amount and initial investment
-  const profit = 20000; // ₹20,000 profit
-  const initialInvestment = 100000; // ₹1,00,000 initial investment
+  const navigate = useNavigate();
 
-  // Calculate the charge based on profit (20%)
-  const calculateCharge = (profit) => {
-    let charge = 0;
-    if (profit > 5000) {
-      charge = (profit - 5000) * 0.20; // Charging 20% for the remaining profit after 5000
-    }
-    return charge;
+  const handleGetStarted = () => {
+    navigate("/login"); // Navigate to login page
   };
-
-  // Calculate the total charge
-  const totalCharge = calculateCharge(profit);
 
   return (
     <AboutContainer maxWidth="md">
       <Typography variant="h4" align="center" gutterBottom>
-        About Us
+        About Aartha Investments
       </Typography>
-      <Typography variant="body2" paragraph>
-        Welcome to Aartha Investments, your personal finance portfolio management solution founded by Kiran Kandregula.
-      </Typography>
-      <Typography variant="body2" paragraph>
-        At KK Wealth Mills, we are dedicated to helping you manage and grow your personal finance portfolio efficiently. Our goal is to provide you with the tools and resources needed to achieve your financial objectives.
-      </Typography>
-
-      {/* Billing Details */}
-      <BillingDetails elevation={3}>
+      <SectionContainer elevation={3}>
+        <IconContainer>
+          <BusinessCenterIcon sx={{ fontSize: 60, color: "#2E8B57" }} />
+        </IconContainer>
         <Typography variant="h5" align="center" gutterBottom>
-          Billing Details
+          Our Mission
         </Typography>
         <Typography variant="body2" paragraph>
-          We charge for every quarter based on your profit only. Here's how our billing works:
-        </Typography>
-        <List>
-          <ListItem>
-            <ListItemText primary="We won't charge for the first 5% profit." />
-          </ListItem>
-          <ListItem>
-            <ListItemText primary="For the remaining profit, we charge 20%." />
-          </ListItem>
-        </List>
-        <Typography variant="body2" paragraph>
-          This transparent billing policy ensures that our customers can easily understand our pricing structure.
-        </Typography>
-        {/* Additional details based on example profit */}
-        <Typography variant="body2" paragraph>
-          Let's say your profit for the quarter is ₹{profit}. The initial investment is ₹{initialInvestment}.
+          Welcome to Aartha Investments, your trusted partner in personal
+          finance portfolio management.
         </Typography>
         <Typography variant="body2" paragraph>
-          1. We won't charge for the first 5% profit, which is ₹{Math.min(5000, profit)}.
+          At Aartha Investments, our mission is to empower individuals to
+          achieve their financial goals through transparent and efficient
+          portfolio management services.
+        </Typography>
+      </SectionContainer>
+      <SectionContainer elevation={3}>
+        <IconContainer>
+          <MonetizationOnIcon sx={{ fontSize: 60, color: "#FFD700" }} />
+        </IconContainer>
+        <Typography variant="h5" align="center" gutterBottom>
+          Our Services
         </Typography>
         <Typography variant="body2" paragraph>
-          2. For the remaining profit (₹{Math.max(profit - 5000, 0)}), we charge 20%, which is ₹{totalCharge}.
+          We specialize in providing personalized investment strategies tailored
+          to meet your financial objectives.
         </Typography>
         <Typography variant="body2" paragraph>
-          So, the total charge for this quarter would be ₹{Math.max(totalCharge, 0)}.
+          Whether you are planning for retirement, saving for education, or
+          seeking to grow your wealth, we offer comprehensive solutions designed
+          to optimize your investments.
         </Typography>
-      </BillingDetails>
+        <Typography variant="body2" paragraph>
+          You can start your journey with Aartha Investments with an initial
+          investment of just ₹25,000, making wealth management accessible to
+          everyone.
+        </Typography>
+      </SectionContainer>
+      <SectionContainer elevation={3}>
+        <IconContainer>
+          <PaymentIcon sx={{ fontSize: 60, color: "#FF6347" }} />
+        </IconContainer>
+        <Typography variant="h5" align="center" gutterBottom>
+          Billing Transparency
+        </Typography>
+        <Typography variant="body2" paragraph>
+          At Aartha Investments, we believe in transparency and fairness in our
+          billing practices.
+        </Typography>
+        <Typography variant="body2" paragraph>
+          We charge based on your profit, ensuring that our fees are aligned
+          with your success. Our billing structure is straightforward: we waive
+          charges for the first 5% of profit and apply a 20% fee on any
+          additional profit, providing clarity and predictability to our
+          clients.
+        </Typography>
+        <Typography variant="body2" paragraph>
+          This commitment to transparency ensures that you can confidently
+          navigate your financial journey with us.
+        </Typography>
+      </SectionContainer>
+      {/* Start Journey Section */}
+      <StartJourneyContainer elevation={3}>
+        <Typography variant="h5" align="center" gutterBottom>
+          Start Your Journey with Aartha Investments
+        </Typography>
+        <Typography variant="body2" paragraph>
+          You can start your journey with Aartha Investments with an initial
+          investment of just ₹25,000, making wealth management accessible to
+          everyone.
+        </Typography>
+        <Typography variant="body2" paragraph>
+          Begin investing today with Aartha Investments and unlock the potential
+          to grow your wealth.
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          endIcon={<ArrowForwardIcon />}
+          onClick={handleGetStarted}
+        >
+          Get Started
+        </Button>
+      </StartJourneyContainer>
     </AboutContainer>
   );
 };

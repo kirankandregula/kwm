@@ -143,7 +143,6 @@ const BuyingAdvice = () => {
                 fontSize: "12px",
                 padding: "4px 8px",
                 marginTop: "8px",
-                width: "200px",
                 boxShadow: "0px 0px 10px rgba(0, 255, 0, 0.7)",
                 "&:hover": {
                   backgroundColor: "rgba(0, 255, 0, 0.1)",
@@ -164,15 +163,22 @@ const BuyingAdvice = () => {
         fullWidth={true}
         maxWidth="md"
       >
-        <DialogTitle>Buying Advice</DialogTitle>
+        <DialogTitle className="text-primary">Buying Advice</DialogTitle>
         <DialogContent>
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Sectors</InputLabel>
+          <FormControl fullWidth variant="outlined" margin="normal">
+            <InputLabel
+              htmlFor="outlined-adornment-sectors"
+              shrink={selectedSectors.length > 0}
+            >
+              Sectors
+            </InputLabel>
             <Select
+              id="outlined-adornment-sectors"
               multiple
               value={selectedSectors}
               onChange={handleSectorChange}
               renderValue={(selected) => selected.join(", ")}
+              label="Sectors"
             >
               {sectors.map((sector) => (
                 <MenuItem key={sector} value={sector}>

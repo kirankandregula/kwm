@@ -28,13 +28,13 @@ function DiversificationDiv({
       <Box sx={{ borderBottom: "1px solid black", mb: 1 }} />
       <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
         <Typography variant="caption" >
-          Equity: <strong>{equity.toLocaleString()}</strong>
+          Equity . <strong>{equity.toLocaleString()}</strong>
         </Typography>
         <Typography variant="caption" >
-          Gold: <strong>{gold.toLocaleString()}</strong>
+          Gold . <strong>{gold.toLocaleString()}</strong>
         </Typography>
         <Typography variant="caption" >
-          Debt: <strong>{debt.toLocaleString()}</strong>
+          Debt . <strong>{debt.toLocaleString()}</strong>
         </Typography>
       </Box>
     </Box>

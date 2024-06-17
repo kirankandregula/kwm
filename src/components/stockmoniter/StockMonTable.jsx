@@ -51,12 +51,11 @@ const getMarketCapColor = (marketCap) => {
   }
 };
 
-const StockMonTable = ({ data, handleSort }) => {
-  // Sort the data by `scopeToGrow` in descending order
+const StockMonTable = ({ data, handleSort, handleClick }) => {
   const sortedData = [...data].sort((a, b) => {
     const scopeA = parseFloat(a.scopeToGrow.replace("%", ""));
     const scopeB = parseFloat(b.scopeToGrow.replace("%", ""));
-    return scopeA - scopeB; // Sort in descending order
+    return scopeA - scopeB;
   });
 
   return (
@@ -105,8 +104,11 @@ const StockMonTable = ({ data, handleSort }) => {
                   parseFloat(row.scopeToGrow.replace("%", "")) <= 10
                     ? "error.light"
                     : "inherit",
+                cursor: 'pointer'
               }}
+              onClick={() => handleClick(row.stock_id)}
             >
+             
               <TableCell>{row.stockName}</TableCell>
               <TableCell>{row.Sector}</TableCell>
               <TableCell>{row.pe}</TableCell>

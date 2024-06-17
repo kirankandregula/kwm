@@ -11,6 +11,7 @@ import {
   OutlinedInput,
   Typography,
   Button,
+  Box
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useData } from "./dataprovider/DataProvider"; // Adjust the import path as necessary
@@ -44,25 +45,29 @@ const LoginPage = () => {
 
     try {
       const response = await fetch(
-        "https://script.google.com/macros/s/AKfycbymorTjnVzmJr56gY5zoBlD-dUp8bwC-dYwIKdAm2WRjnfpwjgMLpUut9E15rgCbXah/exec"
+        "https://script.google.com/macros/s/AKfycby5GfxI1JMefqrVXYHMaodj07Dbx1MOTY8O_gu1U14ceiqdZzbN42ZX9KCmi_J0ZJJL/exec"
       );
 
       const users = await response.json();
 
       const user = users.find(
         (user) =>
-          user.Name === credentials.userName &&
+          user.Name === credentials.userName.trim() &&
           user.Password === credentials.passWord
       );
 
       if (user) {
-        const expirationTime = new Date(new Date().getTime() + 30 * 60 * 1000);
-        setCookie("userName", user.Name, { expires: expirationTime });
-        setCookie("userRole", user.Role, { expires: expirationTime });
-        setCookie("userId", user.user_id, { expires: expirationTime });
+        if (user.approved === "yes") {
+          const expirationTime = new Date(new Date().getTime() + 30 * 60 * 1000);
+          setCookie("userName", user.Name, { expires: expirationTime });
+          setCookie("userRole", user.Role, { expires: expirationTime });
+          setCookie("userId", user.user_id, { expires: expirationTime });
 
-        await fetchData();
-        navigate(`/portfolio/${user.user_id}`);
+          await fetchData();
+          navigate(`/portfolio/${user.user_id}`);
+        } else {
+          setErrorMessage("Your account is not approved. Please contact the Admin.");
+        }
       } else {
         setErrorMessage("Invalid username or password");
       }
@@ -160,6 +165,15 @@ const LoginPage = () => {
               {!loading && "Login"}
             </Button>
           </form>
+          <Box mt={2} textAlign="center">
+            <Button
+              variant="text"
+              color="primary"
+              onClick={() => navigate("/register")}
+            >
+              Are you a New User?
+            </Button>
+          </Box>
         </div>
       </div>
     </div>

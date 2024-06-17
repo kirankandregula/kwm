@@ -22,7 +22,7 @@ const AppBarComponent = ({ onLogout }) => {
   const isMediumDevice = useMediaQuery(theme.breakpoints.down("md"));
   const [anchorEl, setAnchorEl] = useState(null);
   const [notificationsAnchorEl, setNotificationsAnchorEl] = useState(null);
-  const [cookies] = useCookies(["userName", "userRole"]);
+  const [cookies] = useCookies(["userName", "userRole","userId"]);
   const { notifications, sellingRecommendations, buyRecommendations } =
     useData();
   const navigate = useNavigate();
@@ -198,7 +198,7 @@ const AppBarComponent = ({ onLogout }) => {
       <Container maxWidth="lg">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            {cookies.userName ? (
+            {cookies.userName && cookies.userId ? (
               <Greet userName={cookies.userName} />
             ) : (
               <Link to="/" style={{ color: "inherit", textDecoration: "none" }}>

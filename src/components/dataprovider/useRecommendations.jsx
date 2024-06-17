@@ -74,9 +74,16 @@ export const useRecommendations = (
       const allocatedAmountToEachStock = allocatedAmount;
       const remainingStocksToRecommend = maxStocks - userStocks.length;
 
+      if(liquidFunds < 25000){
+        setBuyingWarning([
+          `Minimum required is 25000, but you only have ${liquidFunds}.`,
+        ]);
+        return;
+      }
+
       if (allocatedAmountToEachStock > liquidFunds) {
         setBuyingWarning([
-          `Minimum required is ${allocatedAmountToEachStock}, but you only have ${liquidFunds}.`,
+          `Minimum required is {allocatedAmountToEachStock}, but you only have {liquidFunds}.`,
         ]);
         return;
       }
@@ -100,8 +107,7 @@ export const useRecommendations = (
           const updatedPortfolioPE =
             (newPortfolioPE * totalPortfolioValue + stockPE * totalCost) /
             (totalPortfolioValue + totalCost);
-
-          if (updatedPortfolioPE < 50) {
+          if (updatedPortfolioPE < 40) {
             remainingFunds -= totalCost;
             newPortfolioPE = updatedPortfolioPE;
             includedSectors.add(stock.Sector);
@@ -112,8 +118,10 @@ export const useRecommendations = (
               TotalValue: totalCost,
               buyQuantity,
               scopeToGrow: stock.scopeToGrow,
+              sector: stock.Sector
             });
           }
+         
         }
       });
 
@@ -142,6 +150,7 @@ export const useRecommendations = (
               TotalValue: totalCost,
               buyQuantity,
               scopeToGrow: stock.scopeToGrow,
+              sector: stock.Sector
             });
           }
         }

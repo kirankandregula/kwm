@@ -26,14 +26,15 @@ const renderAction = (action) => {
   }
 };
 
-const CompactMoniter = ({ data }) => {
+const CompactMoniter = ({ data, handleClick }) => {
   return (
-    <Box  sx={{ mb: 8 }}>
+    <Box sx={{ mb: 8 }}>
       {data.map((item, index) => (
         <Card
           key={index}
           variant="outlined"
-          sx={{ marginBottom: "2px", border: "1px solid lightgray" }}
+          sx={{ marginBottom: "2px", border: "1px solid lightgray", cursor: 'pointer' }}
+          onClick={() => handleClick(item.stock_id)}
         >
           <CardContent>
             <Grid container alignItems="center">

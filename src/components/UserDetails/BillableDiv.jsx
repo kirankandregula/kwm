@@ -16,7 +16,7 @@ function BillableDiv({
 }) {
   const quarterlyReturn = ((presentValue - preValue) / preValue) * 100;
   const billableReturn =
-    quarterlyReturn < 5 ? 0 : ((presentValue - preValue) * 0.95).toFixed(2); // Calculate Billable Return
+    quarterlyReturn < 5 ? 0 :  ((presentValue - (preValue*1.05)).toFixed(2)); // Calculate Billable Return
   const bill = quarterlyReturn < 5 ? 0 : (billableReturn * 0.2).toFixed(2); // Calculate Billable Amount
   const formattedBill = bill < 0 ? 0 : bill;
   const formattedBillableReturn = billableReturn < 0 ? 0 : billableReturn;
@@ -33,10 +33,10 @@ function BillableDiv({
       }}
     >
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
-        <Typography variant="caption" sx={{ fontWeight: "bold" }}>
+        <Typography variant="caption" >
           Bill
         </Typography>
-        <Typography variant="caption" sx={{ fontWeight: "bold" }}>
+        <Typography variant="caption" >
           EX.Growth
         </Typography>
       </Box>
@@ -51,16 +51,17 @@ function BillableDiv({
             color: getScopeColor(averageScopeToGrow),
           }}
         >
-          {averageScopeToGrow}%
+          {!isNaN(averageScopeToGrow) ? averageScopeToGrow : 0}%
+
         </Typography>
       </Box>
       <Box sx={{ borderBottom: "1px solid black", mb: 1 }} />
       <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
-        <Typography variant="caption" sx={{ fontWeight: "bold" }}>
-          Billable Return {formattedBillableReturn}
+        <Typography variant="caption" >
+          Billable . {formattedBillableReturn}
         </Typography>
-        <Typography variant="caption" sx={{ fontWeight: "bold" }}>
-          PE {averagePE}
+        <Typography variant="caption" >
+          PE . {!isNaN(averagePE) ? averagePE : 0}
         </Typography>
       </Box>
     </Box>

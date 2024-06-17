@@ -58,7 +58,7 @@ function AdminPage() {
         const quarterlyReturn = preValue
           ? (((presentValue - preValue) / preValue) * 100).toFixed(2)
           : 0;
-        const billableReturn = ((presentValue - preValue) * 0.95).toFixed(2);
+        const billableReturn = ((presentValue - (preValue*1.05)).toFixed(2));
         const billableAmount = Math.max((billableReturn * 0.2).toFixed(2), 0);
         return {
           ...user,

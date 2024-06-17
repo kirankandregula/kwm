@@ -25,10 +25,10 @@ function UserMetricsCard({
       }}
     >
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
-        <Typography variant="caption" sx={{ fontWeight: "bold" }}>
+        <Typography variant="caption" >
           Previous
         </Typography>
-        <Typography variant="caption" sx={{ fontWeight: "bold" }}>
+        <Typography variant="caption" >
           Current
         </Typography>
       </Box>
@@ -42,13 +42,13 @@ function UserMetricsCard({
       </Box>
       <Box sx={{ borderBottom: "1px solid black", mb: 1 }} />
       <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
-        <Typography variant="caption" sx={{ fontWeight: "bold" }}>
+        <Typography variant="caption" >
           <span>P&L </span>
-          <span style={{ color: profitLoss >= 0 ? green[500] : red[500] }}>{profitLoss >= 0 ? `+${profitLoss}` : profitLoss}</span>
+          <strong style={{ color: profitLoss >= 0 ? green[500] : red[500] }}>{profitLoss >= 0 ? `+${profitLoss}` : profitLoss}</strong>
         </Typography>
-        <Typography variant="caption" sx={{ fontWeight: "bold" }}>
+        <Typography variant="caption" >
           <span>Return </span>
-          <span  style={{ color: profitLoss >= 0 ? green[500] : red[500] }}>{quarterlyReturn}%</span>
+          <strong  style={{ color: profitLoss >= 0 ? green[500] : red[500] }}>{quarterlyReturn}%</strong>
         </Typography>
       </Box>
     </Box>

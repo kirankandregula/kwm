@@ -3,7 +3,7 @@ import { css } from "@emotion/react";
 import { ClipLoader } from "react-spinners";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import { TextField, Box, useMediaQuery } from "@mui/material";
+import { TextField, Box, useMediaQuery, Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useData } from "../dataprovider/DataProvider"; // Adjust the import path as needed
 import CompactView from "./CompactMoniter"; // Adjust the import path as needed
@@ -17,13 +17,15 @@ const override = css`
 `;
 
 const StockMonitor = () => {
-  const { individualStockData, loading, fetchData, setLoading } = useData();
+  const { individualStockData, loading, fetchData, setLoading, stockData, financialData } = useData();
   const [filterValue, setFilterValue] = useState("");
   const [cookies] = useCookies(["userName", "userRole"]);
   const navigate = useNavigate();
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"));
   const [data, setData] = useState([]);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogContent, setDialogContent] = useState([]);
 
   useEffect(() => {
     if (!cookies.userName || !cookies.userRole) {
@@ -47,6 +49,21 @@ const StockMonitor = () => {
 
   const handleFilterChange = (e) => {
     setFilterValue(e.target.value);
+  };
+
+  const handleClick = (stockId) => {
+    const usersWithStock = stockData
+      .filter(f => f.stock_id === stockId)
+      .map(f => {
+        const user = financialData.find(s => s.user_id === f.user_id);
+        return { ...user, quantity: f.quantity };
+      });
+    setDialogContent(usersWithStock);
+    setDialogOpen(true);
+  };
+
+  const handleClose = () => {
+    setDialogOpen(false);
   };
 
   const filteredData = data.filter(
@@ -95,13 +112,34 @@ const StockMonitor = () => {
               data={data}
               filteredData={filteredData}
               handleSort={handleSort}
+              handleClick={handleClick}
             />
           </Box>
           <Box sx={{ display: { xs: "block", md: "none" } }}>
-            <CompactView data={filteredData} />
+            <CompactView data={filteredData} handleClick={handleClick} />
           </Box>
         </Box>
       )}
+      <Dialog open={dialogOpen} onClose={handleClose}>
+        <DialogTitle>User Details</DialogTitle>
+        <DialogContent>
+          {dialogContent.map((user, index) => (
+            <Box key={index} mb={2}>
+              <Typography variant="body1">
+                User Name: {user.Name}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                Quantity: {user.quantity}
+              </Typography>
+            </Box>
+          ))}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

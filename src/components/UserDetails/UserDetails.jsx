@@ -135,7 +135,7 @@ function UserDetails() {
             </Box>
           ) : (
             <UserMetricsCard
-              averagePE={averagePE}
+              averagePE={parseFloat(averagePE)}
               averageScopeToGrow={averageScopeToGrow}
               preValue={
                 userFinancialData ? userFinancialData.Previous_Value : 0
@@ -164,7 +164,7 @@ function UserDetails() {
             </Box>
           ) : (
             <BillableDiv
-              averagePE={averagePE}
+              averagePE={parseFloat(averagePE)}
               averageScopeToGrow={averageScopeToGrow}
               preValue={
                 userFinancialData ? userFinancialData.Previous_Value : 0

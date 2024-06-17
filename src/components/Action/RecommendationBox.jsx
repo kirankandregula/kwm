@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Typography, Grid } from "@mui/material";
 
 const RecommendationBox = ({ recommendation }) => {
-  const { stockName, LTP, buyQuantity, TotalValue, PE } = recommendation;
+  const { stockName, LTP, buyQuantity, TotalValue, PE ,sector} = recommendation;
 
   return (
     <Box
@@ -18,7 +18,10 @@ const RecommendationBox = ({ recommendation }) => {
     >
       <Box>
         <Typography variant="caption" color="textSecondary">
-          PE: {PE}
+          PE. {PE} &bull; &nbsp;
+        </Typography>
+        <Typography variant="caption" color="textSecondary">
+          Sec. {sector}
         </Typography>
         <Typography variant="subtitle1" fontWeight="bold">
           {stockName}

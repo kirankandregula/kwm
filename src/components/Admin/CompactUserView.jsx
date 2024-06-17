@@ -23,7 +23,7 @@ const CompactUserView = ({ userData, handleRowClick }) => (
             <Grid container justifyContent="space-between">
               <Grid item>
                 <Typography variant="caption">
-                  PE. {user.averagePE}
+                  PE. {!isNaN(user.averagePE)? (user.averagePE): 0}
                   <Typography
                     variant="caption"
                     component="span"
@@ -31,7 +31,7 @@ const CompactUserView = ({ userData, handleRowClick }) => (
                   >
                     &bull;
                   </Typography>
-                  Gwth. {user.averageScopeToGrow}%
+                  Gwth. {!isNaN(user.averageScopeToGrow) ? (user.averageScopeToGrow) : 0}%
                 </Typography>
               </Grid>
               <Grid item>
