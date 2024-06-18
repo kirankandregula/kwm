@@ -118,7 +118,7 @@ function UserDetails() {
         </Box>
       )}
       {filteredData && filteredData.length === 0 && (
-        <Box textAlign="center" color="error" mb={3}>
+        <Box textAlign="center" color="error" mb={3} mt={5} className="text-danger">
           You don't have any holdings now.
         </Box>
       )}
@@ -189,7 +189,7 @@ function UserDetails() {
             </Box>
           ) : (
             <DiversificationDiv
-              equity={totalLatestValue}
+              equity={totalLatestValue ? parseFloat(totalLatestValue): 0}
               gold={userFinancialData ? userFinancialData.Gold : 0}
               debt={userFinancialData ? userFinancialData.Debt : 0}
               totalLatestValue={
@@ -202,26 +202,37 @@ function UserDetails() {
         </Grid>
       </Grid>
       <Grid container spacing={4}>
-        <Grid item xs={12}>
-          {cardsLoading ? (
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              minHeight="100px"
-            >
-              <CircularProgress />
-            </Box>
-          ) : isLargeScreen ? (
+      <Grid item xs={12}>
+        {cardsLoading ? (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            minHeight="100px"
+          >
+            <CircularProgress />
+          </Box>
+        ) : filteredData && filteredData.length > 0 ? (
+          isLargeScreen ? (
             <StockTable filteredData={filteredData} />
           ) : (
             <CompactStockView
               filteredData={filteredData}
               individualStockData={individualStockData}
             />
-          )}
-        </Grid>
+          )
+        ) : (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            minHeight="100px"
+          >
+            <p>No data available</p>
+          </Box>
+        )}
       </Grid>
+    </Grid>
       <Grid container spacing={4} sx={{ mb: 8, mt: "1px" }}>
         <Grid item xs={12} textAlign="center">
           {(isLargeScreen || isMidScreen) && cookies.userRole === "Admin" && (

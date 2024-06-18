@@ -58,10 +58,10 @@ function BillableDiv({
       <Box sx={{ borderBottom: "1px solid black", mb: 1 }} />
       <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
         <Typography variant="caption" >
-          Billable . {formattedBillableReturn}
+          Billable. {formattedBillableReturn}
         </Typography>
         <Typography variant="caption" >
-          PE . {!isNaN(averagePE) ? averagePE : 0}
+          PE. {!isNaN(averagePE) ? averagePE : 0}
         </Typography>
       </Box>
     </Box>

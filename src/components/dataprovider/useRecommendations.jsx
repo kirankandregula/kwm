@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 
 export const useRecommendations = (
-  financialData,
+  userFinancialData,
   userStocks,
   individualStockData,
   userId,
@@ -23,6 +23,14 @@ export const useRecommendations = (
         userStocks,
         userId
       );
+
+      // Check if user is approved
+      if (!userFinancialData || userFinancialData.approved !== "yes") {
+        setBuyingWarning([
+          "Your account is not approved. Please contact the Admin to generate advices.",
+        ]);
+        return;
+      }
 
       // Filter stocksToConsider by selectedSectors
       const sectorFilteredRecommendations = selectedSectors.length
@@ -68,13 +76,13 @@ export const useRecommendations = (
         maxStocks = 10;
       } else {
         allocatedAmount = totalPortfolioValue / 10;
-        maxStocks = 10;
+        maxStocks = 11;
       }
 
       const allocatedAmountToEachStock = allocatedAmount;
       const remainingStocksToRecommend = maxStocks - userStocks.length;
 
-      if(liquidFunds < 25000){
+      if (isNewUser && liquidFunds < 25000) {
         setBuyingWarning([
           `Minimum required is 25000, but you only have ${liquidFunds}.`,
         ]);
@@ -83,7 +91,7 @@ export const useRecommendations = (
 
       if (allocatedAmountToEachStock > liquidFunds) {
         setBuyingWarning([
-          `Minimum required is {allocatedAmountToEachStock}, but you only have {liquidFunds}.`,
+          `Minimum required is ${allocatedAmountToEachStock}, but you only have ${liquidFunds}.`,
         ]);
         return;
       }
@@ -118,18 +126,18 @@ export const useRecommendations = (
               TotalValue: totalCost,
               buyQuantity,
               scopeToGrow: stock.scopeToGrow,
-              sector: stock.Sector
+              sector: stock.Sector,
             });
           }
-         
         }
       });
 
-      // Fill remaining recommendations based on the highest scope to grow
+      // Fill remaining recommendations based on the highest scope to grow, ensuring unique sectors
       nonSectorFilteredRecommendations.forEach((stock) => {
         if (
           newRecommendations.length < remainingStocksToRecommend &&
-          remainingFunds >= allocatedAmountToEachStock
+          remainingFunds >= allocatedAmountToEachStock &&
+          !includedSectors.has(stock.Sector)
         ) {
           const buyQuantity = Math.floor(
             allocatedAmountToEachStock / stock.LTP
@@ -140,9 +148,10 @@ export const useRecommendations = (
             (newPortfolioPE * totalPortfolioValue + stockPE * totalCost) /
             (totalPortfolioValue + totalCost);
 
-          if (updatedPortfolioPE < 50) {
+          if (updatedPortfolioPE < 40) {
             remainingFunds -= totalCost;
             newPortfolioPE = updatedPortfolioPE;
+            includedSectors.add(stock.Sector);
             newRecommendations.push({
               stockName: stock.stockName,
               LTP: stock.LTP,
@@ -150,11 +159,13 @@ export const useRecommendations = (
               TotalValue: totalCost,
               buyQuantity,
               scopeToGrow: stock.scopeToGrow,
-              sector: stock.Sector
+              sector: stock.Sector,
             });
           }
         }
       });
+
+      const totalStocksAfterRecommendations = userStocks.length + newRecommendations.length;
 
       if (isNewUser || newRecommendations.length > 0) {
         // Only update recommendations if there are changes
@@ -165,16 +176,21 @@ export const useRecommendations = (
           setPreviousRecommendations(newRecommendations);
           setBuyRecommendations(newRecommendations);
           setPortfolioPE(newPortfolioPE);
+
+          if (totalStocksAfterRecommendations > 10) {
+            setBuyingWarning([
+              "Too many stocks, reduce to max 10.",
+            ]);
+          }
         }
       } else {
         setBuyingWarning([
-          `You need ${
-            allocatedAmountToEachStock - liquidFunds
-          } more to buy stocks`,
+          `Need ${allocatedAmountToEachStock - liquidFunds} more to buy stocks.`,
         ]);
       }
     },
     [
+      userFinancialData,
       stocksToConsider,
       userStocks,
       calculateTotalAmount,

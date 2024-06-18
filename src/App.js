@@ -42,14 +42,18 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/etf"
           element={
-            <ProtectedRoute isAllowed={cookies.userId}>
+            <ProtectedRoute
+              isAllowed={cookies.userRole && cookies.userId && cookies.userRole}
+            >
               <EtfService />
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/admin/:id"
           element={
@@ -69,7 +73,7 @@ const App = () => {
         <Route
           path="/portfolio/:id"
           element={
-            <ProtectedRoute isAllowed={!!cookies.userRole}>
+            <ProtectedRoute isAllowed={cookies.userRole}>
               <YourPortfolio />
             </ProtectedRoute>
           }

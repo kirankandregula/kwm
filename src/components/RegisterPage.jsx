@@ -27,7 +27,9 @@ const RegisterPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false); // State for password visibility toggle
+  const [existingUsers, setExistingUsers] = useState([]);
 
   useEffect(() => {
     // Fetch the user data to determine the new user_id
@@ -39,6 +41,7 @@ const RegisterPage = () => {
         const users = await response.json();
         const maxUserId = users.reduce((max, user) => Math.max(max, user.user_id), 0);
         setFormData((prevData) => ({ ...prevData, user_id: maxUserId + 1 }));
+        setExistingUsers(users.map(user => user.Name.toLowerCase()));
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -59,6 +62,11 @@ const RegisterPage = () => {
       return false;
     }
 
+    if (existingUsers.includes(Name.toLowerCase())) {
+      setErrorMessage("Username already exists. Please choose another one.");
+      return false;
+    }
+
     const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
     if (!passwordRegex.test(Password)) {
       setErrorMessage(
@@ -73,6 +81,18 @@ const RegisterPage = () => {
     }
 
     return true;
+  };
+
+  const resetForm = () => {
+    setFormData({
+      Name: "",
+      Password: "",
+      Role: "Viewer",
+      Previous_Value: "0",
+      Debt: "",
+      Gold: "0",
+      approved: "no"
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -90,7 +110,7 @@ const RegisterPage = () => {
     console.log("Register Object: ", updatedFormData); // Log the form data
 
     try {
-      const response = await fetch(
+      await fetch(
         "https://script.google.com/macros/s/AKfycbxX4X5wPezzCIexzN9yOXzKpqRNrqqIUoSvoHV1u1AeiQK6LJZrFsICFljF1p90SXJM1Q/exec",
         {
           method: "POST",
@@ -98,18 +118,18 @@ const RegisterPage = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(updatedFormData),
+          mode: "no-cors"
         }
       );
 
-      const result = await response.json();
-      if (result.success) {
-        navigate(`/login`);
-      } else {
-        setErrorMessage("Registration failed");
-      }
+      // Assume success if no error is thrown
+      setSuccessMessage("Registration successful! Please contact the admin to approve your login.");
+      resetForm();
+      setErrorMessage("");
     } catch (error) {
       console.error("Error registering:", error);
       setErrorMessage("Registration failed");
+      setSuccessMessage("");
     }
 
     setLoading(false);
@@ -123,9 +143,18 @@ const RegisterPage = () => {
     e.preventDefault();
   };
 
+  const handleUsernameKeyDown = async (e) => {
+    const { value } = e.target;
+    if (existingUsers.includes(value.toLowerCase())) {
+      setErrorMessage("Username already exists. Please choose another one.");
+    } else {
+      setErrorMessage("");
+    }
+  };
+
   return (
-    <div className="register-container d-flex justify-content-center align-items-center" style={{marginTop: "100px"}}>
-      <div className="register-card">
+    <div className="register-container d-flex justify-content-center align-items-center" style={{ marginTop: "100px" }}>
+      <div className="register-card" style={{ maxWidth: '500px', padding: '20px',  margin: "10px" }}>
         <div className="register-card-body">
           <Typography
             variant="h5"
@@ -137,7 +166,10 @@ const RegisterPage = () => {
             Register
           </Typography>
           {errorMessage && (
-            <p className="text-center text-danger">{errorMessage}</p>
+            <p className="text-center text-danger" style={{ maxWidth: "250px"}}>{errorMessage}</p>
+          )}
+          {successMessage && (
+            <p className="text-center text-success " style={{ maxWidth: "250px" }}>{successMessage}</p>
           )}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
@@ -150,6 +182,7 @@ const RegisterPage = () => {
                   type="text"
                   value={formData.Name}
                   onChange={handleChange}
+                  onKeyDown={handleUsernameKeyDown}
                   name="Name"
                   label="Username"
                 />

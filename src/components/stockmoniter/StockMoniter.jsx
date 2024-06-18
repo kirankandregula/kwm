@@ -97,8 +97,8 @@ const StockMonitor = () => {
           />
         </Box>
       ) : (
-        <Box className="col-md-12">
-          <Box className="form-group sm-12 mt-5 my-2">
+        <Box className="col-md-12" marginTop={isLargeScreen? 0 : 6}>
+          <Box className="form-group sm-12 my-2" >
             <TextField
               fullWidth
               label="Filter by Stock Name or Sector"

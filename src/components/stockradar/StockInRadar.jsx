@@ -115,7 +115,7 @@ const StockInRadar = () => {
   }
 
   return (
-    <Box mt={10} className="container">
+    <Box  className="container" mt={isLargeScreen? 10: 8}>
       <Box my={2}>
         <Box className="form-group sm-12 mt-5 my-2">
           <TextField

@@ -109,7 +109,7 @@ export const DataProvider = ({ children }) => {
   }, [userStocks, calculatePortfolioPE]);
 
   const { generateBuyingAdvice, generateSellingAdvice } = useRecommendations(
-    financialData,
+    userFinancialData,
     userStocks,
     individualStockData,
     cookies.userId,
@@ -166,6 +166,7 @@ export const DataProvider = ({ children }) => {
   const handleLogout = useCallback(() => {
     removeCookie("userId");
     removeCookie("userName"); // Clear the user ID cookie
+    removeCookie("userRole");
     resetNotificationCount(); // Reset notifications and recommendations
     navigate("/login"); // Navigate to login page
   }, [removeCookie, resetNotificationCount, navigate]);

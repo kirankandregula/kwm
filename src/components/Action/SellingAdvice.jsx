@@ -49,7 +49,7 @@ const SellingAdvice = () => {
       flexDirection="column"
       alignItems="center"
       mb={3}
-      mt={2}
+      mt={1}
     >
       <Box
         className="initial-recommendation"
@@ -60,9 +60,9 @@ const SellingAdvice = () => {
         backgroundColor="#f9f9f9"
         boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)"
         minHeight={180}
-        minWidth={330}
+        minWidth={isSmallScreen? "330px" : "400px"}
       >
-        <Typography variant="h6" color="red" sx={{ fontWeight: "bold" }}>
+        <Typography variant="h6" color="red">
           Selling Recommendation
         </Typography>
         <Box
@@ -74,10 +74,10 @@ const SellingAdvice = () => {
             mt: "20px",
           }}
         >
-          <Typography variant="body1">
+          <Typography variant="caption" sx={{mb: "8px", color: "warning.main"}} >
             {sellingRecommendations.length > 0
-              ? "We have identified stocks that you might want to consider selling."
-              : "None of your stocks meet the criteria for selling."}
+              ? `${sellingRecommendations.length} Stocks to consider selling.`
+              : "None of your stocks met the criteria for selling."}
           </Typography>
           <Button
             variant="outlined"
@@ -165,10 +165,10 @@ const SellingAdvice = () => {
               </Box>
             ))
           ) : (
-            <Box display="flex" alignItems="center" mb={1}>
+            <Box display="flex" flexDirection="column" justifyContent="end" alignItems="center" mb={1}>
               <WarningIcon color="warning" />
-              <Typography variant="body1" color="warning.main" ml={1}>
-                No stocks currently meet the criteria for selling. Please check
+              <Typography variant="caption" color="warning.main" ml={1}>
+                No stocks currently met the criteria for selling. Please check
                 back later.
               </Typography>
             </Box>

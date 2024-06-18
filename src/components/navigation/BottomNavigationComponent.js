@@ -61,20 +61,21 @@ const BottomNavigationComponent = ({ handleLogout }) => {
   };
 
   const renderLogoutActions = () => {
-    if (!cookies.userName) {
+    if (!cookies.userRole) {
       return [
+        <BottomNavigationAction
+        key="about"
+        label="About"
+        value="/about"
+        icon={<InfoIcon />}
+      />,
         <BottomNavigationAction
           key="contact"
           label="Contact"
           value="/contact"
           icon={<ContactSupportIcon />}
         />,
-        <BottomNavigationAction
-          key="about"
-          label="About"
-          value="/about"
-          icon={<InfoIcon />}
-        />,
+       
       ];
     }
     return [];

@@ -1,5 +1,13 @@
 import React from "react";
-import { Container, Typography, Paper, Grid, Button } from "@mui/material";
+import {
+  Container,
+  Typography,
+  Paper,
+  Grid,
+  Button,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { styled } from "@mui/system";
 import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
@@ -8,11 +16,11 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useNavigate } from "react-router-dom";
 
 const AboutContainer = styled(Container)(({ theme }) => ({
-  marginTop: theme.spacing(10),
+  marginTop: theme.spacing(7),
   marginBottom: theme.spacing(10),
   padding: theme.spacing(2),
   background: "linear-gradient(45deg, #ADD8E6, #ffc3a0)",
-  borderRadius: "20px",
+  backgroundSize : "cover"
 }));
 
 const SectionContainer = styled(Paper)(({ theme }) => ({
@@ -37,6 +45,9 @@ const StartJourneyContainer = styled(SectionContainer)(({ theme }) => ({
 }));
 
 const About = () => {
+
+  const theme = useTheme();
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"));
   const navigate = useNavigate();
 
   const handleGetStarted = () => {
@@ -44,8 +55,13 @@ const About = () => {
   };
 
   return (
-    <AboutContainer maxWidth="md">
-      <Typography variant="h4" align="center" gutterBottom>
+    <AboutContainer maxWidth="md" sx={{marginTop: isLargeScreen ? "80px" : "30px"}}>
+      <Typography
+        variant="h5"
+        align="center"
+        sx={{ mt: "28px", fontWeight: "bold" }}
+        gutterBottom
+      >
         About Aartha Investments
       </Typography>
       <SectionContainer elevation={3}>

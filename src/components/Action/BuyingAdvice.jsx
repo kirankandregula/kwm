@@ -93,12 +93,12 @@ const BuyingAdvice = () => {
         backgroundColor="#f9f9f9"
         boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)"
         minHeight={180}
-        minWidth={330}
+        minWidth={isSmallScreen? "330px" : "400px"}
       >
         <Typography
           variant="h6"
           color="green"
-          sx={{ fontWeight: "bold", mb: "10px" }}
+          sx={{ mb: "10px" }}
         >
           Buying Recommendation
         </Typography>
@@ -111,12 +111,12 @@ const BuyingAdvice = () => {
             minHeight: "100px",
           }}
         >
-          <Typography variant="body1">
+          <Typography variant="caption" sx={{color: "warning.main"}}>
             {buyRecommendations.length > 0
               ? `You have ${buyRecommendations.length} stocks to buy.`
               : "No stocks to recommend yet."}
           </Typography>
-          {buyRecommendations.length === 0 && buyingWarning.length > 0 && (
+          { buyingWarning.length > 0 && (
             <Box
               display="flex"
               flexDirection="column"
@@ -125,7 +125,7 @@ const BuyingAdvice = () => {
               mt={2}
             >
               <WarningIcon color="error" />
-              <Typography variant="body1" color="error" ml={1}>
+              <Typography variant="variant" color="error" ml={1} style={{maxWidth: "340px", marginBottom: "5px",fontSize: "12px"}}>
                 {buyingWarning[0]}
               </Typography>
             </Box>

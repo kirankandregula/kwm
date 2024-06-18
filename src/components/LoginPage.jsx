@@ -57,17 +57,13 @@ const LoginPage = () => {
       );
 
       if (user) {
-        if (user.approved === "yes") {
-          const expirationTime = new Date(new Date().getTime() + 30 * 60 * 1000);
-          setCookie("userName", user.Name, { expires: expirationTime });
-          setCookie("userRole", user.Role, { expires: expirationTime });
-          setCookie("userId", user.user_id, { expires: expirationTime });
+        const expirationTime = new Date(new Date().getTime() + 30 * 60 * 1000);
+        setCookie("userName", user.Name, { expires: expirationTime });
+        setCookie("userRole", user.Role, { expires: expirationTime });
+        setCookie("userId", user.user_id, { expires: expirationTime });
 
-          await fetchData();
-          navigate(`/portfolio/${user.user_id}`);
-        } else {
-          setErrorMessage("Your account is not approved. Please contact the Admin.");
-        }
+        await fetchData();
+        navigate(`/portfolio/${user.user_id}`);
       } else {
         setErrorMessage("Invalid username or password");
       }
@@ -100,7 +96,7 @@ const LoginPage = () => {
             Login
           </Typography>
           {errorMessage && (
-            <p className="text-center text-danger">{errorMessage}</p>
+            <p className="text-center text-danger" style={{width: "250px"}}>{errorMessage}</p>
           )}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">

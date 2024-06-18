@@ -5,7 +5,7 @@ import SellingAdvice from "./SellingAdvice";
 
 const MainPage = () => {
   return (
-    <Box className="container" sx={{ marginTop: "80px" }}>
+    <Box className="container" sx={{ marginTop: "120px" }}>
       <BuyingAdvice />
       <SellingAdvice />
     </Box>

@@ -198,7 +198,7 @@ const AppBarComponent = ({ onLogout }) => {
       <Container maxWidth="lg">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            {cookies.userName && cookies.userId ? (
+            {cookies.userName && cookies.userId && cookies.userRole ? (
               <Greet userName={cookies.userName} />
             ) : (
               <Link to="/" style={{ color: "inherit", textDecoration: "none" }}>
