@@ -153,7 +153,7 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="register-container d-flex justify-content-center align-items-center" style={{ marginTop: "100px" }}>
+    <div className="register-container d-flex justify-content-center align-items-center" style={{ marginTop: "130px" }}>
       <div className="register-card" style={{ maxWidth: '500px', padding: '20px',  margin: "10px" }}>
         <div className="register-card-body">
           <Typography

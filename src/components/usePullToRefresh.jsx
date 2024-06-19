@@ -16,7 +16,7 @@ const usePullToRefresh = (onRefresh) => {
     const handleTouchEnd = (e) => {
       // Increase the pull-down distance to 100px
       if (touchEndY > touchStartY + 100 && window.scrollY === 0) {
-        e.preventDefault();
+        e.preventDefault(); // Prevent default only when refreshing
         onRefresh();
       }
     };

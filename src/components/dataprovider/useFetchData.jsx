@@ -7,6 +7,7 @@ export const useFetchData = (
   setIndividualStockData,
   setStockInRadarData,
   setEtfServiceData,
+  setHistoryData,
   setLoading
 ) => {
   const fetchData = useCallback(async () => {
@@ -18,6 +19,7 @@ export const useFetchData = (
         individualStockResponse,
         stockInRadarResponse,
         etfServiceResponse,
+        historyResponse
       ] = await Promise.all([
         axios.get(
           "https://script.google.com/macros/s/AKfycby5GfxI1JMefqrVXYHMaodj07Dbx1MOTY8O_gu1U14ceiqdZzbN42ZX9KCmi_J0ZJJL/exec"
@@ -34,6 +36,9 @@ export const useFetchData = (
         axios.get(
           "https://script.google.com/macros/s/AKfycbyAGkiTm2CCB56gtwdO2EpHhNb75gnogCedBoF3tnsR6mcfjY5LwpDEaDUS7mH0F4a3Xg/exec"
         ),
+        axios.get(
+          "https://script.google.com/macros/s/AKfycbwLPbCIhhasSg3AD6KZwQQ6ituKUc1CA04cpmk201tmDQUXGBz5RoHKlmW_a7HE1oabCQ/exec"
+        ),
       ]);
 
       setFinancialData(financialResponse.data);
@@ -41,6 +46,7 @@ export const useFetchData = (
       setIndividualStockData(individualStockResponse.data);
       setStockInRadarData(stockInRadarResponse.data);
       setEtfServiceData(etfServiceResponse.data);
+      setHistoryData(historyResponse.data)
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -52,6 +58,7 @@ export const useFetchData = (
     setIndividualStockData,
     setStockInRadarData,
     setEtfServiceData,
+    setHistoryData,
     setLoading,
   ]);
 

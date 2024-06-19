@@ -111,12 +111,12 @@ const BuyingAdvice = () => {
             minHeight: "100px",
           }}
         >
-          <Typography variant="caption" sx={{color: "warning.main"}}>
+          <Typography variant="caption" sx={{color: "info.main"}}>
             {buyRecommendations.length > 0
               ? `You have ${buyRecommendations.length} stocks to buy.`
               : "No stocks to recommend yet."}
           </Typography>
-          { buyingWarning.length > 0 && (
+          { buyingWarning.length > 0 && buyRecommendations.length ===0 && (
             <Box
               display="flex"
               flexDirection="column"
@@ -124,8 +124,8 @@ const BuyingAdvice = () => {
               justifyContent="center"
               mt={2}
             >
-              <WarningIcon color="error" />
-              <Typography variant="variant" color="error" ml={1} style={{maxWidth: "340px", marginBottom: "5px",fontSize: "12px"}}>
+              <WarningIcon color="warning" />
+              <Typography variant="variant" color="warning.main" ml={1} style={{maxWidth: "340px", marginBottom: "5px",fontSize: "12px"}}>
                 {buyingWarning[0]}
               </Typography>
             </Box>

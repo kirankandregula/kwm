@@ -22,9 +22,12 @@ const AppBarComponent = ({ onLogout }) => {
   const isMediumDevice = useMediaQuery(theme.breakpoints.down("md"));
   const [anchorEl, setAnchorEl] = useState(null);
   const [notificationsAnchorEl, setNotificationsAnchorEl] = useState(null);
-  const [cookies] = useCookies(["userName", "userRole","userId"]);
-  const { notifications, sellingRecommendations, buyRecommendations } =
-    useData();
+  const [cookies, removeCookie] = useCookies(["userName", "userRole", "userId"]);
+  const {
+    notifications,
+    sellingRecommendations,
+    buyRecommendations,
+  } = useData();
   const navigate = useNavigate();
   const [badgeContent, setBadgeContent] = useState(0);
 
@@ -108,90 +111,57 @@ const AppBarComponent = ({ onLogout }) => {
   };
 
   const menuItems = [
-    <MenuItem key="home" onClick={handleMenuClose} component={Link} to="/">
-      Home
-    </MenuItem>,
-    <MenuItem key="etf" onClick={handleMenuClose} component={Link} to="/etf">
-      Etf-Service
-    </MenuItem>,
-    <MenuItem
-      key="action"
-      onClick={handleMenuClose}
-      component={Link}
-      to="/action"
-    >
-      Action
-    </MenuItem>,
-    <MenuItem
-      key="about"
-      onClick={handleMenuClose}
-      component={Link}
-      to="/about"
-    >
-      About
-    </MenuItem>,
-    <MenuItem
-      key="contact"
-      onClick={handleMenuClose}
-      component={Link}
-      to="/contact"
-    >
-      Contact
-    </MenuItem>,
+    { text: "Home", link: "/" },
+    { text: "About", link: "/about" },
+    { text: "Contact", link: "/contact" },
   ];
 
   if (cookies.userRole === "Admin") {
     menuItems.push(
-      <MenuItem
-        key="spying"
-        onClick={handleMenuClose}
-        component={Link}
-        to="/spying"
-      >
-        Stock Monitor
-      </MenuItem>,
-      <MenuItem
-        key="radar"
-        onClick={handleMenuClose}
-        component={Link}
-        to="/radar"
-      >
-        Stock In Radar
-      </MenuItem>
+      { text: "Etf Service", link: "/etf" },
+      { text: "Stock Monitor", link: "/spying" },
+      { text: "Stock In Radar", link: "/radar" },
+      { text: "Action", link: "/action" },
+      { text: "History", link: "/history" }
     );
   }
 
   if (cookies.userRole === "Viewer") {
     menuItems.push(
-      <MenuItem
-        key="action-viewer"
-        onClick={handleMenuClose}
-        component={Link}
-        to="/action"
-      >
-        Action
-      </MenuItem>
+      { text: "Etf Service", link: "/etf" },
+      { text: "Action", link: "/action" },
+      { text: "History", link: "/history" }
     );
   }
 
   if (cookies.userName && cookies.userRole) {
-    menuItems.push(
-      <MenuItem key="logout" onClick={onLogout}>
-        Logout
-      </MenuItem>
-    );
+    menuItems.push({
+      text: "Logout",
+      value: "logout", // Add a value to identify logout item
+    });
   } else {
-    menuItems.push(
-      <MenuItem
-        key="login"
-        onClick={handleMenuClose}
-        component={Link}
-        to="/login"
-      >
-        Login
-      </MenuItem>
-    );
+    menuItems.push({
+      text: "Login",
+      link: "/login",
+    });
   }
+
+  const handleChange = (event, newValue) => {
+    if (newValue === "logout") {
+      handleLogout(); // Call handleLogout function
+    } else {
+      navigate(newValue);
+    }
+    handleMenuClose(); // Close menu after selecting an option
+  };
+
+  const handleLogout = () => {
+    onLogout(); // Call onLogout function passed from props
+    removeCookie("userName"); // Remove userName cookie
+    removeCookie("userRole"); // Remove userRole cookie
+    removeCookie("userId"); // Remove userId cookie
+    navigate("/"); // Navigate to home page
+  };
 
   return (
     <AppBar position="fixed" className="app-bar">
@@ -229,49 +199,35 @@ const AppBarComponent = ({ onLogout }) => {
                   horizontal: "right",
                 }}
               >
-                {menuItems}
+                {menuItems.map((item, index) => (
+                  <MenuItem
+                    key={index}
+                    onClick={(event) =>
+                      handleChange(event, item.value || item.link)
+                    }
+                  >
+                    {item.text}
+                  </MenuItem>
+                ))}
               </Menu>
             </>
           ) : (
             <>
-              <Button color="inherit" component={Link} to="/">
-                Home
-              </Button>
-              {(cookies.userRole === "Viewer" ||
-                cookies.userRole === "Admin") && (
-                <Button color="inherit" component={Link} to="/action">
-                  Action
+              {menuItems.map((item, index) => (
+                <Button
+                  key={index}
+                  color="inherit"
+                  onClick={() => {
+                    if (item.value === "logout") {
+                      handleLogout();
+                    } else {
+                      navigate(item.link);
+                    }
+                  }}
+                >
+                  {item.text}
                 </Button>
-              )}
-              {cookies.userRole === "Admin" && (
-                <>
-                  <Button color="inherit" component={Link} to="/spying">
-                    Stock Monitor
-                  </Button>
-                  <Button color="inherit" component={Link} to="/radar">
-                    Stock In Radar
-                  </Button>
-                </>
-              )}
-              <Button color="inherit" component={Link} to="/etf">
-                Etf-Service
-              </Button>
-              <Button color="inherit" component={Link} to="/about">
-                About
-              </Button>
-              <Button color="inherit" component={Link} to="/contact">
-                Contact
-              </Button>
-
-              {cookies.userName && cookies.userRole ? (
-                <Button color="inherit" onClick={onLogout}>
-                  Logout
-                </Button>
-              ) : (
-                <Button color="inherit" component={Link} to="/login">
-                  Login
-                </Button>
-              )}
+              ))}
             </>
           )}
           <IconButton

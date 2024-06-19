@@ -74,7 +74,7 @@ const SellingAdvice = () => {
             mt: "20px",
           }}
         >
-          <Typography variant="caption" sx={{mb: "8px", color: "warning.main"}} >
+          <Typography variant="caption" sx={{mb: "8px", color: "grey"}} >
             {sellingRecommendations.length > 0
               ? `${sellingRecommendations.length} Stocks to consider selling.`
               : "None of your stocks met the criteria for selling."}

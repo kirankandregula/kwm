@@ -10,7 +10,7 @@ const getQuarterlyReturnColor = (quarterlyReturn) => {
 const renderAvg = (average) => {
   if (average === "Average") {
     return (
-      <span style={{ color: "red" }} className="mx-2">
+      <span key="avg" style={{ color: "red" }} className="mx-2">
         Avg
       </span>
     );
@@ -20,14 +20,18 @@ const renderAvg = (average) => {
 
 const renderAction = (action) => {
   if (action === "Hold") {
-    return <span style={{ color: "green" }}>Hold</span>;
+    return (
+      <span key="hold" style={{ color: "green" }}>
+        Hold
+      </span>
+    );
   } else {
-    return <span style={{ color: "red" }}>Sell</span>;
+    return (
+      <span key="sell" style={{ color: "red" }}>
+        Sell
+      </span>
+    );
   }
-};
-
-const getActionColor = (action) => {
-  return action === "Hold" ? "green" : "red";
 };
 
 const CompactStockView = ({ filteredData, individualStockData }) => {
@@ -41,6 +45,7 @@ const CompactStockView = ({ filteredData, individualStockData }) => {
 
         return (
           <Box
+            key={stock.stockId} // Adding unique key prop here
             className="compact-stock-view"
             sx={{
               p: 2,

@@ -31,16 +31,20 @@ export const DataProvider = ({ children }) => {
   const [buyingWarning, setBuyingWarning] = useState([]);
   const [userFinancialData, setUserFinancialData] = useState(null);
   const [portfolioPE, setPortfolioPE] = useState(0);
+  const [userPortfolioPresentValue, setUserPortfolioPresentValue] = useState(0);
   const [cookies, removeCookie] = useCookies(["userId"]);
   const navigate = useNavigate();
   const [sectors, setSectors] = useState([]);
   const [selectedSectors, setSelectedSectors] = useState([]);
+  const [historyData, setHistoryData] = useState([]);
+  const [userHistoryData, setUserHistoryData] = useState([]);
   const fetchData = useFetchData(
     setFinancialData,
     setStockData,
     setIndividualStockData,
     setStockInRadarData,
     setEtfServiceData,
+    setHistoryData,
     setLoading
   );
 
@@ -56,6 +60,15 @@ export const DataProvider = ({ children }) => {
 
     return totalValue === 0 ? 0 : weightedPETotal / totalValue;
   }, [userStocks]);
+
+  const { calculateTotalAmount } = useTotalPortfolioValue(individualStockData, financialData);
+
+  useEffect(() => {
+    if (userStocks.length > 0) {
+      const { totalPortfolioValue } = calculateTotalAmount(userStocks, cookies.userId);
+      setUserPortfolioPresentValue(totalPortfolioValue);
+    }
+  }, [individualStockData, financialData, userStocks, cookies.userId, calculateTotalAmount]);
 
   useEffect(() => {
     if (stocksToConsider.length > 0) {
@@ -101,6 +114,16 @@ export const DataProvider = ({ children }) => {
     }
   }, [financialData, cookies.userId]);
 
+  // Update userHistoryData when historyData changes
+  useEffect(() => {
+    if (historyData.length > 0) {
+      const filteredUserHistoryData = historyData.filter(
+        (data) => data.user_id === cookies.userId
+      );
+      setUserHistoryData(filteredUserHistoryData || []);
+    }
+  }, [historyData, cookies.userId]);
+
   // Update portfolioPE when userStocks change
   useEffect(() => {
     if (userStocks.length > 0) {
@@ -113,8 +136,7 @@ export const DataProvider = ({ children }) => {
     userStocks,
     individualStockData,
     cookies.userId,
-    useTotalPortfolioValue(individualStockData, financialData)
-      .calculateTotalAmount,
+    calculateTotalAmount,
     useCallback(
       (recommendations) => setBuyRecommendations(recommendations),
       []
@@ -193,11 +215,13 @@ export const DataProvider = ({ children }) => {
         setBuyRecommendations,
         setSellingRecommendations,
         portfolioPE,
+        userPortfolioPresentValue, // Add this to the context value
         fetchData,
         handleLogout,
         sectors,
         setSelectedSectors,
         selectedSectors,
+        userHistoryData, // Add this to the context value
       }}
     >
       {children}

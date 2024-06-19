@@ -10,7 +10,7 @@ import RadarIcon from "@mui/icons-material/Radar";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
-
+import ShowChartIcon from "@mui/icons-material/ShowChart"; 
 const BottomNavigationComponent = ({ handleLogout }) => {
   const [value, setValue] = useState(0);
   const [cookies] = useCookies(["userName", "userRole"]);
@@ -49,6 +49,12 @@ const BottomNavigationComponent = ({ handleLogout }) => {
       ];
     } else if (userRole === "Viewer") {
       return [
+        <BottomNavigationAction
+          key="history"
+          label="History"
+          value="/history"
+          icon={<ShowChartIcon />} // Use meaningful icon for DataVisualization
+        />,
         <BottomNavigationAction
           key="action"
           label="Action"
@@ -89,7 +95,7 @@ const BottomNavigationComponent = ({ handleLogout }) => {
       style={{ position: "fixed", bottom: 0, width: "100%" }}
     >
       <BottomNavigationAction label="Home" value="/" icon={<HomeIcon />} />
-      {cookies.userRole !== "Admin" && (
+      {cookies.userRole !== "Admin" && cookies.userRole !== "Viewer" && (
         <BottomNavigationAction
           label="Etf"
           value="/etf"

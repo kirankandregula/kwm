@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import AppBarComponent from "./components/navigation/AppBarComponent";
 import BottomNavigationComponent from "./components/navigation/BottomNavigationComponent";
@@ -19,16 +19,28 @@ import StockInRadar from "./components/stockradar/StockInRadar";
 import ActionComponent from "./components/Action/ActionComponent";
 import NotificationComponent from "./components/NotificationComponent"; // Import NotificationComponent
 import RegisterPage from "./components/RegisterPage";
+import DataVisualization from "./components/History/DataVisualization";
+import { ErrorBoundary } from 'react-error-boundary';
 
 const App = () => {
   const [cookies] = useCookies(["userName", "userRole", "userId"]);
   const { handleLogout } = useData();
 
+  const ErrorFallback = ({ error, resetErrorBoundary }) => (
+    <div>
+      <h2>Something went wrong:</h2>
+      <pre>{error.message}</pre>
+      <button onClick={resetErrorBoundary}>Try again</button>
+    </div>
+  );
+
   return (
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
     <>
       <AppBarComponent onLogout={handleLogout} />
       <NotificationComponent /> {/* Add NotificationComponent here */}
       <Routes>
+      <Route path="*" element={<Navigate to="/" />} />
         <Route path="/" element={<YourPortfolio />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
@@ -73,7 +85,7 @@ const App = () => {
         <Route
           path="/portfolio/:id"
           element={
-            <ProtectedRoute isAllowed={cookies.userRole}>
+            <ProtectedRoute isAllowed={cookies.userRole && cookies.userId && cookies.userName}>
               <YourPortfolio />
             </ProtectedRoute>
           }
@@ -102,9 +114,18 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+         <Route
+          path="/history"
+          element={
+            <ProtectedRoute isAllowed={!!cookies.userRole}>
+              <DataVisualization/>
+            </ProtectedRoute>
+          }
+        />
       </Routes>
       <BottomNavigationComponent handleLogout={handleLogout} />
     </>
+    </ErrorBoundary>
   );
 };
 
