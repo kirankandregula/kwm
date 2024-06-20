@@ -10,14 +10,14 @@ import {
   useTheme,
 } from "@mui/material";
 import { useCookies } from "react-cookie";
+import { useTransition, animated, useSpring } from 'react-spring';
 import UserMetricsCard from "./UserMetricsCard";
 import StockTable from "./StockTable";
 import "../../css/UserDetails.css";
 import { useData } from "../dataprovider/DataProvider";
-
 import DiversificationDiv from "./diversificationdiv";
 import BillableDiv from "./BillableDiv";
-import CompactStockView from "./CompactStockView ";
+import CompactStockView from "./CompactStockView";
 import usePullToRefresh from "../usePullToRefresh";
 import RefreshButton from "../RefreshButton";
 
@@ -85,6 +85,75 @@ function UserDetails() {
     }
   }, [loading, financialData, stockData, individualStockData, userId]);
 
+  const cardComponents = [
+    {
+      component: (
+        <UserMetricsCard
+          averagePE={parseFloat(averagePE)}
+          averageScopeToGrow={averageScopeToGrow}
+          preValue={
+            userFinancialData ? userFinancialData.Previous_Value : 0
+          }
+          equity={totalLatestValue}
+          gold={userFinancialData ? userFinancialData.Gold : 0}
+          debt={userFinancialData ? userFinancialData.Debt : 0}
+          totalLatestValue={
+            parseFloat(totalLatestValue) +
+            (userFinancialData ? parseFloat(userFinancialData.Gold) : 0) +
+            (userFinancialData ? parseFloat(userFinancialData.Debt) : 0)
+          }
+        />
+      ),
+      key: "userMetricsCard",
+    },
+    {
+      component: (
+        <BillableDiv
+          averagePE={parseFloat(averagePE)}
+          averageScopeToGrow={averageScopeToGrow}
+          preValue={
+            userFinancialData ? userFinancialData.Previous_Value : 0
+          }
+          presentValue={
+            parseFloat(totalLatestValue) +
+            (userFinancialData ? parseFloat(userFinancialData.Gold) : 0) +
+            (userFinancialData ? parseFloat(userFinancialData.Debt) : 0)
+          }
+        />
+      ),
+      key: "billableDiv",
+    },
+    {
+      component: (
+        <DiversificationDiv
+          equity={totalLatestValue ? parseFloat(totalLatestValue) : 0}
+          gold={userFinancialData ? userFinancialData.Gold : 0}
+          debt={userFinancialData ? userFinancialData.Debt : 0}
+          totalLatestValue={
+            parseFloat(totalLatestValue) +
+            (userFinancialData ? parseFloat(userFinancialData.Gold) : 0) +
+            (userFinancialData ? parseFloat(userFinancialData.Debt) : 0)
+          }
+        />
+      ),
+      key: "diversificationDiv",
+    }
+  ];
+
+  const transitions = useTransition(cardComponents, {
+    keys: (item) => item.key,
+    from: { opacity: 0, transform: 'translate3d(-100%,0,0)' },
+    enter: { opacity: 1, transform: 'translate3d(0%,0,0)' },
+    leave: { opacity: 0, transform: 'translate3d(100%,0,0)' },
+    trail: 100,
+  });
+
+  const animationProps = useSpring({
+    opacity: loading ? 0 : 1,
+    transform: loading ? 'translateY(20px)' : 'translateY(0px)',
+    config: { duration: 500 },
+  });
+
   if (loading) {
     return (
       <Box
@@ -99,150 +168,93 @@ function UserDetails() {
   }
 
   return (
-    <Container className="user-details" sx={{ mt: 3 }}>
-      <Box display="flex" justifyContent="center" mb={3}>
-        <div className="d-flex justify-content-center mb-3">
-          {isLargeScreen && (
-            <RefreshButton
-              handleClick={() => {
-                setLoading(true);
-                fetchData();
-              }}
-            />
-          )}
-        </div>
-      </Box>
-      {!userFinancialData && (
-        <Box textAlign="center" color="textSecondary" mb={3}>
-          It will take a few seconds. Please wait...
+    <animated.div style={animationProps}>
+      <Container className="user-details" sx={{ mt: 8 }}>
+        <Box display="flex" justifyContent="center" >
+          <div className="d-flex justify-content-center">
+            {isLargeScreen && (
+              <RefreshButton
+                handleClick={() => {
+                  setLoading(true);
+                  fetchData();
+                }}
+              />
+            )}
+          </div>
         </Box>
-      )}
-      {filteredData && filteredData.length === 0 && (
-        <Box textAlign="center" color="error" mb={3} mt={5} className="text-danger">
-          You don't have any holdings now.
-        </Box>
-      )}
-      <Grid container spacing={1}>
-        <Grid item xs={12} md={4}>
-          {cardsLoading ? (
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              minHeight="100px"
-            >
-              <CircularProgress />
-            </Box>
-          ) : (
-            <UserMetricsCard
-              averagePE={parseFloat(averagePE)}
-              averageScopeToGrow={averageScopeToGrow}
-              preValue={
-                userFinancialData ? userFinancialData.Previous_Value : 0
-              }
-              equity={totalLatestValue}
-              gold={userFinancialData ? userFinancialData.Gold : 0}
-              debt={userFinancialData ? userFinancialData.Debt : 0}
-              totalLatestValue={
-                parseFloat(totalLatestValue) +
-                (userFinancialData ? parseFloat(userFinancialData.Gold) : 0) +
-                (userFinancialData ? parseFloat(userFinancialData.Debt) : 0)
-              }
-            />
-          )}
-        </Grid>
-
-        <Grid item xs={12} md={4}>
-          {cardsLoading ? (
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              minHeight="100px"
-            >
-              <CircularProgress />
-            </Box>
-          ) : (
-            <BillableDiv
-              averagePE={parseFloat(averagePE)}
-              averageScopeToGrow={averageScopeToGrow}
-              preValue={
-                userFinancialData ? userFinancialData.Previous_Value : 0
-              }
-              presentValue={
-                parseFloat(totalLatestValue) +
-                (userFinancialData ? parseFloat(userFinancialData.Gold) : 0) +
-                (userFinancialData ? parseFloat(userFinancialData.Debt) : 0)
-              }
-            />
-          )}
-        </Grid>
-        <Grid item xs={12} md={4} style={{ marginBottom: "2px" }}>
-          {cardsLoading ? (
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              minHeight="100px"
-            >
-              <CircularProgress />
-            </Box>
-          ) : (
-            <DiversificationDiv
-              equity={totalLatestValue ? parseFloat(totalLatestValue): 0}
-              gold={userFinancialData ? userFinancialData.Gold : 0}
-              debt={userFinancialData ? userFinancialData.Debt : 0}
-              totalLatestValue={
-                parseFloat(totalLatestValue) +
-                (userFinancialData ? parseFloat(userFinancialData.Gold) : 0) +
-                (userFinancialData ? parseFloat(userFinancialData.Debt) : 0)
-              }
-            />
-          )}
-        </Grid>
-      </Grid>
-      <Grid container spacing={4}>
-      <Grid item xs={12}>
-        {cardsLoading ? (
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            minHeight="100px"
-          >
-            <CircularProgress />
-          </Box>
-        ) : filteredData && filteredData.length > 0 ? (
-          isLargeScreen ? (
-            <StockTable filteredData={filteredData} />
-          ) : (
-            <CompactStockView
-              filteredData={filteredData}
-              individualStockData={individualStockData}
-            />
-          )
-        ) : (
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            minHeight="100px"
-          >
-            <p>No data available</p>
+        {!userFinancialData && (
+          <Box textAlign="center" color="textSecondary" mb={3}>
+            It will take a few seconds. Please wait...
           </Box>
         )}
-      </Grid>
-    </Grid>
-      <Grid container spacing={4} sx={{ mb: 8, mt: "1px" }}>
-        <Grid item xs={12} textAlign="center">
-          {(isLargeScreen || isMidScreen) && cookies.userRole === "Admin" && (
-            <Button variant="contained" color="secondary" onClick={handleBack}>
-              Back
-            </Button>
-          )}
+        {filteredData && filteredData.length === 0 && (
+          <Box textAlign="center" color="error" mb={3} mt={5} className="text-danger">
+            You don't have any holdings now.
+          </Box>
+        )}
+        <Grid container >
+          {transitions((style, item) => (
+            <Grid item xs={12} md={3.8} mt={isLargeScreen? "10px": "2px"} mx={isLargeScreen? "2px": "0px"}  key={item.key}>
+              <animated.div style={style}>
+                {cardsLoading ? (
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                  
+                  >
+                    <CircularProgress />
+                  </Box>
+                ) : (
+                  item.component
+                )}
+              </animated.div>
+            </Grid>
+          ))}
         </Grid>
-      </Grid>
-    </Container>
+        <Grid container spacing={4}>
+          <Grid item xs={12}>
+            {cardsLoading ? (
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                minHeight="100px"
+              >
+                <CircularProgress />
+              </Box>
+            ) : filteredData && filteredData.length > 0 ? (
+              isLargeScreen ? (
+                <StockTable filteredData={filteredData} />
+              ) : (
+                <CompactStockView
+                  filteredData={filteredData}
+                  individualStockData={individualStockData}
+                />
+              )
+            ) : (
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                minHeight="100px"
+              >
+                <p>No data available</p>
+              </Box>
+            )}
+          </Grid>
+        </Grid>
+        <Grid container spacing={4} sx={{ mb: 8, mt: "1px" }}>
+          <Grid item xs={12} textAlign="center">
+            {(isLargeScreen || isMidScreen) && cookies.userRole === "Admin" && (
+              <Button variant="contained" color="secondary" onClick={handleBack}>
+                Back
+              </Button>
+            )}
+          </Grid>
+        </Grid>
+      </Container>
+    </animated.div>
   );
 
   function handleBack() {

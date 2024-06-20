@@ -24,8 +24,10 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 import QuarterlyReturnChart from "./QuarterlyReturnChart";
 import AnnualReturnChart from "./AnnualReturnChart";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
 
 // Register plugins
 ChartJS.register(
@@ -87,10 +89,14 @@ const DataVisualization = () => {
     const data = userHistoryData.slice(-5).map((entry) => ({
       label: getQuarterLabel(entry.quarter),
       value: entry.closingValue,
+      deposit: entry.deposit,
+      withdraw: entry.withdraw,
     }));
     data.push({
       label: "Present",
       value: Math.round(userPortfolioPresentValue),
+      deposit: 0,
+      withdraw: 0,
     });
     return data;
   }, [userHistoryData, userPortfolioPresentValue]);
@@ -99,21 +105,29 @@ const DataVisualization = () => {
     const annualMap = {};
     userHistoryData.forEach((entry) => {
       const year = getYearLabel(entry.quarter);
-      if (!annualMap[year]) {
-        annualMap[year] = entry.closingValue;
-      } else {
-        annualMap[year] = Math.max(annualMap[year], entry.closingValue);
+      const month = Math.floor(entry.quarter / 10000);
+      if (month === 3) {
+        // March
+        annualMap[year] = {
+          value: entry.closingValue,
+          deposit: entry.deposit,
+          withdraw: entry.withdraw,
+        };
       }
     });
     const data = Object.keys(annualMap)
       .slice(-4)
       .map((year) => ({
         label: year,
-        value: annualMap[year],
+        value: annualMap[year].value,
+        deposit: annualMap[year].deposit,
+        withdraw: annualMap[year].withdraw,
       }));
     data.push({
       label: "Present",
       value: Math.round(userPortfolioPresentValue),
+      deposit: 0,
+      withdraw: 0,
     });
     return data;
   }, [userHistoryData, userPortfolioPresentValue]);
@@ -130,37 +144,80 @@ const DataVisualization = () => {
     finalAnnualValue
   );
 
+  // Calculate total deposits and withdrawals
+  const totalDeposits = userHistoryData.reduce(
+    (acc, entry) => acc + entry.deposit,
+    0
+  );
+  const totalWithdrawals = userHistoryData.reduce(
+    (acc, entry) => acc + entry.withdraw,
+    0
+  );
+
   return (
     <Box sx={{ padding: 2, marginTop: 6 }}>
-      <Paper elevation={3} sx={{ padding: 2, marginBottom: 2 }}>
-        <Typography variant="h6" gutterBottom>
-          Portfolio Summary
-        </Typography>
-        <Box display="flex" alignItems="center" mb={1}>
-          <MonetizationOnIcon color="primary" />
-          <Typography
-            variant="body2"
-            color="textSecondary"
-            gutterBottom
-            sx={{ ml: 1 }}
-          >
-            Present Value: ₹
-            {Math.round(userPortfolioPresentValue).toLocaleString()}
-          </Typography>
-        </Box>
-        <Box display="flex" alignItems="center" mb={1}>
-          <TrendingUpIcon color="success" />
-          <Typography variant="body2" color="textSecondary" sx={{ ml: 1 }}>
-            Total Return: {absoluteReturn}%
-          </Typography>
-        </Box>
-        <Box display="flex" alignItems="center">
-          <CheckCircleIcon color="primary" />
-          <Typography variant="body2" color="textSecondary" sx={{ ml: 1 }}>
-            CAGR: {cagr}%
-          </Typography>
-        </Box>
+      <Paper elevation={3} sx={{ padding: 2, marginBottom: 1 }}>
+        <Grid container alignItems="center">
+          <Grid item xs={12} md={6}>
+            <Typography variant="h6" gutterBottom>
+              Portfolio Summary
+            </Typography>
+            <Box display="flex" alignItems="center" mb={1}>
+              <MonetizationOnIcon color="primary" />
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                gutterBottom
+                sx={{ ml: 1 }}
+              >
+                Present Value: ₹
+                {Math.round(userPortfolioPresentValue).toLocaleString()}
+              </Typography>
+            </Box>
+            <Box display="flex" alignItems="center" mb={1}>
+              <TrendingUpIcon color="success" />
+              <Typography variant="body2" color="textSecondary" sx={{ ml: 1 }}>
+                Total Return: <Typography variant="body2" color="success.main">{absoluteReturn}%</Typography>
+              </Typography>
+            </Box>
+            <Box display="flex" alignItems="center">
+              <SignalCellularAltIcon color="primary" />
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                sx={{ ml: 1, mb: 1 }}
+              >
+                CAGR: <Typography variant="body2" color="primary.main">{cagr}%</Typography>
+              </Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Box display="flex" alignItems="center" mb={1}>
+              <ArrowUpwardIcon color="primary" />
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                gutterBottom
+                sx={{ ml: 1 }}
+              >
+                Total Deposits: ₹{totalDeposits.toLocaleString()}
+              </Typography>
+            </Box>
+            <Box display="flex" alignItems="center" mb={1}>
+              <ArrowDownwardIcon color="secondary" />
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                gutterBottom
+                sx={{ ml: 1 }}
+              >
+                Total Withdrawals: ₹{totalWithdrawals.toLocaleString()}
+              </Typography>
+            </Box>
+          </Grid>
+        </Grid>
       </Paper>
+
       {isLargeScreen ? (
         <Grid container spacing={2}>
           <Grid item xs={6}>

@@ -20,7 +20,7 @@ const AboutContainer = styled(Container)(({ theme }) => ({
   marginBottom: theme.spacing(10),
   padding: theme.spacing(2),
   background: "linear-gradient(45deg, #ADD8E6, #ffc3a0)",
-  backgroundSize : "cover"
+  backgroundSize: "cover",
 }));
 
 const SectionContainer = styled(Paper)(({ theme }) => ({
@@ -45,7 +45,6 @@ const StartJourneyContainer = styled(SectionContainer)(({ theme }) => ({
 }));
 
 const About = () => {
-
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"));
   const navigate = useNavigate();
@@ -55,14 +54,17 @@ const About = () => {
   };
 
   return (
-    <AboutContainer maxWidth="md" sx={{marginTop: isLargeScreen ? "80px" : "30px"}}>
+    <AboutContainer
+      maxWidth="md"
+      sx={{ marginTop: isLargeScreen ? "80px" : "30px" }}
+    >
       <Typography
         variant="h5"
         align="center"
-        sx={{ mt: "28px", fontWeight: "bold" }}
+        sx={{ mt: "28px", fontWeight: "bold", color: "success.main" }}
         gutterBottom
       >
-        About Aartha Investments
+        About Artha Investments
       </Typography>
       <SectionContainer elevation={3}>
         <IconContainer>
@@ -72,13 +74,13 @@ const About = () => {
           Our Mission
         </Typography>
         <Typography variant="body2" paragraph>
-          Welcome to Aartha Investments, your trusted partner in personal
-          finance portfolio management.
+          Welcome to Artha Investments, your trusted partner in personal finance
+          portfolio management.
         </Typography>
         <Typography variant="body2" paragraph>
-          At Aartha Investments, our mission is to empower individuals to
-          achieve their financial goals through transparent and efficient
-          portfolio management services.
+          At Artha Investments, our mission is to empower individuals to achieve
+          their financial goals through transparent and efficient portfolio
+          management services.
         </Typography>
       </SectionContainer>
       <SectionContainer elevation={3}>
@@ -98,7 +100,7 @@ const About = () => {
           to optimize your investments.
         </Typography>
         <Typography variant="body2" paragraph>
-          You can start your journey with Aartha Investments with an initial
+          You can start your journey with Artha Investments with an initial
           investment of just ₹25,000, making wealth management accessible to
           everyone.
         </Typography>
@@ -111,7 +113,7 @@ const About = () => {
           Billing Transparency
         </Typography>
         <Typography variant="body2" paragraph>
-          At Aartha Investments, we believe in transparency and fairness in our
+          At Artha Investments, we believe in transparency and fairness in our
           billing practices.
         </Typography>
         <Typography variant="body2" paragraph>
@@ -129,15 +131,15 @@ const About = () => {
       {/* Start Journey Section */}
       <StartJourneyContainer elevation={3}>
         <Typography variant="h5" align="center" gutterBottom>
-          Start Your Journey with Aartha Investments
+          Start Your Journey with Artha Investments
         </Typography>
         <Typography variant="body2" paragraph>
-          You can start your journey with Aartha Investments with an initial
+          You can start your journey with Artha Investments with an initial
           investment of just ₹25,000, making wealth management accessible to
           everyone.
         </Typography>
         <Typography variant="body2" paragraph>
-          Begin investing today with Aartha Investments and unlock the potential
+          Begin investing today with Artha Investments and unlock the potential
           to grow your wealth.
         </Typography>
         <Button

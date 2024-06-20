@@ -25,9 +25,7 @@ const AnnualReturnChart = ({ annualData }) => {
                 backgroundColor: annualData.map((data, index) =>
                   index === annualData.length - 1 ? green[300] : grey[500]
                 ),
-                borderColor: annualData.map((data, index) =>
-                  index === annualData.length - 1 ? green[500] : grey[700]
-                ),
+              
                 borderWidth: 1,
                 hoverBackgroundColor: annualData.map((data, index) =>
                   index === annualData.length - 1 ? green[100] : grey[300]

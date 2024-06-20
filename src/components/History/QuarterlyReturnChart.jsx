@@ -21,9 +21,7 @@ const QuarterlyReturnChart = ({ quarterlyData }) => {
                 backgroundColor: quarterlyData.map((data, index) =>
                   index === quarterlyData.length - 1 ? blue[300] : grey[500]
                 ),
-                borderColor: quarterlyData.map((data, index) =>
-                  index === quarterlyData.length - 1 ? blue[500] : grey[700]
-                ),
+               
                 borderWidth: 1,
                 hoverBackgroundColor: quarterlyData.map((data, index) =>
                   index === quarterlyData.length - 1 ? blue[100] : grey[300]

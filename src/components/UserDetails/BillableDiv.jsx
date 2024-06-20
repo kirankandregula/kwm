@@ -30,9 +30,10 @@ function BillableDiv({
         backgroundColor: "white",
         color: "black",
         width: "100%",
+         height: "130px"
       }}
     >
-      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between" , marginTop: "8px"}} >
         <Typography variant="caption" >
           Bill
         </Typography>
