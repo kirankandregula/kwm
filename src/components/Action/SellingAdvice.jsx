@@ -111,7 +111,7 @@ const SellingAdvice = () => {
             mt={2}
           >
             <WarningIcon color="error" />
-            <Typography variant="body1" color="error" ml={1}>
+            <Typography variant="caption" color="error" ml={1}>
               {`You have ${sellingRecommendations.length} stock${
                 sellingRecommendations.length > 1 ? "s" : ""
               } to consider for selling.`}

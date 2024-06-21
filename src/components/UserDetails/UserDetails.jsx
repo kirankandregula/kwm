@@ -258,10 +258,10 @@ function UserDetails() {
   );
 
   function handleBack() {
-    if (cookies.userRole === "Admin" && isLargeScreen) {
-      navigate(`/portfolio/${cookies.userId}`);
+    if (cookies.userRole === "Admin") {
+      navigate("/admin");
     } else {
-      navigate("/");
+      navigate("/home");
     }
   }
 }

@@ -22,12 +22,13 @@ const AppBarComponent = ({ onLogout }) => {
   const isMediumDevice = useMediaQuery(theme.breakpoints.down("md"));
   const [anchorEl, setAnchorEl] = useState(null);
   const [notificationsAnchorEl, setNotificationsAnchorEl] = useState(null);
-  const [cookies, removeCookie] = useCookies(["userName", "userRole", "userId"]);
-  const {
-    notifications,
-    sellingRecommendations,
-    buyRecommendations,
-  } = useData();
+  const [cookies, removeCookie] = useCookies([
+    "userName",
+    "userRole",
+    "userId",
+  ]);
+  const { notifications, sellingRecommendations, buyRecommendations } =
+    useData();
   const navigate = useNavigate();
   const [badgeContent, setBadgeContent] = useState(0);
 
@@ -230,17 +231,22 @@ const AppBarComponent = ({ onLogout }) => {
               ))}
             </>
           )}
-          <IconButton
-            color="inherit"
-            onClick={handleNotificationsOpen}
-            aria-controls="notifications-menu"
-            aria-haspopup="true"
-            sx={{ marginLeft: 2 }}
-          >
-            <Badge badgeContent={badgeContent} color="error">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
+
+          {cookies.userId &&
+            (buyRecommendations.length > 0 ||
+              sellingRecommendations.length > 0) && (
+              <IconButton
+                color="inherit"
+                onClick={handleNotificationsOpen}
+                aria-controls="notifications-menu"
+                aria-haspopup="true"
+                sx={{ marginLeft: 2 }}
+              >
+                <Badge badgeContent={badgeContent} color="error">
+                  <NotificationsIcon />
+                </Badge>
+              </IconButton>
+            )}
 
           <Menu
             id="notifications-menu"

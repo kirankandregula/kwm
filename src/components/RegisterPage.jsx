@@ -39,9 +39,12 @@ const RegisterPage = () => {
           "https://script.google.com/macros/s/AKfycbymorTjnVzmJr56gY5zoBlD-dUp8bwC-dYwIKdAm2WRjnfpwjgMLpUut9E15rgCbXah/exec"
         );
         const users = await response.json();
-        const maxUserId = users.reduce((max, user) => Math.max(max, user.user_id), 0);
+        const maxUserId = users.reduce(
+          (max, user) => Math.max(max, user.user_id),
+          0
+        );
         setFormData((prevData) => ({ ...prevData, user_id: maxUserId + 1 }));
-        setExistingUsers(users.map(user => user.Name.toLowerCase()));
+        setExistingUsers(users.map((user) => user.Name.toLowerCase()));
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -76,7 +79,7 @@ const RegisterPage = () => {
     }
 
     if (Number(Debt) < 25000) {
-      setErrorMessage("Liquid Fund must be at least 25000.");
+      setErrorMessage("Amount must be at least 25000.");
       return false;
     }
 
@@ -91,7 +94,7 @@ const RegisterPage = () => {
       Previous_Value: "0",
       Debt: "",
       Gold: "0",
-      approved: "no"
+      approved: "no",
     });
   };
 
@@ -106,7 +109,7 @@ const RegisterPage = () => {
 
     // Set Previous_Value to be the same as Debt
     const updatedFormData = { ...formData, Previous_Value: formData.Debt };
-    
+
     console.log("Register Object: ", updatedFormData); // Log the form data
 
     try {
@@ -118,12 +121,14 @@ const RegisterPage = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(updatedFormData),
-          mode: "no-cors"
+          mode: "no-cors",
         }
       );
 
       // Assume success if no error is thrown
-      setSuccessMessage("Registration successful! Please contact the admin to approve your login.");
+      setSuccessMessage(
+        "Registration successful! Please contact the admin to approve your login."
+      );
       resetForm();
       setErrorMessage("");
     } catch (error) {
@@ -153,8 +158,14 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="register-container d-flex justify-content-center align-items-center" style={{ marginTop: "130px" }}>
-      <div className="register-card" style={{ maxWidth: '500px', padding: '20px',  margin: "10px" }}>
+    <div
+      className="register-container d-flex justify-content-center align-items-center"
+      style={{ marginTop: "110px" }}
+    >
+      <div
+        className="register-card"
+        style={{ maxWidth: "500px", padding: "20px", margin: "10px" }}
+      >
         <div className="register-card-body">
           <Typography
             variant="h5"
@@ -166,10 +177,20 @@ const RegisterPage = () => {
             Register
           </Typography>
           {errorMessage && (
-            <p className="text-center text-danger" style={{ maxWidth: "250px"}}>{errorMessage}</p>
+            <p
+              className="text-center text-danger"
+              style={{ maxWidth: "250px" }}
+            >
+              {errorMessage}
+            </p>
           )}
           {successMessage && (
-            <p className="text-center text-success " style={{ maxWidth: "250px" }}>{successMessage}</p>
+            <p
+              className="text-center text-success "
+              style={{ maxWidth: "250px" }}
+            >
+              {successMessage}
+            </p>
           )}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
@@ -219,7 +240,7 @@ const RegisterPage = () => {
             <div className="mb-3">
               <FormControl fullWidth variant="outlined">
                 <InputLabel htmlFor="outlined-adornment-debt">
-                  Liquid Fund
+                  Enter Amount
                 </InputLabel>
                 <OutlinedInput
                   id="outlined-adornment-debt"
@@ -228,7 +249,7 @@ const RegisterPage = () => {
                   onChange={handleChange}
                   name="Debt"
                   autoComplete="new-debt"
-                  label="Liquid Fund"
+                  label="Enter Amount"
                 />
               </FormControl>
             </div>

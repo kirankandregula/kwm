@@ -37,11 +37,11 @@ const renderAction = (action) => {
 
 const CompactStockView = ({ filteredData, individualStockData }) => {
   const transitions = useTransition(filteredData, {
-    keys: (stock) => stock.stockId,
-    from: { opacity: 0, transform: 'translate3d(-100%,0,0)' },
-    enter: { opacity: 1, transform: 'translate3d(0%,0,0)' },
-    leave: { opacity: 0, transform: 'translate3d(100%,0,0)' },
-    trail: 100,
+    keys: item => item.stockId,
+    from: { opacity: 0, transform: 'translate3d(0,-40px,0)' },
+    enter: { opacity: 1, transform: 'translate3d(0,0px,0)' },
+    leave: { opacity: 0, transform: 'translate3d(0,-40px,0)' },
+    trail: 300, // Adjust the trail delay as needed
   });
 
   return (
