@@ -10,7 +10,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { useCookies } from "react-cookie";
-import { useTransition, animated, useSpring } from 'react-spring';
+import { useTransition, animated, useSpring } from "react-spring";
 import UserMetricsCard from "./UserMetricsCard";
 import StockTable from "./StockTable";
 import "../../css/UserDetails.css";
@@ -91,9 +91,7 @@ function UserDetails() {
         <UserMetricsCard
           averagePE={parseFloat(averagePE)}
           averageScopeToGrow={averageScopeToGrow}
-          preValue={
-            userFinancialData ? userFinancialData.Previous_Value : 0
-          }
+          preValue={userFinancialData ? userFinancialData.Previous_Value : 0}
           equity={totalLatestValue}
           gold={userFinancialData ? userFinancialData.Gold : 0}
           debt={userFinancialData ? userFinancialData.Debt : 0}
@@ -111,9 +109,7 @@ function UserDetails() {
         <BillableDiv
           averagePE={parseFloat(averagePE)}
           averageScopeToGrow={averageScopeToGrow}
-          preValue={
-            userFinancialData ? userFinancialData.Previous_Value : 0
-          }
+          preValue={userFinancialData ? userFinancialData.Previous_Value : 0}
           presentValue={
             parseFloat(totalLatestValue) +
             (userFinancialData ? parseFloat(userFinancialData.Gold) : 0) +
@@ -137,20 +133,20 @@ function UserDetails() {
         />
       ),
       key: "diversificationDiv",
-    }
+    },
   ];
 
   const transitions = useTransition(cardComponents, {
     keys: (item) => item.key,
-    from: { opacity: 0, transform: 'translate3d(-100%,0,0)' },
-    enter: { opacity: 1, transform: 'translate3d(0%,0,0)' },
-    leave: { opacity: 0, transform: 'translate3d(100%,0,0)' },
+    from: { opacity: 0, transform: "translate3d(-100%,0,0)" },
+    enter: { opacity: 1, transform: "translate3d(0%,0,0)" },
+    leave: { opacity: 0, transform: "translate3d(100%,0,0)" },
     trail: 100,
   });
 
   const animationProps = useSpring({
     opacity: loading ? 0 : 1,
-    transform: loading ? 'translateY(20px)' : 'translateY(0px)',
+    transform: loading ? "translateY(20px)" : "translateY(0px)",
     config: { duration: 500 },
   });
 
@@ -170,7 +166,7 @@ function UserDetails() {
   return (
     <animated.div style={animationProps}>
       <Container className="user-details" sx={{ mt: 8 }}>
-        <Box display="flex" justifyContent="center" >
+        <Box display="flex" justifyContent="center">
           <div className="d-flex justify-content-center">
             {isLargeScreen && (
               <RefreshButton
@@ -188,20 +184,32 @@ function UserDetails() {
           </Box>
         )}
         {filteredData && filteredData.length === 0 && (
-          <Box textAlign="center" color="error" mb={3} mt={5} className="text-danger">
+          <Box
+            textAlign="center"
+            color="error"
+            mb={3}
+            mt={5}
+            className="text-danger"
+          >
             You don't have any holdings now.
           </Box>
         )}
-        <Grid container >
+        <Grid container>
           {transitions((style, item) => (
-            <Grid item xs={12} md={3.8} mt={isLargeScreen? "10px": "2px"} mx={isLargeScreen? "2px": "0px"}  key={item.key}>
+            <Grid
+              item
+              xs={12}
+              md={3.8}
+              mt={isLargeScreen ? "10px" : "2px"}
+              mx={isLargeScreen ? "2px" : "0px"}
+              key={item.key}
+            >
               <animated.div style={style}>
                 {cardsLoading ? (
                   <Box
                     display="flex"
                     justifyContent="center"
                     alignItems="center"
-                  
                   >
                     <CircularProgress />
                   </Box>
@@ -247,7 +255,11 @@ function UserDetails() {
         <Grid container spacing={4} sx={{ mb: 8, mt: "1px" }}>
           <Grid item xs={12} textAlign="center">
             {(isLargeScreen || isMidScreen) && cookies.userRole === "Admin" && (
-              <Button variant="contained" color="secondary" onClick={handleBack}>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleBack}
+              >
                 Back
               </Button>
             )}

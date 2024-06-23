@@ -12,27 +12,22 @@ export const useRecommendations = (
   setBuyingWarning,
   portfolioPE,
   setPortfolioPE,
-  sectors
+  sectors,
+  selectedSectors,
+  portfolioScopeToGrow,
+  setPortfolioScopeToGrow
 ) => {
   const [previousRecommendations, setPreviousRecommendations] = useState([]);
 
   const generateBuyingAdvice = useCallback(
     (selectedSectors) => {
       const isNewUser = userStocks.length === 0;
+      let newPortfolioScopeToGrow = portfolioScopeToGrow;
       const { totalPortfolioValue, liquidFunds } = calculateTotalAmount(
         userStocks,
         userId
       );
 
-      // Check if user is approved
-      if (!userFinancialData || userFinancialData.approved !== "yes") {
-        setBuyingWarning([
-          "Your account is not approved. Please contact the Admin to generate advices.",
-        ]);
-        return;
-      }
-
-      // Filter stocksToConsider by selectedSectors
       const sectorFilteredRecommendations = selectedSectors.length
         ? stocksToConsider.filter(
             (stock) =>
@@ -47,10 +42,9 @@ export const useRecommendations = (
         (stock) =>
           !userStocks.some(
             (userStock) => userStock.stock_id === stock.stock_id
-          ) && !selectedSectors.includes(stock.Sector) // Ensure non-selected sectors
+          ) && !selectedSectors.includes(stock.Sector)
       );
 
-      // Sort by scope to grow
       nonSectorFilteredRecommendations.sort(
         (a, b) =>
           parseInt(b.scopeToGrow.replace("%", "")) -
@@ -76,22 +70,17 @@ export const useRecommendations = (
         maxStocks = 10;
       } else {
         allocatedAmount = totalPortfolioValue / 10;
-        maxStocks = 11;
+        maxStocks = 10;
       }
 
       const allocatedAmountToEachStock = allocatedAmount;
       const remainingStocksToRecommend = maxStocks - userStocks.length;
 
-      if (isNewUser && liquidFunds < 25000) {
-        setBuyingWarning([
-          `Minimum required is 25000, but you only have ${liquidFunds}.`,
-        ]);
-        return;
-      }
-
       if (allocatedAmountToEachStock > liquidFunds) {
         setBuyingWarning([
-          `Minimum required is ${allocatedAmountToEachStock}, but you only have ${liquidFunds}.`,
+          `You need at least ${allocatedAmountToEachStock.toFixed(
+            2
+          )}, but you only have ${liquidFunds.toFixed(2)}.`,
         ]);
         return;
       }
@@ -101,7 +90,6 @@ export const useRecommendations = (
       let newPortfolioPE = portfolioPE;
       const includedSectors = new Set();
 
-      // Include one stock from each selected sector
       sectorFilteredRecommendations.forEach((stock) => {
         if (
           !includedSectors.has(stock.Sector) &&
@@ -115,29 +103,38 @@ export const useRecommendations = (
           const updatedPortfolioPE =
             (newPortfolioPE * totalPortfolioValue + stockPE * totalCost) /
             (totalPortfolioValue + totalCost);
-          if (updatedPortfolioPE < 40) {
+          const stockScopeToGrow = parseInt(stock.scopeToGrow.replace("%", ""));
+          const updatedPortfolioScopeToGrow =
+            (newPortfolioScopeToGrow * totalPortfolioValue +
+              stockScopeToGrow * totalCost) /
+            (totalPortfolioValue + totalCost);
+
+          if (updatedPortfolioPE < 50) {
             remainingFunds -= totalCost;
             newPortfolioPE = updatedPortfolioPE;
+            newPortfolioScopeToGrow = updatedPortfolioScopeToGrow;
             includedSectors.add(stock.Sector);
             newRecommendations.push({
               stockName: stock.stockName,
               LTP: stock.LTP,
               PE: stock.pe,
               TotalValue: totalCost,
+              sector: stock.Sector,
               buyQuantity,
               scopeToGrow: stock.scopeToGrow,
-              sector: stock.Sector,
             });
+          } else {
+            setBuyingWarning([
+              `Buying ${stock.stockName} would exceed the portfolio PE limit. Consider adjusting your selections.`,
+            ]);
           }
         }
       });
 
-      // Fill remaining recommendations based on the highest scope to grow, ensuring unique sectors
       nonSectorFilteredRecommendations.forEach((stock) => {
         if (
           newRecommendations.length < remainingStocksToRecommend &&
-          remainingFunds >= allocatedAmountToEachStock &&
-          !includedSectors.has(stock.Sector)
+          remainingFunds >= allocatedAmountToEachStock
         ) {
           const buyQuantity = Math.floor(
             allocatedAmountToEachStock / stock.LTP
@@ -147,28 +144,34 @@ export const useRecommendations = (
           const updatedPortfolioPE =
             (newPortfolioPE * totalPortfolioValue + stockPE * totalCost) /
             (totalPortfolioValue + totalCost);
+          const stockScopeToGrow = parseInt(stock.scopeToGrow.replace("%", ""));
+          const updatedPortfolioScopeToGrow =
+            (newPortfolioScopeToGrow * totalPortfolioValue +
+              stockScopeToGrow * totalCost) /
+            (totalPortfolioValue + totalCost);
 
-          if (updatedPortfolioPE < 40) {
+          if (updatedPortfolioPE < 50) {
             remainingFunds -= totalCost;
             newPortfolioPE = updatedPortfolioPE;
-            includedSectors.add(stock.Sector);
+            newPortfolioScopeToGrow = updatedPortfolioScopeToGrow;
             newRecommendations.push({
               stockName: stock.stockName,
               LTP: stock.LTP,
               PE: stock.pe,
               TotalValue: totalCost,
+              sector: stock.Sector,
               buyQuantity,
               scopeToGrow: stock.scopeToGrow,
-              sector: stock.Sector,
             });
+          } else {
+            setBuyingWarning([
+              `Buying ${stock.stockName} would exceed the portfolio PE limit. Consider adjusting your selections.`,
+            ]);
           }
         }
       });
 
-      const totalStocksAfterRecommendations = userStocks.length + newRecommendations.length;
-
       if (isNewUser || newRecommendations.length > 0) {
-        // Only update recommendations if there are changes
         if (
           JSON.stringify(previousRecommendations) !==
           JSON.stringify(newRecommendations)
@@ -176,21 +179,17 @@ export const useRecommendations = (
           setPreviousRecommendations(newRecommendations);
           setBuyRecommendations(newRecommendations);
           setPortfolioPE(newPortfolioPE);
-
-          if (totalStocksAfterRecommendations > 10) {
-            setBuyingWarning([
-              "Too many stocks, reduce to max 10.",
-            ]);
-          }
+          setPortfolioScopeToGrow(newPortfolioScopeToGrow);
         }
       } else {
         setBuyingWarning([
-          `Need ${allocatedAmountToEachStock - liquidFunds} more to buy stocks.`,
+          `You need ${
+            allocatedAmountToEachStock - liquidFunds
+          } more to buy stocks`,
         ]);
       }
     },
     [
-      userFinancialData,
       stocksToConsider,
       userStocks,
       calculateTotalAmount,
@@ -198,6 +197,8 @@ export const useRecommendations = (
       setBuyingWarning,
       portfolioPE,
       setPortfolioPE,
+      portfolioScopeToGrow,
+      setPortfolioScopeToGrow,
       userId,
       previousRecommendations,
       setPreviousRecommendations,

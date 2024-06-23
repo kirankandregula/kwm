@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import {
   Dialog,
   DialogActions,
@@ -9,12 +10,12 @@ import {
 } from "@mui/material";
 
 const ConfirmationDialog = ({
-  confirmationOpen,
+  open,
   handleCloseConfirmation,
   handleConfirmGenerateAdvice,
 }) => (
   <Dialog
-    open={confirmationOpen}
+    open={open}
     onClose={handleCloseConfirmation}
     aria-labelledby="confirmation-dialog-title"
     aria-describedby="confirmation-dialog-description"
@@ -23,7 +24,7 @@ const ConfirmationDialog = ({
     <DialogContent>
       <DialogContentText id="confirmation-dialog-description">
         Please share a screenshot after the transaction is completed. That will
-        be helpful for future advice
+        be helpful for future advice.
       </DialogContentText>
     </DialogContent>
     <DialogActions>
@@ -36,5 +37,11 @@ const ConfirmationDialog = ({
     </DialogActions>
   </Dialog>
 );
+
+ConfirmationDialog.propTypes = {
+  open: PropTypes.bool.isRequired,
+  handleCloseConfirmation: PropTypes.func.isRequired,
+  handleConfirmGenerateAdvice: PropTypes.func.isRequired,
+};
 
 export default ConfirmationDialog;

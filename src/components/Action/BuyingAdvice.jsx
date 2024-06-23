@@ -13,6 +13,8 @@ import {
   InputLabel,
   Checkbox,
   ListItemText,
+  OutlinedInput,
+  Chip,
 } from "@mui/material";
 import RecommendationList from "./RecommendationList";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -25,12 +27,13 @@ const BuyingAdvice = () => {
   const {
     buyRecommendations,
     buyingWarning,
-    userFinancialData,
     portfolioPE,
-    sectors, // Get the sectors from the DataProvider
+    sectors,
     generateBuyingAdvice,
     setSelectedSectors,
     selectedSectors,
+    portfolioScopeToGrow,
+    setBuyingWarning,
   } = useData();
   const [showAdviceDialog, setShowAdviceDialog] = useState(false);
   const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
@@ -41,6 +44,8 @@ const BuyingAdvice = () => {
 
   const handleCloseDialog = () => {
     setShowAdviceDialog(false);
+    setSelectedSectors([]);
+    setBuyingWarning([]);
   };
 
   const handleGenerateAdviceClick = () => {
@@ -54,14 +59,14 @@ const BuyingAdvice = () => {
   const handleConfirmGenerateAdvice = () => {
     setShowAdviceDialog(true);
     handleCloseConfirmation();
-    generateBuyingAdvice(selectedSectors); // Ensure advice is generated after confirmation
+    generateBuyingAdvice(selectedSectors);
   };
 
   const handleSectorChange = (event) => {
     const selectedValues = event.target.value;
     setSelectedSectors(selectedValues);
 
-    generateBuyingAdvice(selectedValues); // Generate advice when sectors are changed
+    generateBuyingAdvice(selectedValues);
   };
 
   useEffect(() => {
@@ -93,30 +98,18 @@ const BuyingAdvice = () => {
         backgroundColor="#f9f9f9"
         boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)"
         minHeight={180}
-        minWidth={isSmallScreen? "330px" : "400px"}
+        minWidth={isSmallScreen ? "330px" : "400px"}
       >
-        <Typography
-          variant="h6"
-          color="green"
-          sx={{ mb: "10px" }}
-        >
+        <Typography variant="h6" color="green" sx={{ mb: "10px" }}>
           Buying Recommendation
         </Typography>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            minHeight: "100px",
-          }}
-        >
-          <Typography variant="caption" sx={{color: "info.main"}}>
+        <div className="d-flex flex-column align-items-center">
+          <Typography variant="caption" sx={{ color: "info.main" }}>
             {buyRecommendations.length > 0
               ? `You have ${buyRecommendations.length} stocks to buy.`
               : "No stocks to recommend yet."}
           </Typography>
-          { buyingWarning.length > 0 && buyRecommendations.length ===0 && (
+          {buyingWarning.length > 0 && buyRecommendations.length === 0 && (
             <Box
               display="flex"
               flexDirection="column"
@@ -125,80 +118,116 @@ const BuyingAdvice = () => {
               mt={2}
             >
               <WarningIcon color="warning" />
-              <Typography variant="variant" color="warning.main" ml={1} style={{maxWidth: "340px", marginBottom: "5px",fontSize: "12px"}}>
+              <Typography
+                variant="variant"
+                color="warning.main"
+                ml={1}
+                style={{
+                  maxWidth: "340px",
+                  marginBottom: "5px",
+                  fontSize: "12px",
+                }}
+              >
                 {buyingWarning[0]}
               </Typography>
             </Box>
           )}
-          {userFinancialData && (
-            <Button
+          {buyRecommendations.length > 0 && (
+            <FormControl
               variant="outlined"
-              color="primary"
-              endIcon={<ArrowForwardIosIcon />}
-              onClick={handleGenerateAdviceClick}
-              size="small"
-              sx={{
-                color: "green",
-                borderColor: "green",
-                fontSize: "12px",
-                padding: "4px 8px",
-                marginTop: "8px",
-                boxShadow: "0px 0px 10px rgba(0, 255, 0, 0.7)",
-                "&:hover": {
-                  backgroundColor: "rgba(0, 255, 0, 0.1)",
-                  borderColor: "darkgreen",
-                },
-              }}
-              disabled={buyRecommendations.length === 0}
+              margin="normal"
+              sx={{ minWidth: "200px", maxWidth: "300px" }}
             >
-              Generate Advice
-            </Button>
+              <InputLabel id="sector-select-label">Select Sectors</InputLabel>
+              <Select
+                labelId="sector-select-label"
+                id="sector-select"
+                multiple
+                value={selectedSectors}
+                onChange={handleSectorChange}
+                input={<OutlinedInput label="Select Sectors" />}
+                renderValue={(selected) => (
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                    {selected.map((value) => (
+                      <Chip key={value} label={value} />
+                    ))}
+                  </Box>
+                )}
+              >
+                {sectors.map((sector) => (
+                  <MenuItem key={sector} value={sector}>
+                    <Checkbox checked={selectedSectors.indexOf(sector) > -1} />
+                    <ListItemText primary={sector} />
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           )}
-        </Box>
+
+          <Button
+            variant="outlined"
+            color="primary"
+            endIcon={<ArrowForwardIosIcon />}
+            onClick={handleGenerateAdviceClick}
+            size="small"
+            sx={{
+              color: "green",
+              borderColor: "green",
+              fontSize: "12px",
+              padding: "4px 8px",
+              mt: "8px",
+              boxShadow: "0px 0px 10px rgba(0, 255, 0, 0.7)",
+              "&:hover": {
+                backgroundColor: "rgba(0, 255, 0, 0.1)",
+                borderColor: "darkgreen",
+              },
+              maxWidth: "200px",
+            }}
+            disabled={buyRecommendations.length === 0}
+          >
+            Generate Advice
+          </Button>
+        </div>
       </Box>
 
       <Dialog
         open={showAdviceDialog}
         onClose={handleCloseDialog}
-        fullWidth={true}
+        fullWidth
         maxWidth="md"
       >
-        <DialogTitle className="text-primary">Buying Advice</DialogTitle>
+        <DialogTitle className="text-success">
+          Buying Recommendations
+        </DialogTitle>
         <DialogContent>
-          <FormControl fullWidth variant="outlined" margin="normal">
-            <InputLabel
-              htmlFor="outlined-adornment-sectors"
-              shrink={selectedSectors.length > 0}
-            >
-              Sectors
-            </InputLabel>
-            <Select
-              id="outlined-adornment-sectors"
-              multiple
-              value={selectedSectors}
-              onChange={handleSectorChange}
-              renderValue={(selected) => selected.join(", ")}
-              label="Sectors"
-            >
-              {sectors.map((sector) => (
-                <MenuItem key={sector} value={sector}>
-                  <Checkbox checked={selectedSectors.indexOf(sector) > -1} />
-                  <ListItemText primary={sector} />
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          <RecommendationList
-            buyRecommendations={buyRecommendations}
-            portfolioPE={portfolioPE}
-            totalBuyingAmount={totalBuyingAmount}
-          />
+          {buyRecommendations.length > 0 ? (
+            <Box>
+              <Typography variant="body2">
+                Total Buying Amount:
+                <strong> {totalBuyingAmount.toFixed(2)}</strong>
+              </Typography>
+              <Typography variant="body2" my={2}>
+                Portfolio PE: <strong> {portfolioPE.toFixed(2)}</strong>
+              </Typography>
+              <Typography variant="body2" my={2}>
+                Portfolio Scope To Grow:{" "}
+                <strong> {portfolioScopeToGrow.toFixed(2)}%</strong>
+              </Typography>
+              <RecommendationList recommendations={buyRecommendations} />
+            </Box>
+          ) : (
+            <Typography>No recommendations available.</Typography>
+          )}
+          {buyingWarning.length > 0 && (
+            <Box className="warning-box">
+              <WarningIcon color="error" />
+              <Typography color="error">{buyingWarning.join(". ")}</Typography>
+            </Box>
+          )}
         </DialogContent>
       </Dialog>
-
       <ConfirmationDialog
-        confirmationOpen={confirmationDialogOpen}
+        open={confirmationDialogOpen}
         handleCloseConfirmation={handleCloseConfirmation}
         handleConfirmGenerateAdvice={handleConfirmGenerateAdvice}
       />

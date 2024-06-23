@@ -1,65 +1,69 @@
 import React from "react";
 import { Box, Typography, Grid } from "@mui/material";
+import { green, red } from "@mui/material/colors";
 
 const RecommendationBox = ({ recommendation }) => {
-  const { stockName, LTP, buyQuantity, TotalValue, PE ,sector} = recommendation;
+  const { stockName, LTP, buyQuantity, TotalValue, PE, sector, scopeToGrow } =
+    recommendation;
+
+  const getScopeColor = (scope) => {
+    const scopeValue = parseFloat(scope.replace("%", ""));
+    return scopeValue >= 0 ? green[500] : red[500];
+  };
 
   return (
     <Box
       border={1}
-      borderRadius={4}
+      borderRadius={2}
       p={2}
       display="flex"
+      flexDirection="column"
       justifyContent="space-between"
-      alignItems="center"
-      mb={2}
+      alignItems="flex-start"
+      mb="2px"
       borderColor="lightgrey"
-      boxShadow={1}
     >
-      <Box>
-        <Typography variant="caption" color="textSecondary">
-          PE. {PE} &bull; &nbsp;
-        </Typography>
-        <Typography variant="caption" color="textSecondary">
-          Sec. {sector}
-        </Typography>
-        <Typography variant="subtitle1" fontWeight="bold">
-          {stockName}
-        </Typography>
-        <Typography variant="caption" color="textSecondary">
-          Quantity: {buyQuantity}
-        </Typography>
-      </Box>
-      <Box textAlign="right">
-        <Grid
-          container
-          spacing={1}
-          alignItems="center"
-          justifyContent="flex-end"
-        >
-          <Grid item>
-            <Typography variant="caption" color="textSecondary">
-              LTP:
-            </Typography>
-          </Grid>
-          <Grid item>
-            <Typography variant="subtitle1" fontWeight="bold">
-              {LTP}
-            </Typography>
-          </Grid>
-          <Grid item xs={12} />
-          <Grid item>
-            <Typography variant="caption" color="textSecondary">
-              Total:
-            </Typography>
-          </Grid>
-          <Grid item>
-            <Typography variant="subtitle1" fontWeight="bold">
-              {Math.round(TotalValue)}
-            </Typography>
-          </Grid>
+      <Grid container spacing={1}>
+        <Grid item xs={6}>
+          <Typography variant="caption" color="textSecondary">
+            PE. {PE} &bull; {sector}
+          </Typography>
         </Grid>
-      </Box>
+        <Grid item xs={6} textAlign="right">
+          <Typography variant="caption" color="textSecondary">
+            STG:{" "}
+            <span style={{ color: getScopeColor(scopeToGrow) }}>
+              {scopeToGrow}
+            </span>
+          </Typography>
+        </Grid>
+        <Grid item xs={6}>
+          <Typography variant="subtitle1" fontWeight="bold">
+            {stockName}
+          </Typography>
+        </Grid>
+        <Grid item xs={6} textAlign="right">
+          <Typography variant="caption" color="textSecondary">
+            LTP:
+          </Typography>
+          <Typography variant="subtitle1" fontWeight="bold" display="inline">
+            {LTP}
+          </Typography>
+        </Grid>
+        <Grid item xs={6}>
+          <Typography variant="body2">
+            QTY: <strong>{buyQuantity}</strong>
+          </Typography>
+        </Grid>
+        <Grid item xs={6} textAlign="right">
+          <Typography variant="caption" color="textSecondary">
+            Total:
+          </Typography>
+          <Typography variant="subtitle1" fontWeight="bold" display="inline">
+            {Math.round(TotalValue)}
+          </Typography>
+        </Grid>
+      </Grid>
     </Box>
   );
 };

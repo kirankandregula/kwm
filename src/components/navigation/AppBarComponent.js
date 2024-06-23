@@ -112,7 +112,6 @@ const AppBarComponent = ({ onLogout }) => {
   };
 
   const menuItems = [
-    { text: "Home", link: "/" },
     { text: "About", link: "/about" },
     { text: "Contact", link: "/contact" },
   ];
@@ -120,19 +119,12 @@ const AppBarComponent = ({ onLogout }) => {
   if (cookies.userRole === "Admin") {
     menuItems.push(
       { text: "Etf Service", link: "/etf" },
-      { text: "Stock Monitor", link: "/spying" },
-      { text: "Stock In Radar", link: "/radar" },
-      { text: "Action", link: "/action" },
       { text: "History", link: "/history" }
     );
   }
 
   if (cookies.userRole === "Viewer") {
-    menuItems.push(
-      { text: "Etf Service", link: "/etf" },
-      { text: "Action", link: "/action" },
-      { text: "History", link: "/history" }
-    );
+    menuItems.push({ text: "Etf Service", link: "/etf" });
   }
 
   if (cookies.userName && cookies.userRole) {

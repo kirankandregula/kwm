@@ -38,6 +38,8 @@ export const DataProvider = ({ children }) => {
   const [selectedSectors, setSelectedSectors] = useState([]);
   const [historyData, setHistoryData] = useState([]);
   const [userHistoryData, setUserHistoryData] = useState([]);
+  const [portfolioScopeToGrow, setPortfolioScopeToGrow] = useState(0);
+
   const fetchData = useFetchData(
     setFinancialData,
     setStockData,
@@ -49,7 +51,7 @@ export const DataProvider = ({ children }) => {
   );
 
   // Memoize calculatePortfolioPE to ensure it doesn't change on every render
-  const calculatePortfolioPE = useCallback(() => {
+  const calculatePortfolioPEAndScopeToGrow = useCallback(() => {
     const totalValue = userStocks.reduce((acc, stock) => {
       return acc + stock.quantity * stock.LTP;
     }, 0);
@@ -58,17 +60,41 @@ export const DataProvider = ({ children }) => {
       return acc + stock.quantity * stock.LTP * stock.pe;
     }, 0);
 
-    return totalValue === 0 ? 0 : weightedPETotal / totalValue;
+    const weightedScopeToGrowTotal = userStocks.reduce((acc, stock) => {
+      return (
+        acc +
+        stock.quantity *
+          stock.LTP *
+          parseInt(stock.scopeToGrow.replace("%", ""))
+      );
+    }, 0);
+
+    const portfolioPE = totalValue === 0 ? 0 : weightedPETotal / totalValue;
+    const portfolioScopeToGrow =
+      totalValue === 0 ? 0 : weightedScopeToGrowTotal / totalValue;
+
+    return { portfolioPE, portfolioScopeToGrow };
   }, [userStocks]);
 
-  const { calculateTotalAmount } = useTotalPortfolioValue(individualStockData, financialData);
+  const { calculateTotalAmount } = useTotalPortfolioValue(
+    individualStockData,
+    financialData
+  );
 
   useEffect(() => {
-    if (userStocks.length > 0) {
-      const { totalPortfolioValue } = calculateTotalAmount(userStocks, cookies.userId);
-      setUserPortfolioPresentValue(totalPortfolioValue);
-    }
-  }, [individualStockData, financialData, userStocks, cookies.userId, calculateTotalAmount]);
+    const { totalPortfolioValue } = calculateTotalAmount(
+      userStocks,
+      cookies.userId
+    );
+
+    setUserPortfolioPresentValue(totalPortfolioValue);
+  }, [
+    individualStockData,
+    financialData,
+    userStocks,
+    cookies.userId,
+    calculateTotalAmount,
+  ]);
 
   useEffect(() => {
     if (stocksToConsider.length > 0) {
@@ -124,12 +150,14 @@ export const DataProvider = ({ children }) => {
     }
   }, [historyData, cookies.userId]);
 
-  // Update portfolioPE when userStocks change
   useEffect(() => {
     if (userStocks.length > 0) {
-      setPortfolioPE(calculatePortfolioPE());
+      const { portfolioPE, portfolioScopeToGrow } =
+        calculatePortfolioPEAndScopeToGrow();
+      setPortfolioPE(portfolioPE);
+      setPortfolioScopeToGrow(portfolioScopeToGrow); // New state variable to store portfolio ScopeToGrow
     }
-  }, [userStocks, calculatePortfolioPE]);
+  }, [userStocks, calculatePortfolioPEAndScopeToGrow]);
 
   const { generateBuyingAdvice, generateSellingAdvice } = useRecommendations(
     userFinancialData,
@@ -150,7 +178,9 @@ export const DataProvider = ({ children }) => {
     portfolioPE,
     setPortfolioPE,
     sectors,
-    selectedSectors
+    selectedSectors,
+    portfolioScopeToGrow,
+    setPortfolioScopeToGrow
   );
 
   const { processStockData } = useProcessStockData(
@@ -221,7 +251,9 @@ export const DataProvider = ({ children }) => {
         sectors,
         setSelectedSectors,
         selectedSectors,
-        userHistoryData, // Add this to the context value
+        userHistoryData, // Add this to the context value,
+        portfolioScopeToGrow,
+        setBuyingWarning,
       }}
     >
       {children}

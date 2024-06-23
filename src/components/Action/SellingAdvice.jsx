@@ -17,17 +17,17 @@ import ConfirmationDialog from "./ConfirmationDialog";
 
 const SellingAdvice = () => {
   const [showAdviceDialog, setShowAdviceDialog] = useState(false);
-  const [confirmationOpen, setConfirmationOpen] = useState(false);
+  const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
   const { sellingRecommendations, generateSellingAdvice } = useData();
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleGenerateAdviceClick = () => {
-    setConfirmationOpen(true);
+    setConfirmationDialogOpen(true);
   };
 
   const handleCloseConfirmation = () => {
-    setConfirmationOpen(false);
+    setConfirmationDialogOpen(false);
   };
 
   const handleConfirmGenerateAdvice = () => {
@@ -60,7 +60,7 @@ const SellingAdvice = () => {
         backgroundColor="#f9f9f9"
         boxShadow="0px 0px 10px rgba(0, 0, 0, 0.2)"
         minHeight={180}
-        minWidth={isSmallScreen? "330px" : "400px"}
+        minWidth={isSmallScreen ? "330px" : "400px"}
       >
         <Typography variant="h6" color="red">
           Selling Recommendation
@@ -74,7 +74,7 @@ const SellingAdvice = () => {
             mt: "20px",
           }}
         >
-          <Typography variant="caption" sx={{mb: "8px", color: "grey"}} >
+          <Typography variant="caption" sx={{ mb: "8px", color: "grey" }}>
             {sellingRecommendations.length > 0
               ? `${sellingRecommendations.length} Stocks to consider selling.`
               : "None of your stocks met the criteria for selling."}
@@ -165,7 +165,13 @@ const SellingAdvice = () => {
               </Box>
             ))
           ) : (
-            <Box display="flex" flexDirection="column" justifyContent="end" alignItems="center" mb={1}>
+            <Box
+              display="flex"
+              flexDirection="column"
+              justifyContent="end"
+              alignItems="center"
+              mb={1}
+            >
               <WarningIcon color="warning" />
               <Typography variant="caption" color="warning.main" ml={1}>
                 No stocks currently met the criteria for selling. Please check
@@ -177,7 +183,7 @@ const SellingAdvice = () => {
       </Dialog>
 
       <ConfirmationDialog
-        confirmationOpen={confirmationOpen}
+        open={confirmationDialogOpen}
         handleCloseConfirmation={handleCloseConfirmation}
         handleConfirmGenerateAdvice={handleConfirmGenerateAdvice}
       />
