@@ -69,11 +69,10 @@ const RegisterPage = () => {
       setErrorMessage("Username already exists. Please choose another one.");
       return false;
     }
-
-    const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+    const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[A-Z])[A-Za-z\d!@#$%^&*]{8,}$/;
     if (!passwordRegex.test(Password)) {
       setErrorMessage(
-        "Password must be at least 8 characters long and contain at least one number and one special character."
+        "Password must be at least 8 characters long, contain at least one number, one special character, and one uppercase letter."
       );
       return false;
     }
@@ -110,7 +109,7 @@ const RegisterPage = () => {
     // Set Previous_Value to be the same as Debt
     const updatedFormData = { ...formData, Previous_Value: formData.Debt };
 
-    console.log("Register Object: ", updatedFormData); // Log the form data
+  
 
     try {
       await fetch(

@@ -28,6 +28,15 @@ export const useRecommendations = (
         userId
       );
 
+      // Check if user is approved
+      if (!userFinancialData || userFinancialData.approved !== "yes") {
+        setBuyingWarning([
+          "Your account is not approved. Please contact the Admin to generate advices.",
+        ]);
+        setBuyRecommendations([]);
+        return;
+      }
+
       const sectorFilteredRecommendations = selectedSectors.length
         ? stocksToConsider.filter(
             (stock) =>
@@ -86,6 +95,7 @@ export const useRecommendations = (
       }
 
       const newRecommendations = [];
+      const newWarnings = [];
       let remainingFunds = liquidFunds;
       let newPortfolioPE = portfolioPE;
       const includedSectors = new Set();
@@ -109,7 +119,7 @@ export const useRecommendations = (
               stockScopeToGrow * totalCost) /
             (totalPortfolioValue + totalCost);
 
-          if (updatedPortfolioPE < 50) {
+          if (updatedPortfolioPE < 40) {
             remainingFunds -= totalCost;
             newPortfolioPE = updatedPortfolioPE;
             newPortfolioScopeToGrow = updatedPortfolioScopeToGrow;
@@ -124,9 +134,9 @@ export const useRecommendations = (
               scopeToGrow: stock.scopeToGrow,
             });
           } else {
-            setBuyingWarning([
-              `Buying ${stock.stockName} would exceed the portfolio PE limit. Consider adjusting your selections.`,
-            ]);
+            newWarnings.push(
+              `Buying ${stock.stockName} would exceed the portfolio PE limit of 40. Consider adjusting your selections.`
+            );
           }
         }
       });
@@ -150,7 +160,7 @@ export const useRecommendations = (
               stockScopeToGrow * totalCost) /
             (totalPortfolioValue + totalCost);
 
-          if (updatedPortfolioPE < 50) {
+          if (updatedPortfolioPE < 40) {
             remainingFunds -= totalCost;
             newPortfolioPE = updatedPortfolioPE;
             newPortfolioScopeToGrow = updatedPortfolioScopeToGrow;
@@ -164,9 +174,9 @@ export const useRecommendations = (
               scopeToGrow: stock.scopeToGrow,
             });
           } else {
-            setBuyingWarning([
-              `Buying ${stock.stockName} would exceed the portfolio PE limit. Consider adjusting your selections.`,
-            ]);
+            newWarnings.push(
+              `Buying ${stock.stockName} would exceed the portfolio PE limit of 40. Consider adjusting your selections.`
+            );
           }
         }
       });
@@ -182,12 +192,12 @@ export const useRecommendations = (
           setPortfolioScopeToGrow(newPortfolioScopeToGrow);
         }
       } else {
-        setBuyingWarning([
-          `You need ${
-            allocatedAmountToEachStock - liquidFunds
-          } more to buy stocks`,
-        ]);
+        newWarnings.push(
+          `You need ${allocatedAmountToEachStock - liquidFunds} more to buy stocks`
+        );
       }
+
+      setBuyingWarning(newWarnings);
     },
     [
       stocksToConsider,
@@ -202,6 +212,7 @@ export const useRecommendations = (
       userId,
       previousRecommendations,
       setPreviousRecommendations,
+      userFinancialData,
     ]
   );
 

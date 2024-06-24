@@ -70,7 +70,9 @@ const StockMonitor = () => {
     (row) =>
       row.stockName && // Filter out rows where stockName is null or undefined
       (row.stockName.toLowerCase().includes(filterValue.toLowerCase()) ||
-        row.Sector.toLowerCase().includes(filterValue.toLowerCase()))
+        row.Sector.toLowerCase().includes(filterValue.toLowerCase()) ||
+        row.action.toLowerCase().includes(filterValue.toLowerCase())
+      )
   );
 
   return (
@@ -101,7 +103,7 @@ const StockMonitor = () => {
           <Box className="form-group sm-12 my-2" >
             <TextField
               fullWidth
-              label="Filter by Stock Name or Sector"
+              label="Filter by Stock Name or Sector or Action"
               variant="outlined"
               value={filterValue}
               onChange={handleFilterChange}
@@ -109,8 +111,7 @@ const StockMonitor = () => {
           </Box>
           <Box sx={{ display: { xs: "none", md: "block" } }}>
             <StockMonTable
-              data={data}
-              filteredData={filteredData}
+              data={filteredData}
               handleSort={handleSort}
               handleClick={handleClick}
             />

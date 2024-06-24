@@ -1,11 +1,10 @@
-// src/components/navigation/Greet.js
-import React from 'react';
+import React from "react";
 
 const Greet = ({ userName }) => {
   const currentHour = new Date().getHours();
   const greeting = currentHour < 12 ? "Good morning" : currentHour < 18 ? "Good afternoon" : "Good evening";
 
-  function toPascalCase(str) {
+  const toPascalCase = (str) => {
     return str
       .replace(/\s(.)/g, function (match) {
         return match.toUpperCase();
@@ -14,9 +13,12 @@ const Greet = ({ userName }) => {
       .replace(/^(.)/, function (match) {
         return match.toUpperCase();
       });
-  }
+  };
 
-  return <span>{userName ? `${greeting} ${toPascalCase(userName)}` : "Wealth Wave"}</span>;
+  // Ensure userName is not undefined or null
+  const displayName = userName ? toPascalCase(userName) : "";
+
+  return <span>{displayName ? `${greeting} ${displayName}` : "Artha Investments"}</span>;
 };
 
 export default Greet;

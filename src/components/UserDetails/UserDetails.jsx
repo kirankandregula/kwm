@@ -107,15 +107,16 @@ function UserDetails() {
     {
       component: (
         <BillableDiv
-          averagePE={parseFloat(averagePE)}
-          averageScopeToGrow={averageScopeToGrow}
-          preValue={userFinancialData ? userFinancialData.Previous_Value : 0}
-          presentValue={
-            parseFloat(totalLatestValue) +
-            (userFinancialData ? parseFloat(userFinancialData.Gold) : 0) +
-            (userFinancialData ? parseFloat(userFinancialData.Debt) : 0)
-          }
-        />
+        averagePE={parseFloat(averagePE)}
+        averageScopeToGrow={averageScopeToGrow.toString()}
+        preValue={userFinancialData ? userFinancialData.Previous_Value : 0}
+        presentValue={
+          parseFloat(totalLatestValue) +
+          (userFinancialData ? parseFloat(userFinancialData.Gold) : 0) +
+          (userFinancialData ? parseFloat(userFinancialData.Debt) : 0)
+        }
+      />
+      
       ),
       key: "billableDiv",
     },
